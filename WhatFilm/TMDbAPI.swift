@@ -15,36 +15,57 @@ final class TMDbAPI {
     
     // MARK: - singleton
     
-    fileprivate static let instance: TMDbAPI = TMDbAPI()
+    static let instance: TMDbAPI = TMDbAPI()
+    
+    // MARK: - Properties
+    
+    fileprivate let disposeBag: DisposeBag = DisposeBag()
+    fileprivate(set) var imageManager: ImageManager? = nil
     
     // MARK: - Initializer (private)
     
     fileprivate init() {}
+
+    // MARK: - 
+    
+    class func start() { TMDbAPI.instance.start() }
+    
+    fileprivate func start() {
+        
+        // Start updating the API configuration (Every four days)
+        // FIXME: Improve
+        let days: RxTimeInterval = 4.0 * 60.0 * 60.0 * 24.0
+        Observable<Int>
+            .timer(0, period: days, scheduler: MainScheduler.instance)
+            .flatMap { (_) -> Observable<APIConfiguration> in
+                return self.configuration()
+            }.map { (apiConfiguration) -> ImageManager in
+                return ImageManager(apiConfiguration: apiConfiguration)
+            }.subscribe(onNext: { (imageManager) in
+                self.imageManager = imageManager
+            }).addDisposableTo(self.disposeBag)
+    }
     
     // MARK: - Configuration
     
-//    static var apiConfiguration: Observable<APIConfiguration> { return TMDbAPI.instance.configuration }
-//    
-//    fileprivate var configuration: Observable<APIConfiguration> {
-//        return Observable.create { (observer) -> Disposable in
-//            let request = Alamofire
-//                .request(Router.configuration)
-//                .validate()
-//                .responseJSON { (response) in
-//                    switch response.result {
-//                    case .success(let data):
-//                        let json = JSON(data)
-//                        
-//                        
-////                        observer.onNext(paginatedList)
-////                        observer.onCompleted()
-//                    case .failure(let error):
-////                        observer.onError(error)
-//                    }
-//                }
-//            return Disposables.create { request.cancel() }
-//        }
-//    }
+    fileprivate func configuration() -> Observable<APIConfiguration> {
+        return Observable.create { (observer) -> Disposable in
+            let request = Alamofire
+                .request(Router.configuration)
+                .validate()
+                .responseJSON { (response) in
+                    switch response.result {
+                    case .success(let data):
+                        let apiConfiguration = APIConfiguration(json: JSON(data))
+                        observer.onNext(apiConfiguration)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create { request.cancel() }
+        }
+    }
     
     // MARK: - Search films
     

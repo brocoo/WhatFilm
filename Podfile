@@ -11,6 +11,7 @@ target 'WhatFilm' do
   pod 'SwiftyJSON', git: 'https://github.com/BaiduHiDeviOS/SwiftyJSON.git', branch: 'swift3'
   pod 'RxSwift', '~> 3.0.0.alpha.1'
   pod 'RxCocoa', '~> 3.0.0.alpha.1'
+  pod 'SDWebImage'
 
 end
 

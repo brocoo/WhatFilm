@@ -6,48 +6,48 @@
 	<dict>
 		<key>Alamofire.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>Pods-WhatFilm.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>RxCocoa.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>5</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>RxSwift.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>4</integer>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SDWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>SwiftyJSON.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>14AD0B5540D5D0340C288357D511D946</key>
+		<key>14E1574250B32F09DBD446ECC0EA06BB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3995E1DC95385AD5368386C43C48C180</key>
+		<key>63DF7A8D2058E1A6ADBB805C7FD49774</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4A3D23C49019CFFD4BED736CBBFA9E62</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5E9B86923E9ED7B0DFBA8249E026EF08</key>
+		<key>6CBFE447A4066362276830389D793B96</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -57,32 +57,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7D7A31423EDF13C7CF8994D19D83937C</key>
+		<key>B5A5CBD003D0B3AF0444404761ACAF12</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9A0DA05A5AEEE175798A10AFA9D00F70</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9B1F024BB3C88DC38BBA0BAF360CC800</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>AAADDF974B01B1BC1EE38F2CCCFF95D6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>BFC9931BEC0F7AF64D1C3A2B1F6A49E8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D408EC37DDAED42C82C4A825DCBC65AF</key>
+		<key>E3CF8565A1A30CD55DC84DED16C12CF6</key>
 		<dict>
 			<key>primary</key>
 			<true/>

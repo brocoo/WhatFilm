@@ -161,7 +161,6 @@ public enum Router: URLRequestConvertible {
     // MARK: - Properties
     
     static let BaseURL: URL = URL(string: "https://api.themoviedb.org/3")!
-    static let ImageURL: URL = URL(string: "http://image.tmdb.org/t/p/w500/")!
     
     static let TMDbAPIKey: String = {
         guard let filePath: String = Bundle.main.path(forResource: "Info", ofType: "plist") else { fatalError("Couldn't find Info.plist") }

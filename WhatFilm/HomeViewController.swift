@@ -29,7 +29,7 @@ class HomeViewController: UIViewController {
     
     fileprivate let collectionViewItemsPerRow: Int = 3
     fileprivate let collectionViewMargin: CGFloat = 15.0
-    fileprivate let collectionViewItemSizeRatio: CGFloat = 3.0 / 4.0
+    fileprivate let collectionViewItemSizeRatio: CGFloat = 2.0 / 3.0
     fileprivate var collectionViewItemWidth: CGFloat {
         return (self.collectionView.bounds.width - (CGFloat(self.collectionViewItemsPerRow + 1) * self.collectionViewMargin)) / CGFloat(self.collectionViewItemsPerRow)
     }

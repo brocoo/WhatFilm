@@ -10,6 +10,7 @@ import Foundation
 import SwiftyJSON
 import RxSwift
 import RxCocoa
+import SDWebImage
 
 public typealias ParametersList = [String: String]
 public typealias FilmsResultClosure = (Result<[Film]>) -> Void
@@ -154,3 +155,19 @@ extension Reactive where Base: UIScrollView {
             .map({ _ in () })
     }
 }
+
+// MARK: - UIImageView extension 
+
+extension UIImageView {
+    
+    func setImage(fromTMDbPath path: ImagePath, withSize size: ImageSize, animated: Bool = true, withPlaceholder placeholder: UIImage? = nil) {
+        guard let imageURL = TMDbAPI.instance.imageManager?.url(fromTMDbPath: path, withSize: size) else { return }
+        self.sd_setImage(with: imageURL, placeholderImage: nil, options: .avoidAutoSetImage) { [weak self] (image, error, cacheType, url) in
+            guard let image = image else { return }
+            self?.image = image
+            self?.alpha = 0.0
+            UIView.animate(withDuration: 0.2) { self?.alpha = 1.0 }
+        }
+    }
+}
+    

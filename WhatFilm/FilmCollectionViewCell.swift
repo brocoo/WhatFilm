@@ -13,6 +13,7 @@ class FilmCollectionViewCell: UICollectionViewCell {
     // MARK: - IBOutlet properties
     
     @IBOutlet weak var filmTitleLabel: UILabel!
+    @IBOutlet weak var filmPosterImageView: UIImageView!
 
     // MARK: - UICollectionViewCell life cycle
     
@@ -25,7 +26,15 @@ class FilmCollectionViewCell: UICollectionViewCell {
     // MARK: -
     
     func populate(withFilm film: Film) {
-        self.filmTitleLabel.text = film.fullTitle
+        if let posterPath = film.posterPath {
+            self.filmTitleLabel.text = nil
+            self.filmTitleLabel.alpha = 0.0
+            self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
+        } else {
+            self.filmTitleLabel.text = film.fullTitle
+            self.filmTitleLabel.alpha = 1.0
+            self.filmPosterImageView.image = nil
+        }
     }
 }
 

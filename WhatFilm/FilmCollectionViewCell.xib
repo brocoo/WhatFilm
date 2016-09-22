@@ -15,6 +15,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="220" height="257"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UzJ-Cx-FH3"/>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ers-ol-ple">
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
@@ -23,15 +24,20 @@
                 </subviews>
             </view>
             <constraints>
+                <constraint firstItem="UzJ-Cx-FH3" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="3Fg-1q-RVy"/>
                 <constraint firstAttribute="bottom" secondItem="Ers-ol-ple" secondAttribute="bottom" constant="8" id="Gq6-PY-D3N"/>
+                <constraint firstAttribute="bottom" secondItem="UzJ-Cx-FH3" secondAttribute="bottom" id="ZuU-pX-MlY"/>
                 <constraint firstItem="Ers-ol-ple" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="hkF-WH-eUG"/>
+                <constraint firstItem="UzJ-Cx-FH3" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="iIO-H9-nXQ"/>
+                <constraint firstAttribute="trailing" secondItem="UzJ-Cx-FH3" secondAttribute="trailing" id="mKL-MD-ULV"/>
                 <constraint firstAttribute="trailing" secondItem="Ers-ol-ple" secondAttribute="trailing" constant="8" id="nia-V9-opb"/>
             </constraints>
             <size key="customSize" width="220" height="257"/>
             <connections>
+                <outlet property="filmPosterImageView" destination="UzJ-Cx-FH3" id="zvP-yP-hxJ"/>
                 <outlet property="filmTitleLabel" destination="Ers-ol-ple" id="EN5-Bm-rZc"/>
             </connections>
-            <point key="canvasLocation" x="133" y="195.5"/>
+            <point key="canvasLocation" x="-348" y="-67"/>
         </collectionViewCell>
     </objects>
 </document>

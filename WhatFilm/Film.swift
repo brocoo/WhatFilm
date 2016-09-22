@@ -14,7 +14,7 @@ public final class Film: NSObject, JSONInitializable {
     // MARK: - Properties
     
     let id: Int
-    let posterPath: String?
+    let posterPathString: String?
     let adult: Bool
     let overview: String
     let releaseDate: Date
@@ -22,7 +22,7 @@ public final class Film: NSObject, JSONInitializable {
     let originalTitle: String
     let originalLanguage: String
     let title: String
-    let backdropPath: String?
+    let backdropPathString: String?
     let popularity: Double
     let voteCount: Int
     let video: Bool
@@ -30,15 +30,23 @@ public final class Film: NSObject, JSONInitializable {
     
     // MARK: - Computed properties
     
-    var fullTitle: String {
-        return self.title
+    var fullTitle: String { return self.title }
+    
+    var posterPath: ImagePath? {
+        guard let posterPathString = self.posterPathString else { return nil }
+        return ImagePath.poster(path: posterPathString)
+    }
+    
+    var backdropPath: ImagePath? {
+        guard let posterPathString = self.posterPathString else { return nil }
+        return ImagePath.poster(path: posterPathString)
     }
     
     // MARK: - JSONInitializable initializer
     
     public init(json: JSON) {
         self.id = json["id"].intValue
-        self.posterPath = json["poster_path"].string
+        self.posterPathString = json["poster_path"].string
         self.adult = json["adult"].boolValue
         self.overview = json["overview"].stringValue
         self.releaseDate = json["release_date"].dateValue
@@ -46,7 +54,7 @@ public final class Film: NSObject, JSONInitializable {
         self.originalTitle = json["original_title"].stringValue
         self.originalLanguage = json["original_language"].stringValue
         self.title = json["title"].stringValue
-        self.backdropPath = json["backdrop_path"].string
+        self.backdropPathString = json["backdrop_path"].string
         self.popularity = json["popularity"].doubleValue
         self.voteCount = json["popularity"].intValue
         self.video = json["video"].boolValue
