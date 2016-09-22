@@ -43,5 +43,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>TMDbAPIKey</key>
+	<string>377d4b93e40b065777fe39c62bebfe9a</string>
 </dict>
 </plist>
