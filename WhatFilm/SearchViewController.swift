@@ -9,10 +9,8 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import Alamofire
-import SwiftyJSON
 
-class HomeViewController: UIViewController {
+class SearchViewController: UIViewController {
 
     // MARK: - IBOutlet Properties
     
@@ -22,7 +20,7 @@ class HomeViewController: UIViewController {
     // MARK: - Properties
     
     private let keyboardObserver: KeyboardObserver = KeyboardObserver()
-    private let viewModel: HomeViewModel = HomeViewModel()
+    private let viewModel: SearchViewModel = SearchViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - UICollectionViewCell layout properties
@@ -97,7 +95,6 @@ class HomeViewController: UIViewController {
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
-        self.title = "🎬"
         self.searchBar.placeholder = "Search films and TV shows"
     }
     
@@ -120,7 +117,11 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
+// MARK: -
+
+extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    
+    // MARK: - UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)

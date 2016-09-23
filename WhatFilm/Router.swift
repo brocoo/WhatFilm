@@ -163,8 +163,8 @@ public enum Router: URLRequestConvertible {
     static let BaseURL: URL = URL(string: "https://api.themoviedb.org/3")!
     
     static let TMDbAPIKey: String = {
-        guard let filePath: String = Bundle.main.path(forResource: "Info", ofType: "plist") else { fatalError("Couldn't find Info.plist") }
-        guard let dict = NSDictionary(contentsOfFile: filePath) else { fatalError("Can't read Info.plist") }
+        guard let filePath: String = Bundle.main.path(forResource: "Services", ofType: "plist") else { fatalError("Couldn't find Services.plist") }
+        guard let dict = NSDictionary(contentsOfFile: filePath) else { fatalError("Can't read Services.plist") }
         guard let apiKey = dict["TMDbAPIKey"] as? String else { fatalError("Couldn't find a value for 'TMDbAPIKey'") }
         return apiKey
     }()
@@ -226,14 +226,14 @@ public enum Router: URLRequestConvertible {
                 
                 var urlParameters = ParametersList()
                 urlParameters["api_key"] = Router.TMDbAPIKey
-                if let page = page { urlParameters["page"] = "\(page)" }
+                if let page = page { urlParameters["page"] = "\(page + 1)" }
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
                 
             case .upcomingFilms(let page):
                 
                 var urlParameters = ParametersList()
                 urlParameters["api_key"] = Router.TMDbAPIKey
-                if let page = page { urlParameters["page"] = "\(page)" }
+                if let page = page { urlParameters["page"] = "\(page + 1)" }
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
                 
             case .discoverFilms(let parameters):

@@ -75,7 +75,6 @@ final class TMDbAPI {
     }
     
     fileprivate func films(fromList currentList: [Film], with parameters: FilmSearchParameters, loadNextPageTrigger trigger: Observable<Void>) -> Observable<[Film]> {
-        
         return self.films(with: parameters).flatMap { (paginatedList) -> Observable<[Film]> in
             let newList = currentList + paginatedList.results
             if let _ = paginatedList.nextPage {
@@ -109,7 +108,24 @@ final class TMDbAPI {
     
     // MARK: - Popular films
     
-    class func PopularFilms(atPage page: Int? = nil) -> Observable<PaginatedList<Film>> {
+    class func popularFilms(startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
+        return TMDbAPI.instance.popularFilms(fromList: [], atPage: page, loadNextPageTrigger: trigger)
+    }
+    
+    fileprivate func popularFilms(fromList currentList: [Film], atPage page: Int, loadNextPageTrigger trigger: Observable<Void>) -> Observable<[Film]> {
+        return self.popularFilms(atPage: page).flatMap { (paginatedList) -> Observable<[Film]> in
+            let newList = currentList + paginatedList.results
+            if let nextPage = paginatedList.nextPage {
+                return [
+                    Observable.just(newList),
+                    Observable.never().takeUntil(trigger),
+                    self.popularFilms(fromList: newList, atPage: nextPage, loadNextPageTrigger: trigger)
+                    ].concat()
+            } else { return Observable.just(newList) }
+        }
+    }
+    
+    fileprivate func popularFilms(atPage page: Int = 0) -> Observable<PaginatedList<Film>> {
         return Observable<PaginatedList<Film>>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.popularFilms(page: page))

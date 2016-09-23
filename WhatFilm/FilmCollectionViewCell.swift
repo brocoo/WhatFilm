@@ -29,7 +29,7 @@ class FilmCollectionViewCell: UICollectionViewCell {
         if let posterPath = film.posterPath {
             self.filmTitleLabel.text = nil
             self.filmTitleLabel.alpha = 0.0
-            self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
+            self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animated: true)
         } else {
             self.filmTitleLabel.text = film.fullTitle
             self.filmTitleLabel.alpha = 1.0

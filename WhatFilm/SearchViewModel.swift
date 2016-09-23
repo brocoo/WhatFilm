@@ -12,7 +12,7 @@ import RxCocoa
 import Alamofire
 import SwiftyJSON
 
-public final class HomeViewModel: NSObject {
+public final class SearchViewModel: NSObject {
     
     // MARK: - Properties
     
