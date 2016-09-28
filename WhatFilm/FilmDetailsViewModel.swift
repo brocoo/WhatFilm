@@ -15,7 +15,7 @@ public final class FilmDetailsViewModel: NSObject {
     // MARK: - Properties
     
     private let film: Film
-//    lazy private(set) var films: Observable<FilmDetail> = Observable()
+//    lazy private(set) var filmDetail: Observable<FilmDetail> = self.setupFilmDetail()
     
     // MARK: - Initializer
     
@@ -25,4 +25,8 @@ public final class FilmDetailsViewModel: NSObject {
     }
     
     // MARK: - Reactive setup
+    
+//    fileprivate func setupFilmDetail() -> Observable<FilmDetail> {
+//        
+//    }
 }

@@ -179,4 +179,10 @@ protocol SegueReachable: class {
     
     static var segueIdentifier: String { get }
 }
+
+// MARK: - DataError
+
+public enum DataError: Error {
+    case missingData
+}
     

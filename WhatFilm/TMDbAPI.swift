@@ -142,11 +142,33 @@ final class TMDbAPI {
             return Disposables.create { request.cancel() }
         }
     }
+    
+    // MARK: - Film details
+    
+    class func filmDetail(fromId id: Int) -> Observable<FilmDetail> {
+        return Observable<FilmDetail>.create { (observer) -> Disposable in
+            let request = Alamofire
+                .request(Router.film(id: id))
+                .validate()
+                .responseFilmDetail() { (response) in
+                    switch response.result {
+                    case .success(let film):
+                        observer.onNext(film)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create { request.cancel() }
+        }
+    }
 }
 
 // MARK: -
 
 extension Alamofire.DataRequest {
+    
+    // MARK: - Alamofire.DataRequest custom response serializers
     
     static func filmsResponseSerializer() -> DataResponseSerializer<[Film]> {
         return DataResponseSerializer { (request, response, data, error) in
@@ -182,5 +204,21 @@ extension Alamofire.DataRequest {
     
     @discardableResult func responsePaginatedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PaginatedList<Film>>) -> Void) -> Self {
         return response(queue: queue, responseSerializer: DataRequest.paginatedFilmsResponseSerializer(), completionHandler: completionHandler)
+    }
+    
+    static func filmDetailsResponseSerializer() -> DataResponseSerializer<FilmDetail> {
+        return DataResponseSerializer { (request, response, data, error) in
+            if let error = error { return .failure(error) }
+            else {
+                guard let data = data else { return .failure(DataError.missingData) }
+                let json = JSON(data: data)
+                let film = FilmDetail(json: json)
+                return .success(film)
+            }
+        }
+    }
+    
+    @discardableResult func responseFilmDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmDetail>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataRequest.filmDetailsResponseSerializer(), completionHandler: completionHandler)
     }
 }
