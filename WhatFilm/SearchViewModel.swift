@@ -24,8 +24,29 @@ public final class SearchViewModel: NSObject {
     
     // Output
     lazy private(set) var films: Observable<[Film]> = self.setupFilms()
+    lazy private(set) var isLoading: PublishSubject<Bool> = PublishSubject()
+    
+    // MARK: - Initializer
+    
+    override init() {
+        super.init()
+        self.setupIsLoading()
+    }
     
     // MARK: - Reactive Setup
+    
+    fileprivate func setupIsLoading() {
+        self.films
+            .subscribe(onNext: { [weak self] (films) in
+                self?.isLoading.on(.next(false))
+            }, onError: { [weak self] (error) in
+                self?.isLoading.on(.next(false))
+            }, onCompleted: { [weak self] in
+                self?.isLoading.on(.next(false))
+            }, onDisposed: { [weak self] in
+                self?.isLoading.on(.next(false))
+            }).addDisposableTo(self.disposaBag)
+    }
     
     fileprivate func setupFilms() -> Observable<[Film]> {
         
@@ -35,7 +56,8 @@ public final class SearchViewModel: NSObject {
             .asObservable()
             .debounce(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .flatMapLatest { (query) -> Observable<[Film]> in
+            .flatMapLatest { [weak self] (query) -> Observable<[Film]> in
+                self?.isLoading.on(.next(true))
                 return TMDbAPI.films(withTitle: query, loadNextPageTrigger: trigger)
             }
             .shareReplay(1)

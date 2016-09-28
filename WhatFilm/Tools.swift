@@ -172,4 +172,11 @@ extension UIImageView {
         }
     }
 }
+
+// MARK: - SegueReachable protocol
+
+protocol SegueReachable: class {
+    
+    static var segueIdentifier: String { get }
+}
     

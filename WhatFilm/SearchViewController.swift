@@ -14,6 +14,7 @@ class SearchViewController: BaseFilmCollectionViewController {
 
     // MARK: - IBOutlet Properties
     
+    @IBOutlet weak var placeholderView: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
     
     // MARK: - Properties
@@ -49,6 +50,13 @@ class SearchViewController: BaseFilmCollectionViewController {
                 cell.populate(withFilm: film)
             }.addDisposableTo(self.disposeBag)
         
+        // Subscribe to collection view cell selection
+        self.collectionView.rx
+            .modelSelected(Film.self)
+            .subscribe(onNext: { [weak self] (film) in
+                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
+            }).addDisposableTo(self.disposeBag)
+        
         // Bind table view bottom reached event to loading the next page
         self.collectionView.rx
             .reachedBottom
@@ -65,6 +73,16 @@ class SearchViewController: BaseFilmCollectionViewController {
                 self.searchBar.endEditing(true)
             }).addDisposableTo(self.disposeBag)
         
+        // Bind the placeholder appearance to the data source
+        self.viewModel
+            .films
+            .subscribe(onNext: { [unowned self] (films) in
+                UIView.animate(withDuration: 0.3) {
+                    self.placeholderView.alpha = films.count > 0 ? 0.0 : 1.0
+                    self.collectionView.alpha = films.count > 0 ? 1.0 : 0.0
+                }
+            }).addDisposableTo(self.disposeBag)
+        
         // Bind keyboard updates to table view inset
         self.keyboardObserver
             .willShow
@@ -77,6 +95,10 @@ class SearchViewController: BaseFilmCollectionViewController {
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).addDisposableTo(self.disposeBag)
+        
+        self.viewModel.isLoading.subscribe(onNext: { (isLoading) in
+            // TODO: Add loading handling
+        }).addDisposableTo(self.disposeBag)
     }
     
     // MARK: - UI Setup
@@ -100,6 +122,16 @@ class SearchViewController: BaseFilmCollectionViewController {
         } else {
             self.collectionView.contentInset = inset
             self.collectionView.scrollIndicatorInsets = inset
+        }
+    }
+    
+    // MARK: - Navigation handling
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
+            guard let film = sender as? Film else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
+            let filmDetailViewModel = FilmDetailsViewModel(withFilm: film)
+            filmDetailsViewController.viewModel = filmDetailViewModel
         }
     }
 }

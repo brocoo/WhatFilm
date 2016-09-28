@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -92,11 +93,52 @@
                     <navigationItem key="navigationItem" title="Featured" id="ey3-UL-gyo"/>
                     <connections>
                         <outlet property="collectionView" destination="SLi-5s-8zd" id="GPh-dj-xb5"/>
+                        <segue destination="97y-3B-ovb" kind="show" identifier="FilmDetail" id="YFb-Pj-ben"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jbc-PX-mhq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1041" y="-456"/>
+        </scene>
+        <!--Film Details View Controller-->
+        <scene sceneID="Awq-6P-GTA">
+            <objects>
+                <viewController id="97y-3B-ovb" customClass="FilmDetailsViewController" customModule="WhatFilm" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="YMz-m6-tE3"/>
+                        <viewControllerLayoutGuide type="bottom" id="2nE-Zo-KGM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ztc-Mm-dgj">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ldN-8P-c37">
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ldN-8P-c37" secondAttribute="height" multiplier="2:3" id="HWx-Zo-Gv7"/>
+                                </constraints>
+                            </imageView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hir-bJ-Ihr">
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ldN-8P-c37" firstAttribute="top" secondItem="YMz-m6-tE3" secondAttribute="bottom" id="05f-gb-pOX"/>
+                            <constraint firstItem="ldN-8P-c37" firstAttribute="leading" secondItem="Ztc-Mm-dgj" secondAttribute="leading" id="Hdq-16-xGa"/>
+                            <constraint firstAttribute="trailing" secondItem="Hir-bJ-Ihr" secondAttribute="trailing" id="V3z-L9-LoV"/>
+                            <constraint firstItem="Hir-bJ-Ihr" firstAttribute="top" secondItem="YMz-m6-tE3" secondAttribute="bottom" id="e7T-Rp-Vkm"/>
+                            <constraint firstItem="2nE-Zo-KGM" firstAttribute="top" secondItem="Hir-bJ-Ihr" secondAttribute="bottom" id="eup-e0-68I"/>
+                            <constraint firstAttribute="trailing" secondItem="ldN-8P-c37" secondAttribute="trailing" id="ifp-JV-BKP"/>
+                            <constraint firstItem="Hir-bJ-Ihr" firstAttribute="leading" secondItem="Ztc-Mm-dgj" secondAttribute="leading" id="tGp-Zm-Mzy"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="posterImageView" destination="ldN-8P-c37" id="4fh-8W-gJ8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="URt-Bx-JEx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2183" y="-72"/>
         </scene>
         <!--Search-->
         <scene sceneID="XCx-PZ-qJe">
@@ -123,22 +165,43 @@
                                 </collectionViewFlowLayout>
                                 <cells/>
                             </collectionView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qZU-gR-UEh">
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No results found..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ttc-xt-Meq">
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Ttc-xt-Meq" firstAttribute="leading" secondItem="qZU-gR-UEh" secondAttribute="leading" id="AK2-Gn-HIP"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ttc-xt-Meq" secondAttribute="trailing" id="KgM-gp-xBt"/>
+                                    <constraint firstItem="Ttc-xt-Meq" firstAttribute="top" secondItem="qZU-gR-UEh" secondAttribute="top" id="PAh-Ax-cdS"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ttc-xt-Meq" secondAttribute="bottom" id="lZj-Sc-YPe"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Icn-Yo-xdE" firstAttribute="top" secondItem="9tp-Te-5Tc" secondAttribute="bottom" id="0x4-Nv-jPC"/>
+                            <constraint firstAttribute="trailing" secondItem="qZU-gR-UEh" secondAttribute="trailing" constant="30" id="FY1-Al-Etz"/>
+                            <constraint firstItem="qZU-gR-UEh" firstAttribute="centerY" secondItem="Icn-Yo-xdE" secondAttribute="centerY" id="FdS-hU-sBb"/>
                             <constraint firstItem="Icn-Yo-xdE" firstAttribute="leading" secondItem="IjD-ed-cy9" secondAttribute="leading" id="GCl-Dg-Qh8"/>
                             <constraint firstItem="RaA-ko-MCa" firstAttribute="top" secondItem="Icn-Yo-xdE" secondAttribute="bottom" id="IEz-D4-nW7"/>
                             <constraint firstItem="9tp-Te-5Tc" firstAttribute="leading" secondItem="IjD-ed-cy9" secondAttribute="leading" id="J4T-1e-jre"/>
                             <constraint firstAttribute="trailing" secondItem="Icn-Yo-xdE" secondAttribute="trailing" id="JRL-pS-hOz"/>
                             <constraint firstAttribute="trailing" secondItem="9tp-Te-5Tc" secondAttribute="trailing" id="PeC-a9-aMS"/>
                             <constraint firstItem="9tp-Te-5Tc" firstAttribute="top" secondItem="TRf-iy-KRm" secondAttribute="bottom" id="TXH-T3-4cs"/>
+                            <constraint firstItem="qZU-gR-UEh" firstAttribute="leading" secondItem="IjD-ed-cy9" secondAttribute="leading" constant="30" id="VJc-Lm-wPP"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Search" id="MAZ-wi-kEC"/>
                     <connections>
                         <outlet property="collectionView" destination="Icn-Yo-xdE" id="ueh-wW-QQH"/>
+                        <outlet property="placeholderView" destination="qZU-gR-UEh" id="ubR-5E-uhL"/>
                         <outlet property="searchBar" destination="9tp-Te-5Tc" id="jX1-wg-RqD"/>
+                        <segue destination="97y-3B-ovb" kind="show" identifier="FilmDetail" id="cqr-bt-aqs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cim-7w-PuH" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -146,4 +209,7 @@
             <point key="canvasLocation" x="1041" y="307"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="cqr-bt-aqs"/>
+    </inferredMetricsTieBreakers>
 </document>

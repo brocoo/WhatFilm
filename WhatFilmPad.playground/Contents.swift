@@ -6,8 +6,6 @@ import RxSwift
 PlaygroundPage.current.needsIndefiniteExecution = true
 
 
-
-
 var trigger: Observable<Void> = Observable.empty()
 
 let observable: Observable<String> = [

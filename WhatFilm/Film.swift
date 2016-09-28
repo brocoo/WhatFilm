@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import RxDataSources
 
 public final class Film: NSObject, JSONInitializable {
     
@@ -61,6 +62,16 @@ public final class Film: NSObject, JSONInitializable {
         self.voteAverage = json["vote_average"].doubleValue
         super.init()
     }
+}
+
+// MARK: -
+
+extension Film: IdentifiableType {
+    
+    // MARK: - IdentifiableType
+    
+    public typealias Identity = Int
+    public var identity: Identity { return self.id }
 }
 
 // MARK: -

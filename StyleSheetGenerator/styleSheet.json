@@ -1,0 +1,31 @@
+{
+  "textStyles": {
+    "Body": {
+      "font": "AvenirNext-Medium ",
+      "size": 14,
+      "colour": "OffBlack"
+    },
+    "BodyDemiBold": {
+      "font": "AvenirNext-DemiBold ",
+      "size": 14,
+      "colour": "OffBlack"
+    }
+  },
+  "colours": {
+    "OffBlack": [
+      20,
+      20,
+      20
+    ],
+    "Yellow": [
+      245,
+      222,
+      80
+    ],
+    "Black": [
+      0,
+      0,
+      0
+    ]
+  }
+}

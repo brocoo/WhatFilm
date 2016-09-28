@@ -14,6 +14,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     
     // MARK: - IBOutlet Properties
     
+    @IBOutlet weak var placeholderView: UIView!
     fileprivate let refreshControl: UIRefreshControl = UIRefreshControl()
     
     // MARK: - Properties
@@ -72,13 +73,12 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
             .willShow
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
-                }).addDisposableTo(self.disposeBag)
-        
+            }).addDisposableTo(self.disposeBag)
         self.keyboardObserver
             .willHide
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
-                }).addDisposableTo(self.disposeBag)
+            }).addDisposableTo(self.disposeBag)
     }
     
     // MARK: - UI Setup

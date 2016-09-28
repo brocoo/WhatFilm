@@ -1,9 +1,12 @@
 PODS:
-  - Alamofire (4.0.0)
+  - Alamofire (4.0.1)
   - Crashlytics (3.8.2):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.8)
+  - Fabric (1.6.9)
   - RxCocoa (3.0.0-beta.1):
+    - RxSwift (~> 3.0.0-beta.1)
+  - RxDataSources (1.0.0-beta.2):
+    - RxCocoa (~> 3.0.0-beta.1)
     - RxSwift (~> 3.0.0-beta.1)
   - RxSwift (3.0.0-beta.1)
   - SDWebImage (3.8.2):
@@ -16,6 +19,7 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - RxCocoa (~> 3.0.0.alpha.1)
+  - RxDataSources (~> 1.0.0-beta.2)
   - RxSwift (~> 3.0.0.alpha.1)
   - SDWebImage
   - SwiftyJSON (from `https://github.com/BaiduHiDeviOS/SwiftyJSON.git`, branch `swift3`)
@@ -31,14 +35,15 @@ CHECKOUT OPTIONS:
     :git: https://github.com/BaiduHiDeviOS/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
+  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
   Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
-  Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
+  Fabric: bc5bec42cef4bcf1ee3ce0e218fc518e4b44dfbb
   RxCocoa: 8cecf331302b8ae5381bbab1bccba4ede2eae6a8
+  RxDataSources: 1cd87dc97fd46be002942eb1dcb1b432535141dd
   RxSwift: 0823e8d7969c23bfa9ddfb2afa4881e424a1a710
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   SwiftyJSON: 6118fb49d7519c4d31a0c1f3d5af936e9047b556
 
-PODFILE CHECKSUM: 6bc73cc8b3dabf19a9c6303187aa27806e6d4b99
+PODFILE CHECKSUM: d70fd552353f6205e9680c98202dc3dd252f2f7c
 
 COCOAPODS: 1.1.0.rc.2
