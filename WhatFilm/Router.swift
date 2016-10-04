@@ -176,7 +176,7 @@ public enum Router: URLRequestConvertible {
         case .popularFilms(_): return "/movie/popular"
         case .upcomingFilms(_): return "/movie/upcoming"
         case .discoverFilms(_): return "/discover/movie"
-        case .film(let id): return "/movie/\(id)"
+        case .filmDetail(let filmId): return "/movie/\(filmId)"
         }
     }
     
@@ -187,7 +187,7 @@ public enum Router: URLRequestConvertible {
         case .popularFilms(_): return .get
         case .upcomingFilms(_): return .get
         case .discoverFilms(_): return .get
-        case .film(_): return .get
+        case .filmDetail(_): return .get
         }
     }
     
@@ -198,7 +198,7 @@ public enum Router: URLRequestConvertible {
     case popularFilms(page: Int?)
     case upcomingFilms(page: Int?)
     case discoverFilms(parameters: DiscoverParameters)
-    case film(id: Int)
+    case filmDetail(filmId: Int)
     
     // MARK: - URLRequestConvertible overriden properties / functions
     
@@ -245,11 +245,12 @@ public enum Router: URLRequestConvertible {
                 urlParameters["api_key"] = Router.TMDbAPIKey
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
                 
-            case .film(_):
+            case .filmDetail(_):
                 
                 var urlParameters = ParametersList()
                 urlParameters["api_key"] = Router.TMDbAPIKey
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
+                
             }
         }()
         print("[ROUTER] \(finalRequest.url?.absoluteString ?? " - ")")

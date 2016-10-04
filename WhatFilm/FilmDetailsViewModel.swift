@@ -14,19 +14,23 @@ public final class FilmDetailsViewModel: NSObject {
 
     // MARK: - Properties
     
-    private let film: Film
-//    lazy private(set) var filmDetail: Observable<FilmDetail> = self.setupFilmDetail()
+    let film: Observable<Film>
+    let filmDetail: Observable<FilmDetail>
     
     // MARK: - Initializer
     
     init(withFilm film: Film) {
-        self.film = film
+        
+        self.film = Observable
+            .just(film)
+            .shareReplay(1)
+        
+        self.filmDetail = Observable
+            .just(())
+            .flatMapLatest { (_) -> Observable<FilmDetail> in
+                return TMDbAPI.filmDetail(fromId: film.id)
+            }.shareReplay(1)
+        
         super.init()
     }
-    
-    // MARK: - Reactive setup
-    
-//    fileprivate func setupFilmDetail() -> Observable<FilmDetail> {
-//        
-//    }
 }

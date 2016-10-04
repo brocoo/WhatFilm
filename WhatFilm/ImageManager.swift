@@ -18,6 +18,7 @@ public enum ImageSize {
     case big
     case original
     
+    static var ratio: CGFloat = (2.0 / 3.0)
 }
 
 // MARK: -

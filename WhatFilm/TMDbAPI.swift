@@ -143,17 +143,21 @@ final class TMDbAPI {
         }
     }
     
-    // MARK: - Film details
+    // MARK: - Film detail
     
-    class func filmDetail(fromId id: Int) -> Observable<FilmDetail> {
+    class func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
+        return TMDbAPI.instance.filmDetail(fromId: filmId)
+    }
+    
+    fileprivate func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
         return Observable<FilmDetail>.create { (observer) -> Disposable in
             let request = Alamofire
-                .request(Router.film(id: id))
+                .request(Router.filmDetail(filmId: filmId))
                 .validate()
-                .responseFilmDetail() { (response) in
+                .responseFilmDetail { (response) in
                     switch response.result {
-                    case .success(let film):
-                        observer.onNext(film)
+                    case .success(let filmDetail):
+                        observer.onNext(filmDetail)
                         observer.onCompleted()
                     case .failure(let error):
                         observer.onError(error)
@@ -168,7 +172,7 @@ final class TMDbAPI {
 
 extension Alamofire.DataRequest {
     
-    // MARK: - Alamofire.DataRequest custom response serializers
+    // MARK: - Films response serializer
     
     static func filmsResponseSerializer() -> DataResponseSerializer<[Film]> {
         return DataResponseSerializer { (request, response, data, error) in
@@ -184,6 +188,8 @@ extension Alamofire.DataRequest {
     @discardableResult func responseFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<[Film]>) -> Void) -> Self {
         return response(queue: queue, responseSerializer: DataRequest.filmsResponseSerializer(), completionHandler: completionHandler)
     }
+    
+    // MARK: - Paginated list of films response serializer
     
     static func paginatedFilmsResponseSerializer() -> DataResponseSerializer<PaginatedList<Film>> {
         return DataResponseSerializer { (request, response, data, error) in
@@ -206,19 +212,21 @@ extension Alamofire.DataRequest {
         return response(queue: queue, responseSerializer: DataRequest.paginatedFilmsResponseSerializer(), completionHandler: completionHandler)
     }
     
-    static func filmDetailsResponseSerializer() -> DataResponseSerializer<FilmDetail> {
+    // MARK: - Flim detail response serializer
+    
+    static func filmDetailResponseSerializer() -> DataResponseSerializer<FilmDetail> {
         return DataResponseSerializer { (request, response, data, error) in
             if let error = error { return .failure(error) }
             else {
-                guard let data = data else { return .failure(DataError.missingData) }
+                guard let data = data else { return .failure(DataError.noData) }
                 let json = JSON(data: data)
-                let film = FilmDetail(json: json)
-                return .success(film)
+                let filmDetail = FilmDetail(json: json)
+                return .success(filmDetail)
             }
         }
     }
     
     @discardableResult func responseFilmDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmDetail>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.filmDetailsResponseSerializer(), completionHandler: completionHandler)
+        return response(queue: queue, responseSerializer: DataRequest.filmDetailResponseSerializer(), completionHandler: completionHandler)
     }
 }

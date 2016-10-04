@@ -1,17 +1,37 @@
 {
   "textStyles": {
     "Body": {
-      "font": "AvenirNext-Medium ",
+      "font": "AvenirNext-Medium",
       "size": 14,
       "colour": "OffBlack"
     },
     "BodyDemiBold": {
-      "font": "AvenirNext-DemiBold ",
+      "font": "AvenirNext-DemiBold",
       "size": 14,
       "colour": "OffBlack"
+    },
+    "NavigationTitle": {
+      "font": "AvenirNext-DemiBold",
+      "size": 16,
+      "colour": "OffBlack"
+    },
+    "Placeholder": {
+      "font": "AvenirNext-Medium",
+      "size": 14,
+      "colour": "Grey"
     }
   },
   "colours": {
+    "Black": [
+      0,
+      0,
+      0
+    ],
+    "Grey": [
+      200,
+      200,
+      200
+    ],
     "OffBlack": [
       20,
       20,
@@ -21,11 +41,6 @@
       245,
       222,
       80
-    ],
-    "Black": [
-      0,
-      0,
-      0
     ]
   }
 }

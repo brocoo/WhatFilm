@@ -15,7 +15,11 @@ class SearchViewController: BaseFilmCollectionViewController {
     // MARK: - IBOutlet Properties
     
     @IBOutlet weak var placeholderView: UIView!
+    @IBOutlet weak var placeholderImageView: UIImageView!
+    @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var contentOverlayBottomMargin: NSLayoutConstraint!
+    private var loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     // MARK: - Properties
     
@@ -76,10 +80,15 @@ class SearchViewController: BaseFilmCollectionViewController {
         // Bind the placeholder appearance to the data source
         self.viewModel
             .films
-            .subscribe(onNext: { [unowned self] (films) in
-                UIView.animate(withDuration: 0.3) {
-                    self.placeholderView.alpha = films.count > 0 ? 0.0 : 1.0
-                    self.collectionView.alpha = films.count > 0 ? 1.0 : 0.0
+            .withLatestFrom(self.searchBar.rx.text) { (films, query) -> String? in
+                guard films.count == 0 else { return nil }
+                if query == "" { return "Search films and TV shows"
+                } else { return "No results found for '\(query)'" }
+            }.subscribe(onNext: { [unowned self] (placeholderString) in
+                self.placeholderLabel.text = placeholderString
+                UIView.animate(withDuration: 0.2) {
+                    self.placeholderView.alpha = placeholderString == nil ? 0.0 : 1.0
+                    self.collectionView.alpha = placeholderString == nil ? 1.0 : 0.0
                 }
             }).addDisposableTo(self.disposeBag)
         
@@ -96,15 +105,30 @@ class SearchViewController: BaseFilmCollectionViewController {
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).addDisposableTo(self.disposeBag)
         
-        self.viewModel.isLoading.subscribe(onNext: { (isLoading) in
-            // TODO: Add loading handling
-        }).addDisposableTo(self.disposeBag)
+        self.viewModel
+            .isLoading
+            .subscribe(onNext: { (isLoading) in
+//                if isLoading { self.loadingIndicator.startAnimating() }
+//                else { self.loadingIndicator.stopAnimating() }
+            }).addDisposableTo(self.disposeBag)
     }
     
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
-        self.searchBar.placeholder = "Search films and TV shows"
+        
+        self.searchBar.returnKeyType = .done
+        self.searchBar.delegate = self
+        // http://stackoverflow.com/questions/14272015/enable-search-button-when-searching-string-is-empty-in-default-search-bar
+        if let searchTextField: UITextField = self.searchBar.subviews[0].subviews[1] as? UITextField {
+            searchTextField.enablesReturnKeyAutomatically = false
+            searchTextField.attributedPlaceholder = NSAttributedString(string: "Search films and TV shows", attributes: TextStyle.placeholder.attributes)
+        }
+        self.searchBar.addSubview(self.loadingIndicator)
+
+        self.placeholderLabel.apply(style: .placeholder)
+        self.placeholderLabel.text = "Search films and TV shows"
+        self.placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     
     fileprivate func setupCollectionView() {
@@ -115,13 +139,18 @@ class SearchViewController: BaseFilmCollectionViewController {
     fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: bottom, right: 0)
         if let duration = duration {
+            self.view.layoutIfNeeded()
             UIView.animate(withDuration: duration, animations: {
                 self.collectionView.contentInset = inset
                 self.collectionView.scrollIndicatorInsets = inset
+                self.contentOverlayBottomMargin.constant = bottom - self.bottomLayoutGuide.length
+                self.view.layoutIfNeeded()
             })
         } else {
             self.collectionView.contentInset = inset
             self.collectionView.scrollIndicatorInsets = inset
+            self.contentOverlayBottomMargin.constant = bottom - self.bottomLayoutGuide.length
+            self.view.layoutIfNeeded()
         }
     }
     
@@ -133,5 +162,14 @@ class SearchViewController: BaseFilmCollectionViewController {
             let filmDetailViewModel = FilmDetailsViewModel(withFilm: film)
             filmDetailsViewController.viewModel = filmDetailViewModel
         }
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    
+    // MARK: - UISearchBarDelegate
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }

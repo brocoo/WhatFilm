@@ -131,7 +131,7 @@ extension UICollectionView {
     }
 }
 
-// MARK: - UIScrollView extension
+// MARK: - Reactive extension (UIScrollView)
 // https://github.com/tryswift/RxPagination/blob/master/Pagination/UIScrollView%2BRx.swift
 
 extension Reactive where Base: UIScrollView {
@@ -153,6 +153,17 @@ extension Reactive where Base: UIScrollView {
             .event
             .filter({ $0.state == .began })
             .map({ _ in () })
+    }
+}
+
+extension Reactive where Base: UIViewController {
+    
+    public var viewLoaded: Observable<Void> {
+        return self.observe(Bool.self, "isViewLoaded")
+            .filter { isLoaded in
+                guard let isLoaded = isLoaded else { return false }
+                return isLoaded
+            }.map { _ in return () }
     }
 }
 
@@ -180,9 +191,29 @@ protocol SegueReachable: class {
     static var segueIdentifier: String { get }
 }
 
-// MARK: - DataError
+// MARK: - TextStyle extension
+
+extension TextStyle {
+    
+    var attributes: [String: AnyObject] {
+        return [NSFontAttributeName: self.font, NSForegroundColorAttributeName: self.color]
+    }
+}
+
+// MARK: - UILabel extension
+
+extension UILabel {
+    
+    func apply(style: TextStyle) {
+        self.font = style.font
+        self.textColor = style.color
+    }
+}
+
+// MARK: - Custom errors
 
 public enum DataError: Error {
-    case missingData
+    
+    case noData
 }
     

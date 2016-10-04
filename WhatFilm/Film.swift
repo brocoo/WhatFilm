@@ -31,7 +31,9 @@ public final class Film: NSObject, JSONInitializable {
     
     // MARK: - Computed properties
     
-    var fullTitle: String { return self.title }
+    var fullTitle: String {
+        return self.title
+    }
     
     var posterPath: ImagePath? {
         guard let posterPathString = self.posterPathString else { return nil }

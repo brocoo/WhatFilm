@@ -34,8 +34,15 @@ public struct Settings {
     }
     
     static func setupAppearance() {
+        
+        // Tint colors
         UIApplication.shared.delegate?.window??.tintColor = UIColor(commonColor: .yellow)
         UIRefreshControl.appearance().tintColor = UIColor(commonColor: .yellow)
         UITabBar.appearance().barTintColor = UIColor(commonColor: .offBlack)
+        
+        // Gloabal font
+        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: TextStyle.navigationTitle.font]
+        UILabel.appearance().font = TextStyle.body.font
+        UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName: TextStyle.body.font], for: .normal)
     }
 }

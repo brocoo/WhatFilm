@@ -20,7 +20,7 @@ public class BaseFilmCollectionViewController: UIViewController {
     
     fileprivate let collectionViewItemsPerRow: Int = 2
     fileprivate let collectionViewMargin: CGFloat = 15.0
-    fileprivate let collectionViewItemSizeRatio: CGFloat = 2.0 / 3.0
+    fileprivate let collectionViewItemSizeRatio: CGFloat = ImageSize.ratio
     fileprivate var collectionViewItemWidth: CGFloat {
         return (self.collectionView.bounds.width - (CGFloat(self.collectionViewItemsPerRow + 1) * self.collectionViewMargin)) / CGFloat(self.collectionViewItemsPerRow)
     }
