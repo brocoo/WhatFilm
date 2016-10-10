@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyJSON
 import RxDataSources
+import DateTools
 
 public final class Film: NSObject, JSONInitializable {
     
@@ -32,7 +33,8 @@ public final class Film: NSObject, JSONInitializable {
     // MARK: - Computed properties
     
     var fullTitle: String {
-        return self.title
+        let date = self.releaseDate as NSDate
+        return self.title + " (\(date.year()))"
     }
     
     var posterPath: ImagePath? {
@@ -41,8 +43,8 @@ public final class Film: NSObject, JSONInitializable {
     }
     
     var backdropPath: ImagePath? {
-        guard let posterPathString = self.posterPathString else { return nil }
-        return ImagePath.poster(path: posterPathString)
+        guard let backdropPathString = self.backdropPathString else { return nil }
+        return ImagePath.backdrop(path: backdropPathString)
     }
     
     // MARK: - JSONInitializable initializer

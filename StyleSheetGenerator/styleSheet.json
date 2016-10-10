@@ -10,6 +10,21 @@
       "size": 14,
       "colour": "OffBlack"
     },
+    "BodySmall": {
+      "font": "AvenirNext-Medium",
+      "size": 12,
+      "colour": "Grey"
+    },
+    "FilmDetailTitle": {
+      "font": "AvenirNext-DemiBold",
+      "size": 20,
+      "colour": "OffBlack"
+    },
+    "FilmRating": {
+      "font": "AvenirNext-DemiBold",
+      "size": 18,
+      "colour": "Yellow"
+    },
     "NavigationTitle": {
       "font": "AvenirNext-DemiBold",
       "size": 16,
@@ -19,6 +34,16 @@
       "font": "AvenirNext-Medium",
       "size": 14,
       "colour": "Grey"
+    },
+    "BodyTiny": {
+      "font": "AvenirNext-Medium",
+      "size": 9,
+      "colour": "OffBlack"
+    },
+    "BodyTinyBold": {
+      "font": "AvenirNext-DemiBold",
+      "size": 9,
+      "colour": "OffBlack"
     }
   },
   "colours": {

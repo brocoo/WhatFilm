@@ -25,13 +25,13 @@ class FilmCollectionViewCell: UICollectionViewCell {
     
     // MARK: -
     
-    func populate(withFilm film: Film) {
-        if let posterPath = film.posterPath {
+    func populate(withPosterPath posterPath: ImagePath?, andTitle title: String) {
+        if let posterPath = posterPath {
             self.filmTitleLabel.text = nil
             self.filmTitleLabel.alpha = 0.0
             self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animated: true)
         } else {
-            self.filmTitleLabel.text = film.fullTitle
+            self.filmTitleLabel.text = title
             self.filmTitleLabel.alpha = 1.0
             self.filmPosterImageView.image = nil
         }

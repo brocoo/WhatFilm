@@ -177,6 +177,9 @@ public enum Router: URLRequestConvertible {
         case .upcomingFilms(_): return "/movie/upcoming"
         case .discoverFilms(_): return "/discover/movie"
         case .filmDetail(let filmId): return "/movie/\(filmId)"
+        case .filmCredits(let filmId): return "/movie/\(filmId)/credits"
+        case .person(let id): return "/person/\(id)"
+        case .personCredits(let id): return "/person/\(id)/movie_credits"
         }
     }
     
@@ -188,6 +191,9 @@ public enum Router: URLRequestConvertible {
         case .upcomingFilms(_): return .get
         case .discoverFilms(_): return .get
         case .filmDetail(_): return .get
+        case .filmCredits(_): return .get
+        case .person(_): return .get
+        case .personCredits(_): return .get
         }
     }
     
@@ -199,6 +205,9 @@ public enum Router: URLRequestConvertible {
     case upcomingFilms(page: Int?)
     case discoverFilms(parameters: DiscoverParameters)
     case filmDetail(filmId: Int)
+    case filmCredits(filmId: Int)
+    case person(id: Int)
+    case personCredits(id: Int)
     
     // MARK: - URLRequestConvertible overriden properties / functions
     
@@ -216,8 +225,6 @@ public enum Router: URLRequestConvertible {
                 var urlParameters = ParametersList()
                 urlParameters["api_key"] = Router.TMDbAPIKey
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
-                
-                //return Alamofire.ParameterEncoding.URL.encode(request, parameters: urlP/arameters).0
                 
             case .searchFilms(let parameters):
                 
@@ -249,8 +256,27 @@ public enum Router: URLRequestConvertible {
                 
                 var urlParameters = ParametersList()
                 urlParameters["api_key"] = Router.TMDbAPIKey
+                urlParameters["append_to_response"] = "videos"
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
                 
+            case .filmCredits(_):
+                
+                var urlParameters = ParametersList()
+                urlParameters["api_key"] = Router.TMDbAPIKey
+                return try URLEncoding.queryString.encode(request, with: urlParameters)
+                
+            case .person(_):
+                
+                var urlParameters = ParametersList()
+                urlParameters["api_key"] = Router.TMDbAPIKey
+                urlParameters["append_to_response"] = "images"
+                return try URLEncoding.queryString.encode(request, with: urlParameters)
+                
+            case .personCredits(_):
+                
+                var urlParameters = ParametersList()
+                urlParameters["api_key"] = Router.TMDbAPIKey
+                return try URLEncoding.queryString.encode(request, with: urlParameters)
             }
         }()
         print("[ROUTER] \(finalRequest.url?.absoluteString ?? " - ")")

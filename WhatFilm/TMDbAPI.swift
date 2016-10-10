@@ -33,7 +33,7 @@ final class TMDbAPI {
     fileprivate func start() {
         
         // Start updating the API configuration (Every four days)
-        // FIXME: Improve
+        // FIXME: - Improve this by performing background fetch
         let days: RxTimeInterval = 4.0 * 60.0 * 60.0 * 24.0
         Observable<Int>
             .timer(0, period: days, scheduler: MainScheduler.instance)
@@ -166,6 +166,76 @@ final class TMDbAPI {
             return Disposables.create { request.cancel() }
         }
     }
+    
+    // MARK: - Film credits
+    
+    class func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
+        return TMDbAPI.instance.credits(forFilmId: filmId)
+    }
+    
+    fileprivate func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
+        return Observable<FilmCredits>.create { (observer) -> Disposable in
+            let request = Alamofire
+                .request(Router.filmCredits(filmId: filmId))
+                .validate()
+                .responseFilmCredits { (response) in
+                    switch response.result {
+                    case .success(let filmCredits):
+                        observer.onNext(filmCredits)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create { request.cancel() }
+        }
+    }
+    
+    // MARK: - Person
+    
+    class func person(forId id: Int) -> Observable<PersonDetail> {
+        return TMDbAPI.instance.person(forId: id)
+    }
+    
+    fileprivate func person(forId id: Int) -> Observable<PersonDetail> {
+        return Observable<PersonDetail>.create { (observer) -> Disposable in
+            let request = Alamofire
+                .request(Router.person(id: id))
+                .validate()
+                .responsePersonDetail { (response) in
+                    switch response.result {
+                    case .success(let personDetail):
+                        observer.onNext(personDetail)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create { request.cancel() }
+        }
+    }
+    
+    class func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
+        return TMDbAPI.instance.filmsCredited(forPersonId: id)
+    }
+    
+    fileprivate func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
+        return Observable<FilmsCredited>.create { (observer) -> Disposable in
+            let request = Alamofire
+                .request(Router.personCredits(id: id))
+                .validate()
+                .responseCreditedFilms { (response) in
+                    switch response.result {
+                    case .success(let creditedFilms):
+                        observer.onNext(creditedFilms)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create { request.cancel() }
+        }
+    }
 }
 
 // MARK: -
@@ -212,7 +282,7 @@ extension Alamofire.DataRequest {
         return response(queue: queue, responseSerializer: DataRequest.paginatedFilmsResponseSerializer(), completionHandler: completionHandler)
     }
     
-    // MARK: - Flim detail response serializer
+    // MARK: - Film detail response serializer
     
     static func filmDetailResponseSerializer() -> DataResponseSerializer<FilmDetail> {
         return DataResponseSerializer { (request, response, data, error) in
@@ -228,5 +298,63 @@ extension Alamofire.DataRequest {
     
     @discardableResult func responseFilmDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmDetail>) -> Void) -> Self {
         return response(queue: queue, responseSerializer: DataRequest.filmDetailResponseSerializer(), completionHandler: completionHandler)
+    }
+    
+    // MARK: - Film credits response serializer
+    
+    static func filmCreditsResponseSerializer() -> DataResponseSerializer<FilmCredits> {
+        return DataResponseSerializer { (request, response, data, error) in
+            if let error = error { return .failure(error) }
+            else {
+                guard let data = data else { return .failure(DataError.noData) }
+                let json = JSON(data: data)
+                let cast: [Person] = json["cast"].arrayValue.flatMap({ Person(json: $0) })
+                let crew: [Person] = json["crew"].arrayValue.flatMap({ Person(json: $0) })
+                let filmCredits = FilmCredits(cast: cast, crew: crew)
+                return .success(filmCredits)
+            }
+        }
+    }
+    
+    @discardableResult func responseFilmCredits(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmCredits>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataRequest.filmCreditsResponseSerializer(), completionHandler: completionHandler)
+    }
+    
+    // MARK: - Person response serializer
+    
+    static func personResponseSerializer() -> DataResponseSerializer<PersonDetail> {
+        return DataResponseSerializer { (request, response, data, error) in
+            if let error = error { return .failure(error) }
+            else {
+                guard let data = data else { return .failure(DataError.noData) }
+                let json = JSON(data: data)
+                let person = PersonDetail(json: json)
+                return .success(person)
+            }
+        }
+    }
+    
+    @discardableResult func responsePersonDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PersonDetail>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataRequest.personResponseSerializer(), completionHandler: completionHandler)
+    }
+    
+    // MARK: - Credited films for person response serializer
+    
+    static func creditedFilmsResponseSerializer() -> DataResponseSerializer<FilmsCredited> {
+        return DataResponseSerializer { (request, response, data, error) in
+            if let error = error { return .failure(error) }
+            else {
+                guard let data = data else { return .failure(DataError.noData) }
+                let json = JSON(data: data)
+                let cast = json["cast"].arrayValue.flatMap({ FilmCredited(json: $0) })
+                let crew = json["crew"].arrayValue.flatMap({ FilmCredited(json: $0) })
+                let filmsCredited = FilmsCredited(asCast: cast, asCrew: crew)
+                return .success(filmsCredited)
+            }
+        }
+    }
+    
+    @discardableResult func responseCreditedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmsCredited>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataRequest.creditedFilmsResponseSerializer(), completionHandler: completionHandler)
     }
 }

@@ -40,9 +40,15 @@ public struct Settings {
         UIRefreshControl.appearance().tintColor = UIColor(commonColor: .yellow)
         UITabBar.appearance().barTintColor = UIColor(commonColor: .offBlack)
         
-        // Gloabal font
+        // Global font
         UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: TextStyle.navigationTitle.font]
         UILabel.appearance().font = TextStyle.body.font
         UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName: TextStyle.body.font], for: .normal)
+        
+        // UINavigation bar
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().backgroundColor = UIColor.clear
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().isTranslucent = true
     }
 }

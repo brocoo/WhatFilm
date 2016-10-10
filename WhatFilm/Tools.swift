@@ -29,6 +29,11 @@ protocol JSONInitializable {
     init(json: JSON)
 }
 
+protocol JSONFailableInitializable {
+    
+    init?(json: JSON)
+}
+
 // MARK: - JSON
 
 extension JSON {

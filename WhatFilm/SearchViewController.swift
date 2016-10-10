@@ -51,7 +51,7 @@ class SearchViewController: BaseFilmCollectionViewController {
             .films
             .bindTo(self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
-                cell.populate(withFilm: film)
+                cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
         
         // Subscribe to collection view cell selection
@@ -125,6 +125,7 @@ class SearchViewController: BaseFilmCollectionViewController {
             searchTextField.attributedPlaceholder = NSAttributedString(string: "Search films and TV shows", attributes: TextStyle.placeholder.attributes)
         }
         self.searchBar.addSubview(self.loadingIndicator)
+        self.searchBar.keyboardAppearance = .dark
 
         self.placeholderLabel.apply(style: .placeholder)
         self.placeholderLabel.text = "Search films and TV shows"
@@ -159,7 +160,7 @@ class SearchViewController: BaseFilmCollectionViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
             guard let film = sender as? Film else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
-            let filmDetailViewModel = FilmDetailsViewModel(withFilm: film)
+            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
             filmDetailsViewController.viewModel = filmDetailViewModel
         }
     }

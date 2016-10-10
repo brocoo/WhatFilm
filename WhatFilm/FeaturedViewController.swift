@@ -53,8 +53,15 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
             .films
             .bindTo(self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
-                cell.populate(withFilm: film)
+                cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
+        
+        // Subscribe to collection view cell selection
+        self.collectionView.rx
+            .modelSelected(Film.self)
+            .subscribe(onNext: { [weak self] (film) in
+                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
+            }).addDisposableTo(self.disposeBag)
         
         // Bind view model films to the refresh control
         self.viewModel.films
@@ -101,6 +108,16 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
         } else {
             self.collectionView.contentInset = inset
             self.collectionView.scrollIndicatorInsets = inset
+        }
+    }
+    
+    // MARK: - Navigation handling
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
+            guard let film = sender as? Film else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
+            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
+            filmDetailsViewController.viewModel = filmDetailViewModel
         }
     }
 }

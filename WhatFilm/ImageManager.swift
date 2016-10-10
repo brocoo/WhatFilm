@@ -18,7 +18,8 @@ public enum ImageSize {
     case big
     case original
     
-    static var ratio: CGFloat = (2.0 / 3.0)
+    static var posterRatio: CGFloat = (2.0 / 3.0)
+    static var backdropRatio: CGFloat = (300.0 / 169.0)
 }
 
 // MARK: -
@@ -86,6 +87,8 @@ public final class ImageManager: NSObject {
     
     func url(fromTMDbPath imagePath: ImagePath, withSize size: ImageSize) -> URL? {
         let pathComponent = self.pathComponent(forSize: size, andPath: imagePath)
-        return URL(string: self.apiConfiguration.imagesSecureBaseURLString)?.appendingPathComponent(pathComponent)
+        let url = URL(string: self.apiConfiguration.imagesSecureBaseURLString)?.appendingPathComponent(pathComponent)
+        print(url)
+        return url
     }
 }

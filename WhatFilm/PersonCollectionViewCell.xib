@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PersonCollectionViewCell" customModule="WhatFilm" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="80" height="140"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="80" height="140"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oGJ-th-5jl">
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pQB-Zk-yds">
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="pQB-Zk-yds" secondAttribute="height" multiplier="1:1" id="bAP-9T-FNF"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OTj-Bf-Whz">
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bnX-yq-0BH">
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="bnX-yq-0BH" secondAttribute="height" multiplier="1:1" id="jGc-u3-Izm"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="OTj-Bf-Whz" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="0Ua-x2-CJg"/>
+                <constraint firstAttribute="trailing" secondItem="bnX-yq-0BH" secondAttribute="trailing" id="2Rz-Dn-d96"/>
+                <constraint firstAttribute="trailing" secondItem="pQB-Zk-yds" secondAttribute="trailing" id="2nc-dn-wKE"/>
+                <constraint firstItem="oGJ-th-5jl" firstAttribute="top" relation="greaterThanOrEqual" secondItem="gTV-IL-0wX" secondAttribute="top" id="DCq-Hi-E9O"/>
+                <constraint firstItem="oGJ-th-5jl" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="DlO-76-dzD"/>
+                <constraint firstItem="bnX-yq-0BH" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="Gwi-Vb-Z5E"/>
+                <constraint firstItem="pQB-Zk-yds" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="OWC-Pt-Ve1"/>
+                <constraint firstItem="pQB-Zk-yds" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Qvg-Og-aDY"/>
+                <constraint firstAttribute="trailing" secondItem="OTj-Bf-Whz" secondAttribute="trailing" id="l89-dm-qOs"/>
+                <constraint firstAttribute="trailing" secondItem="oGJ-th-5jl" secondAttribute="trailing" id="oUT-SC-prO"/>
+                <constraint firstItem="OTj-Bf-Whz" firstAttribute="top" secondItem="pQB-Zk-yds" secondAttribute="bottom" id="t8u-nK-Q0C"/>
+                <constraint firstItem="bnX-yq-0BH" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="vdq-je-ky5"/>
+                <constraint firstItem="bnX-yq-0BH" firstAttribute="top" secondItem="oGJ-th-5jl" secondAttribute="bottom" id="x0Z-tu-z8r"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="OTj-Bf-Whz" secondAttribute="bottom" id="xKc-eB-STS"/>
+            </constraints>
+            <connections>
+                <outlet property="nameLabel" destination="OTj-Bf-Whz" id="z2o-qJ-tvi"/>
+                <outlet property="profileImageView" destination="pQB-Zk-yds" id="ZW9-ha-RP4"/>
+                <outlet property="profileInitialsLabel" destination="bnX-yq-0BH" id="Skf-n7-fCK"/>
+                <outlet property="roleLabel" destination="oGJ-th-5jl" id="Cq5-tj-M5B"/>
+            </connections>
+            <point key="canvasLocation" x="-65" y="-13"/>
+        </collectionViewCell>
+    </objects>
+</document>

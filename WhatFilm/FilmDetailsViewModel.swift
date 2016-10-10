@@ -14,21 +14,24 @@ public final class FilmDetailsViewModel: NSObject {
 
     // MARK: - Properties
     
-    let film: Observable<Film>
     let filmDetail: Observable<FilmDetail>
+    let credits: Observable<FilmCredits>
     
     // MARK: - Initializer
     
-    init(withFilm film: Film) {
-        
-        self.film = Observable
-            .just(film)
-            .shareReplay(1)
+    init(withFilmId id: Int) {
         
         self.filmDetail = Observable
             .just(())
             .flatMapLatest { (_) -> Observable<FilmDetail> in
-                return TMDbAPI.filmDetail(fromId: film.id)
+                return TMDbAPI.filmDetail(fromId: id)
+            }.shareReplay(1)
+        
+        
+        self.credits = Observable
+            .just(())
+            .flatMapLatest { (_) -> Observable<FilmCredits> in
+                return TMDbAPI.credits(forFilmId: id)
             }.shareReplay(1)
         
         super.init()

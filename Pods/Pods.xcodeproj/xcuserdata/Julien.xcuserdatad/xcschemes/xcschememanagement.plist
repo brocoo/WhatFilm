@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>DateTools.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-WhatFilm.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,17 +47,32 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>31F9288C3A40628396D7F07373A7283C</key>
+		<key>0D90D47836CEF2016414A3E34A885EC5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>43B7FD6BCDDE87B884248172897A18FD</key>
+		<key>14EC8ECCE4DE7F371598CBF5F02CB926</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5928D71BB4ADC2BEB2AF1F6CE7844909</key>
+		<key>1818FF36F23664ACBA1CA3EFDB8AE560</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>391309BFC978B63854D555E9FBB35D2C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>47391C7956C182F298AFAD605F750FF7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>665B9C8393471328D1B3C8FFC637852F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -62,17 +82,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BB0822A752384DE22C0A3802490EE215</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CBC5B83A11DF2DA3CB9F0F2DDAAADB0E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E7FD18DD8E6F1CA5691F02C988AA5E0D</key>
+		<key>AFEDA8059B169E4068B6DCC4D2F0B0E9</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -31,6 +31,24 @@ final class FilmDetail: NSObject, JSONInitializable {
     let imdbId: Int?
     let filmOverview: String?
     let runtime: Int?
+    let videos: [Video]
+    
+    // MARK: - Computed properties
+    
+    var fullTitle: String {
+        let date = self.releaseDate as NSDate
+        return self.title + " (\(date.year()))"
+    }
+    
+    var posterPath: ImagePath? {
+        guard let posterPathString = self.posterPathString else { return nil }
+        return ImagePath.poster(path: posterPathString)
+    }
+    
+    var backdropPath: ImagePath? {
+        guard let backdropPathString = self.backdropPathString else { return nil }
+        return ImagePath.backdrop(path: backdropPathString)
+    }
     
     // MARK: - JSONInitializable initializer
     
@@ -53,6 +71,7 @@ final class FilmDetail: NSObject, JSONInitializable {
         self.imdbId = json["imdb_id"].int
         self.filmOverview = json["overview"].string
         self.runtime = json["runtime"].int
+        self.videos = json["videos"]["results"].arrayValue.flatMap({ Video(json: $0) })
         super.init()
     }
 }
