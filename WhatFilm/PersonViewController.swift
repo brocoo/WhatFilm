@@ -16,16 +16,23 @@ class PersonViewController: UIViewController {
     
     private let disposeBag: DisposeBag = DisposeBag()
     var viewModel: PersonViewModel?
+    var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
     
     // MARK: - IBOutlet properties
     
+    @IBOutlet weak var blurredImageView: UIImageView!
+    @IBOutlet weak var fakeNavigationBar: UIView!
+    @IBOutlet weak var fakeNavigationBarHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var personInitialsLabel: UILabel!
     @IBOutlet weak var personNameLabel: UILabel!
     @IBOutlet weak var personAgeLabel: UILabel!
+    @IBOutlet weak var crewLabel: UILabel!
+    @IBOutlet weak var crewCollectionView: UICollectionView!
+    @IBOutlet weak var castLabel: UILabel!
+    @IBOutlet weak var castCollectionView: UICollectionView!
     @IBOutlet weak var personBiographyLabel: UILabel!
-    @IBOutlet weak var filmsCollectionView: UICollectionView!
     
     // MARK: - UIViewController life cycle
 
@@ -38,19 +45,13 @@ class PersonViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-//        self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
-        
-        // Adjust scrollview insets based on film title
-        let height: CGFloat = self.view.bounds.width / ImageSize.backdropRatio
-        self.scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: 0, right: 0)
-        self.scrollView.scrollIndicatorInsets = UIEdgeInsets(top: height, left: 0, bottom: 0, right: 0)
+        self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
     }
     
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
-        self.view.backgroundColor = UIColor(commonColor: .grey)
+        self.fakeNavigationBar.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
         self.profileImageView.layer.cornerRadius = 50.0
         self.profileImageView.layer.masksToBounds = true
         self.profileImageView.contentMode = .scaleAspectFill
@@ -61,14 +62,19 @@ class PersonViewController: UIViewController {
         self.personNameLabel.text = nil
         self.personAgeLabel.apply(style: .filmRating)
         self.personAgeLabel.text = nil
+        self.crewLabel.apply(style: .filmDetailTitle)
+        self.castLabel.apply(style: .filmDetailTitle)
         self.personBiographyLabel.apply(style: .bodyDemiBold)
         self.personBiographyLabel.text = nil
     }
     
     fileprivate func setupCollectionView() {
-        self.filmsCollectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.filmsCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
-        self.filmsCollectionView.showsHorizontalScrollIndicator = false
+        self.crewCollectionView.registerReusableCell(FilmCollectionViewCell.self)
+        self.crewCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.crewCollectionView.showsHorizontalScrollIndicator = false
+        self.castCollectionView.registerReusableCell(FilmCollectionViewCell.self)
+        self.castCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.castCollectionView.showsHorizontalScrollIndicator = false
     }
     
     // MARK: - Reactive setup
@@ -83,11 +89,40 @@ class PersonViewController: UIViewController {
         
         viewModel
             .filmsCredits
-            .map({ $0.asCast })
-            .bindTo(self.filmsCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .map({ $0.asCrew })
+            .bindTo(self.crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
+        
+        viewModel
+            .filmsCredits
+            .map({ $0.asCast })
+            .bindTo(self.castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+                (row, film, cell) in
+                cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
+            }.addDisposableTo(self.disposeBag)
+        
+        self.crewCollectionView.rx
+            .modelSelected(FilmCredited.self)
+            .subscribe(onNext: { [weak self] (film) in
+                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
+            }).addDisposableTo(self.disposeBag)
+        
+        self.castCollectionView.rx
+            .modelSelected(FilmCredited.self)
+            .subscribe(onNext: { [weak self] (film) in
+                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
+            }).addDisposableTo(self.disposeBag)
+        
+        self.backgroundImagePath
+            .subscribe(onNext: { [unowned self] (imagePath) in
+                if let imagePath = imagePath {
+                    self.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
+                } else {
+                    self.blurredImageView.image = nil
+                }
+            }).addDisposableTo(self.disposeBag)
     }
     
     // MARK: - Data handling
@@ -113,6 +148,16 @@ class PersonViewController: UIViewController {
             return birthDateString + " - " + (deathDate as NSDate).formattedDate(with: .medium) + " (\(age))"
         } else {
             return birthDateString + " (\(age))"
+        }
+    }
+    
+    // MARK: - Navigation handling
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
+            guard let film = sender as? FilmCredited else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
+            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
+            filmDetailsViewController.viewModel = filmDetailViewModel
         }
     }
 }

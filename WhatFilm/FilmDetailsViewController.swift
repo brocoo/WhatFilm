@@ -17,6 +17,7 @@ final class FilmDetailsViewController: UIViewController {
     
     private let disposeBag: DisposeBag = DisposeBag()
     var viewModel: FilmDetailsViewModel?
+    var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
     
     // MARK: - IBOutlet properties
     
@@ -139,18 +140,22 @@ final class FilmDetailsViewController: UIViewController {
         
         viewModel
             .filmDetail
-            .subscribe(onNext: { [unowned self] (filmDetail) in
-                self.populate(forFilmDetail: filmDetail)
+            .subscribe(onNext: { [weak self] (filmDetail) in
+                self?.populate(forFilmDetail: filmDetail)
             }).addDisposableTo(self.disposeBag)
+        
+        self.backgroundImagePath = viewModel.filmDetail.map { (filmDetail) -> ImagePath? in
+            return filmDetail.posterPath ?? filmDetail.backdropPath
+        }
         
         viewModel
             .credits
-            .subscribe(onNext: { [unowned self] (credits) in
-                UIView.animate(withDuration: 0.2) { self.creditsView.alpha = 1.0 }
+            .subscribe(onNext: { [weak self] (credits) in
+                UIView.animate(withDuration: 0.2) { self?.creditsView.alpha = 1.0 }
             }).addDisposableTo(self.disposeBag)
         
-        self.scrollView.rx.contentOffset.subscribe { [unowned self] (contentOffset) in
-            self.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
+        self.scrollView.rx.contentOffset.subscribe { [weak self] (contentOffset) in
+            self?.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
         }.addDisposableTo(self.disposeBag)
         
         viewModel
@@ -181,19 +186,19 @@ final class FilmDetailsViewController: UIViewController {
                 }
             }.addDisposableTo(self.disposeBag)
         
-        self.videosCollectionView.rx.modelSelected(Video.self).subscribe { [unowned self] (event) in
+        self.videosCollectionView.rx.modelSelected(Video.self).subscribe { [weak self] (event) in
             guard let video = event.element else { return }
-            self.play(video: video)
+            self?.play(video: video)
         }.addDisposableTo(self.disposeBag)
         
-        self.crewCollectionView.rx.modelSelected(Person.self).subscribe { [unowned self] (event) in
+        self.crewCollectionView.rx.modelSelected(Person.self).subscribe { [weak self] (event) in
             guard let person = event.element else { return }
-            self.show(person: person)
+            self?.show(person: person)
         }.addDisposableTo(self.disposeBag)
         
-        self.castCollectionView.rx.modelSelected(Person.self).subscribe { [unowned self] (event) in
+        self.castCollectionView.rx.modelSelected(Person.self).subscribe { [weak self] (event) in
             guard let person = event.element else { return }
-            self.show(person: person)
+            self?.show(person: person)
         }.addDisposableTo(self.disposeBag)
     }
     
@@ -215,6 +220,7 @@ final class FilmDetailsViewController: UIViewController {
             guard let person = sender as? Person else { fatalError("No person provided for the 'PersonDetailViewController' instance") }
             let personViewModel = PersonViewModel(withPersonId: person.id)
             personViewController.viewModel = personViewModel
+            personViewController.backgroundImagePath = self.backgroundImagePath
         }
     }
 }
