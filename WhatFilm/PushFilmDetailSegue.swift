@@ -36,11 +36,11 @@ public final class PushFilmDetailSegue: UIStoryboardSegue {
         var finalFrame = sourceView.bounds
         finalFrame.size.height = finalFrame.height - self.source.bottomLayoutGuide.length
         
-        UIView.animate(withDuration: 0.2, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveLinear, animations: {
+        self.source.navigationController?.pushViewController(self.destination, animated: false)
+        UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveLinear, animations: {
             posterImageView.frame = finalFrame
             blurView.alpha = 1.0
         }, completion: { (_) in
-            self.source.navigationController?.pushViewController(self.destination, animated: false)
             UIView.animate(withDuration: 0.1, animations: {
                 posterImageView.alpha = 0.0
             }, completion: { (_) in

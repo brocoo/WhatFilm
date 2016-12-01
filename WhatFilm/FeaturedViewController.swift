@@ -126,7 +126,6 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
         
         // Prepopulate with the selected film
         viewController.rx.viewDidLoad.subscribe(onNext: { _ in
-            print("viewDidLoad trigger")
             viewController.prePopulate(forFilm: film)
         }).addDisposableTo(self.disposeBag)
         
