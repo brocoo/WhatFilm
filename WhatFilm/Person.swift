@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-typealias FilmCredits = (cast: [Person], crew: [Person])
+public typealias FilmCredits = (cast: [Person], crew: [Person])
 
 // MARK: -
 
@@ -36,7 +36,7 @@ extension PersonCategory: JSONFailableInitializable {
 
 // MARK: -
 
-final class Person: NSObject, JSONFailableInitializable {
+public final class Person: NSObject, JSONFailableInitializable {
 
     // MARK: - Properties
     

@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-final class FilmDetail: NSObject, JSONInitializable {
+public final class FilmDetail: NSObject, JSONInitializable {
     
     // MARK: - Properties
     

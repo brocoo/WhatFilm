@@ -111,8 +111,6 @@ final class FilmDetailsViewController: UIViewController {
         if let runtime = filmDetail.runtime { self.filmRuntimeLabel.text = "\(runtime) min" }
         else { self.filmRuntimeLabel.text = " - " }
         self.filmRatingLabel.text = "\(filmDetail.voteAverage)/10"
-        
-        
         self.blurredImageView.contentMode = .scaleAspectFill
         if let backdropPath = filmDetail.backdropPath {
             if let posterPath = filmDetail.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium) }
@@ -132,6 +130,12 @@ final class FilmDetailsViewController: UIViewController {
         }
         self.filmTitleLabel.text = filmDetail.fullTitle.uppercased()
         self.filmOverviewLabel.text = filmDetail.overview
+    }
+    
+    public func prePopulate(forFilm film: Film) {
+        if let posterPath = film.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animated: true) }
+        self.filmTitleLabel.text = film.fullTitle.uppercased()
+        self.filmOverviewLabel.text = film.overview
     }
     
     // MARK: - Reactive setup
@@ -231,7 +235,7 @@ extension FilmDetailsViewController: SegueReachable {
     
     // MARK: - SegueReachable
     
-    static var segueIdentifier: String { return "FilmDetail" }
+    static var segueIdentifier: String { return PushFilmDetailSegue.identifier }
 }
 
 // MARK: -

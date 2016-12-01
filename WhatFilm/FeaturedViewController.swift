@@ -19,9 +19,9 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     
     // MARK: - Properties
     
-    private let keyboardObserver: KeyboardObserver = KeyboardObserver()
-    private let viewModel: FeaturedViewModel = FeaturedViewModel()
-    private let disposeBag: DisposeBag = DisposeBag()
+    fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
+    fileprivate let viewModel: FeaturedViewModel = FeaturedViewModel()
+    fileprivate let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - UIViewController life cycle
     
@@ -30,11 +30,11 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
         self.setupUI()
         self.setupCollectionView()
         self.setupBindings()
+        self.viewModel.reloadTrigger.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.viewModel.reloadTrigger.onNext(())
     }
     
     // MARK: - Reactive bindings setup
@@ -55,13 +55,6 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
-        
-        // Subscribe to collection view cell selection
-        self.collectionView.rx
-            .modelSelected(Film.self)
-            .subscribe(onNext: { [weak self] (film) in
-                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
-            }).addDisposableTo(self.disposeBag)
         
         // Bind view model films to the refresh control
         self.viewModel.films
@@ -114,10 +107,42 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     // MARK: - Navigation handling
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
-            guard let film = sender as? Film else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
-            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
-            filmDetailsViewController.viewModel = filmDetailViewModel
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
+            let pushFilmDetailSegue = segue as? PushFilmDetailSegue,
+            let indexPath = sender as? IndexPath,
+            let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
+            do {
+                let film: Film = try collectionView.rx.model(indexPath)
+                self.prepareTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: pushFilmDetailSegue)
+            } catch { fatalError(error.localizedDescription) }
         }
+    }
+    
+    fileprivate func prepareTransition(to viewController: FilmDetailsViewController, with film: Film, fromCell cell: FilmCollectionViewCell, via segue: PushFilmDetailSegue) {
+        
+        // Create the view model
+        let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
+        viewController.viewModel = filmDetailViewModel
+        
+        // Prepopulate with the selected film
+        viewController.rx.viewDidLoad.subscribe(onNext: { _ in
+            print("viewDidLoad trigger")
+            viewController.prePopulate(forFilm: film)
+        }).addDisposableTo(self.disposeBag)
+        
+        // Setup the segue for transition
+        segue.startingFrame = cell.convert(cell.bounds, to: self.view)
+        segue.posterImage = cell.filmPosterImageView.image
+    }
+}
+
+// MARK: -
+
+extension FeaturedViewController: UITableViewDelegate {
+    
+    // MARK: - UITableViewDelegate functions
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
     }
 }

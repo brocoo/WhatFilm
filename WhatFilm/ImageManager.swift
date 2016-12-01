@@ -88,7 +88,6 @@ public final class ImageManager: NSObject {
     func url(fromTMDbPath imagePath: ImagePath, withSize size: ImageSize) -> URL? {
         let pathComponent = self.pathComponent(forSize: size, andPath: imagePath)
         let url = URL(string: self.apiConfiguration.imagesSecureBaseURLString)?.appendingPathComponent(pathComponent)
-        print(url)
         return url
     }
 }

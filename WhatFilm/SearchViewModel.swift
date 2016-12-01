@@ -58,7 +58,7 @@ public final class SearchViewModel: NSObject {
             .distinctUntilChanged()
             .flatMapLatest { [weak self] (query) -> Observable<[Film]> in
                 self?.isLoading.on(.next(true))
-                return TMDbAPI.films(withTitle: query, loadNextPageTrigger: trigger)
+                return TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger)
             }
             .shareReplay(1)
     }

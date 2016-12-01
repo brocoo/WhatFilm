@@ -163,12 +163,24 @@ extension Reactive where Base: UIScrollView {
 
 extension Reactive where Base: UIViewController {
     
-    public var viewLoaded: Observable<Void> {
-        return self.observe(Bool.self, "isViewLoaded")
-            .filter { isLoaded in
-                guard let isLoaded = isLoaded else { return false }
-                return isLoaded
-            }.map { _ in return () }
+    public var viewDidLoad: Observable<Void> {
+        return self.sentMessage(#selector(UIViewController.viewDidLoad)).map({ _ in return () })
+    }
+    
+    public var viewWillAppear: Observable<Bool> {
+        return self.sentMessage(#selector(UIViewController.viewWillAppear(_:))).map({ $0.first as! Bool })
+    }
+    
+    public var viewDidAppear: Observable<Bool> {
+        return self.sentMessage(#selector(UIViewController.viewDidAppear(_:))).map({ $0.first as! Bool })
+    }
+    
+    public var viewWillDisappear: Observable<Bool> {
+        return self.sentMessage(#selector(UIViewController.viewWillDisappear(_:))).map({ $0.first as! Bool })
+    }
+    
+    public var viewDidDisappear: Observable<Bool> {
+        return self.sentMessage(#selector(UIViewController.viewDidDisappear(_:))).map({ $0.first as! Bool })
     }
 }
 
@@ -182,7 +194,7 @@ extension UIImageView {
         self.sd_setImage(with: imageURL, placeholderImage: nil, options: .avoidAutoSetImage) { [weak self] (image, error, cacheType, url) in
             if animated && !hasImage {
                 self?.alpha = 0.0
-                UIView.animate(withDuration: 0.1) { self?.alpha = 1.0 }
+                UIView.animate(withDuration: 0.5) { self?.alpha = 1.0 }
             }
             self?.image = image
         }
@@ -221,4 +233,14 @@ public enum DataError: Error {
     
     case noData
 }
+
+
+// MARK: - Key window
+
+extension UIApplication {
     
+    static var window: UIWindow? {
+        guard let delegate = self.shared.delegate else { return nil }
+        return delegate.window ?? nil
+    }
+}

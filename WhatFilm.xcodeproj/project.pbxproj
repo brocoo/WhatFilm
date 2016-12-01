@@ -27,6 +27,7 @@
 		F95A04EA1D9C4044007AB2C1 /* FilmDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95A04E91D9C4044007AB2C1 /* FilmDetailsViewController.swift */; };
 		F95A04EC1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95A04EB1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift */; };
 		F95A04EE1D9C4873007AB2C1 /* FilmDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95A04ED1D9C4873007AB2C1 /* FilmDetail.swift */; };
+		F95C6ED11DF0597300CEF516 /* PushFilmDetailSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C6ED01DF0597300CEF516 /* PushFilmDetailSegue.swift */; };
 		F9644B5A1DA7BA6300959622 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B591DA7BA6300959622 /* Video.swift */; };
 		F9644B5E1DA7C39A00959622 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */; };
 		F9644B5F1DA7C39A00959622 /* VideoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */; };
@@ -87,6 +88,7 @@
 		F95A04E91D9C4044007AB2C1 /* FilmDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilmDetailsViewController.swift; sourceTree = "<group>"; };
 		F95A04EB1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilmDetailsViewModel.swift; sourceTree = "<group>"; };
 		F95A04ED1D9C4873007AB2C1 /* FilmDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilmDetail.swift; sourceTree = "<group>"; };
+		F95C6ED01DF0597300CEF516 /* PushFilmDetailSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushFilmDetailSegue.swift; sourceTree = "<group>"; };
 		F9644B591DA7BA6300959622 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewCell.swift; sourceTree = "<group>"; };
 		F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -223,10 +225,19 @@
 		F95A04E81D9C3BBD007AB2C1 /* Film Details */ = {
 			isa = PBXGroup;
 			children = (
+				F95C6ECF1DF0594600CEF516 /* Push segue */,
 				F95A04E91D9C4044007AB2C1 /* FilmDetailsViewController.swift */,
 				F95A04EB1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift */,
 			);
 			name = "Film Details";
+			sourceTree = "<group>";
+		};
+		F95C6ECF1DF0594600CEF516 /* Push segue */ = {
+			isa = PBXGroup;
+			children = (
+				F95C6ED01DF0597300CEF516 /* PushFilmDetailSegue.swift */,
+			);
+			name = "Push segue";
 			sourceTree = "<group>";
 		};
 		F9644B5B1DA7C37200959622 /* Video Collection Cell */ = {
@@ -429,6 +440,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F99DD6BB1D80BD4F00179C5A /* Build configuration list for PBXNativeTarget "WhatFilm" */;
 			buildPhases = (
+				FE919FC0340FA2B7DCBC6574 /* 📦 Check Pods Manifest.lock */,
 				FB448D84436D4AF729ED1C7B /* [CP] Check Pods Manifest.lock */,
 				F99DD6A21D80BD4F00179C5A /* Sources */,
 				F99DD6A31D80BD4F00179C5A /* Frameworks */,
@@ -436,6 +448,8 @@
 				ECA5812A8EB29A1A5A4B0D4F /* [CP] Embed Pods Frameworks */,
 				C243F28365F158CF2EBC45AD /* [CP] Copy Pods Resources */,
 				F9C6D6BC1D958F6E00BB6104 /* ShellScript */,
+				AC610F257219C8F6BE92E1DF /* 📦 Embed Pods Frameworks */,
+				49550FCB7DC073DF4D06D86A /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -453,7 +467,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Julien Ducret";
 				TargetAttributes = {
 					F95A04D61D9C0BD1007AB2C1 = {
@@ -507,6 +521,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		49550FCB7DC073DF4D06D86A /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WhatFilm/Pods-WhatFilm-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AC610F257219C8F6BE92E1DF /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WhatFilm/Pods-WhatFilm-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C243F28365F158CF2EBC45AD /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -565,6 +609,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		FE919FC0340FA2B7DCBC6574 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -603,6 +662,7 @@
 				F91AC78F1D884B1000E99849 /* Result.swift in Sources */,
 				F9C6D6BB1D9587EE00BB6104 /* BaseFilmCollectionViewController.swift in Sources */,
 				F9884F541DABB125007A90F7 /* PersonViewModel.swift in Sources */,
+				F95C6ED11DF0597300CEF516 /* PushFilmDetailSegue.swift in Sources */,
 				F91AC7911D88506E00E99849 /* DateManager.swift in Sources */,
 				F9230F541D9560C60091B353 /* FeaturedViewController.swift in Sources */,
 				F95A04EA1D9C4044007AB2C1 /* FilmDetailsViewController.swift in Sources */,
@@ -759,7 +819,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CF617C246769580856BE0678 /* Pods-WhatFilm.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = PH2JAPR3D3;
@@ -778,7 +838,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4CDE941203556B9E1E9F6231 /* Pods-WhatFilm.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

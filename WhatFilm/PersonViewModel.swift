@@ -24,14 +24,14 @@ final class PersonViewModel: NSObject {
         self.personDetail = Observable
             .just(())
             .flatMapLatest { _ in
-                return TMDbAPI.person(forId: id)
+                return TMDbAPI.instance.person(forId: id)
             }.shareReplay(1)
         
         
         self.filmsCredits = Observable
             .just(())
             .flatMapLatest { _ in
-                return TMDbAPI.filmsCredited(forPersonId: id)
+                return TMDbAPI.instance.filmsCredited(forPersonId: id)
             }.shareReplay(1)
         
         super.init()

@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import DateTools
 
-final class PersonDetail: NSObject, JSONInitializable {
+public final class PersonDetail: NSObject, JSONInitializable {
     
     // MARK: - Properties
     

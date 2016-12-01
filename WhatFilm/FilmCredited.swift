@@ -9,9 +9,9 @@
 import UIKit
 import SwiftyJSON
 
-typealias FilmsCredited = (asCast: [FilmCredited], asCrew: [FilmCredited])
+public typealias FilmsCredited = (asCast: [FilmCredited], asCrew: [FilmCredited])
 
-final class FilmCredited: NSObject, JSONFailableInitializable {
+public final class FilmCredited: NSObject, JSONFailableInitializable {
 
     // MARK: - Properties
     

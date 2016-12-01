@@ -11,7 +11,7 @@ import Alamofire
 import RxSwift
 import SwiftyJSON
 
-final class TMDbAPI {
+public final class TMDbAPI {
     
     // MARK: - singleton
     
@@ -28,9 +28,7 @@ final class TMDbAPI {
 
     // MARK: - 
     
-    class func start() { TMDbAPI.instance.start() }
-    
-    fileprivate func start() {
+    public func start() {
         
         // Start updating the API configuration (Every four days)
         // FIXME: - Improve this by performing background fetch
@@ -69,7 +67,7 @@ final class TMDbAPI {
     
     // MARK: - Search films
     
-    class func films(withTitle title: String, startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
+    public func films(withTitle title: String, startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
         let parameters: FilmSearchParameters = FilmSearchParameters(query: title, atPage: page)
         return TMDbAPI.instance.films(fromList: [], with: parameters, loadNextPageTrigger: trigger)
     }
@@ -108,7 +106,7 @@ final class TMDbAPI {
     
     // MARK: - Popular films
     
-    class func popularFilms(startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
+    public func popularFilms(startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
         return TMDbAPI.instance.popularFilms(fromList: [], atPage: page, loadNextPageTrigger: trigger)
     }
     
@@ -145,11 +143,7 @@ final class TMDbAPI {
     
     // MARK: - Film detail
     
-    class func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
-        return TMDbAPI.instance.filmDetail(fromId: filmId)
-    }
-    
-    fileprivate func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
+    public func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
         return Observable<FilmDetail>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.filmDetail(filmId: filmId))
@@ -169,11 +163,7 @@ final class TMDbAPI {
     
     // MARK: - Film credits
     
-    class func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
-        return TMDbAPI.instance.credits(forFilmId: filmId)
-    }
-    
-    fileprivate func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
+    public func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
         return Observable<FilmCredits>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.filmCredits(filmId: filmId))
@@ -193,11 +183,7 @@ final class TMDbAPI {
     
     // MARK: - Person
     
-    class func person(forId id: Int) -> Observable<PersonDetail> {
-        return TMDbAPI.instance.person(forId: id)
-    }
-    
-    fileprivate func person(forId id: Int) -> Observable<PersonDetail> {
+    public func person(forId id: Int) -> Observable<PersonDetail> {
         return Observable<PersonDetail>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.person(id: id))
@@ -215,11 +201,7 @@ final class TMDbAPI {
         }
     }
     
-    class func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
-        return TMDbAPI.instance.filmsCredited(forPersonId: id)
-    }
-    
-    fileprivate func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
+    public func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
         return Observable<FilmsCredited>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.personCredits(id: id))

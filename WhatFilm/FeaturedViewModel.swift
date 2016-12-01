@@ -35,7 +35,7 @@ final class FeaturedViewModel: NSObject {
             .asObservable()
             .debounce(0.3, scheduler: MainScheduler.instance)
             .flatMapLatest { (_) -> Observable<[Film]> in
-                return TMDbAPI.popularFilms(startingAtPage: 0, loadNextPageTrigger: trigger)
+                return TMDbAPI.instance.popularFilms(startingAtPage: 0, loadNextPageTrigger: trigger)
             }
             .shareReplay(1)
     }

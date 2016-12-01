@@ -29,7 +29,7 @@ public struct Settings {
     }
     
     static func initializeServices() {
-        TMDbAPI.start()
+        TMDbAPI.instance.start()
         Fabric.with([Crashlytics.self])
     }
     
