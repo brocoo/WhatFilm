@@ -41,11 +41,12 @@ public final class PushFilmDetailSegue: UIStoryboardSegue {
             posterImageView.frame = finalFrame
             blurView.alpha = 1.0
         }, completion: { (_) in
-            UIView.animate(withDuration: 0.1, animations: {
-                posterImageView.alpha = 0.0
-            }, completion: { (_) in
-                posterImageView.removeFromSuperview()
-            })
+
+        })
+        UIView.animate(withDuration: 0.1, delay: 0.2, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveLinear, animations: {
+            posterImageView.alpha = 0.0
+        }, completion: { (_) in
+            posterImageView.removeFromSuperview()
         })
     }
 }

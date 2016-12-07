@@ -460,9 +460,11 @@
                         <outlet property="videosCollectionView" destination="tIX-dz-y2t" id="gdO-jz-M14"/>
                         <outlet property="videosLabel" destination="9b6-Dy-wUw" id="aho-0o-5on"/>
                         <segue destination="5jk-dz-GtO" kind="show" identifier="PersonDetail" id="OAq-Pi-jW2"/>
+                        <segue destination="Qej-N1-7Gh" kind="unwind" identifier="PopFilmDetailSegueIdentifier" customClass="PopFilmDetailsSegue" customModule="WhatFilm" customModuleProvider="target" unwindAction="unwindToFeaturedViewControllerWithSender:" id="fJZ-fB-FaM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="URt-Bx-JEx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Qej-N1-7Gh" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2181.5999999999999" y="-72.413793103448285"/>
         </scene>

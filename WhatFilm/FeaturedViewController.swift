@@ -106,6 +106,10 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     
     // MARK: - Navigation handling
     
+    @IBAction func unwindToFeaturedViewController(sender: UIStoryboardSegue) {
+    
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
             let pushFilmDetailSegue = segue as? PushFilmDetailSegue,
@@ -133,6 +137,24 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
         segue.startingFrame = cell.convert(cell.bounds, to: self.view)
         segue.posterImage = cell.filmPosterImageView.image
     }
+    
+    
+    override func segueForUnwinding(to toViewController: UIViewController, from fromViewController: UIViewController, identifier: String?) -> UIStoryboardSegue {
+
+        return PopFilmDetailsSegue(identifier: "", source: fromViewController, destination: toViewController)
+        
+        //        if let id = identifier{
+//            if id == "idFirstSegueUnwind" {
+//                let unwindSegue = FirstCustomSegueUnwind(identifier: id, source: fromViewController, destination: toViewController, performHandler: { () -> Void in
+//                    
+//                })
+//                return unwindSegue
+//            }
+//        }
+//        
+//        return super.segueForUnwindingToViewController(toViewController, fromViewController: fromViewController, identifier: identifier)
+    }
+
 }
 
 // MARK: -
