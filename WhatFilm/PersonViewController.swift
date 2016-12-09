@@ -10,11 +10,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class PersonViewController: UIViewController {
+public final class PersonViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - Properties
     
-    private let disposeBag: DisposeBag = DisposeBag()
+    let disposeBag: DisposeBag = DisposeBag()
     var viewModel: PersonViewModel?
     var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
     
@@ -36,14 +36,14 @@ class PersonViewController: UIViewController {
     
     // MARK: - UIViewController life cycle
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         self.setupCollectionView()
         if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
     }
     
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
     }
@@ -103,18 +103,6 @@ class PersonViewController: UIViewController {
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
         
-        self.crewCollectionView.rx
-            .modelSelected(FilmCredited.self)
-            .subscribe(onNext: { [weak self] (film) in
-                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
-            }).addDisposableTo(self.disposeBag)
-        
-        self.castCollectionView.rx
-            .modelSelected(FilmCredited.self)
-            .subscribe(onNext: { [weak self] (film) in
-                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
-            }).addDisposableTo(self.disposeBag)
-        
         self.backgroundImagePath
             .subscribe(onNext: { [unowned self] (imagePath) in
                 if let imagePath = imagePath {
@@ -140,6 +128,17 @@ class PersonViewController: UIViewController {
         self.personBiographyLabel.text = person.biography
     }
     
+    public func prePopulate(forPerson person: Person) {
+        if let profilePath = person.profilePath {
+            self.personInitialsLabel.text = nil
+            self.profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
+        } else {
+            self.personInitialsLabel.text = person.initials
+            self.profileImageView.image = nil
+        }
+        self.personNameLabel.text = person.name
+    }
+    
     fileprivate func age(forPerson person: PersonDetail) -> String? {
         guard let birthDate = person.birthdate else { return nil }
         guard let birthDateString = (birthDate as NSDate).formattedDate(with: .medium) else { return nil }
@@ -153,11 +152,15 @@ class PersonViewController: UIViewController {
     
     // MARK: - Navigation handling
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
-            guard let film = sender as? FilmCredited else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
-            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
-            filmDetailsViewController.viewModel = filmDetailViewModel
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
+            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
+            let sender = sender as? CollectionViewSelection,
+            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? FilmCollectionViewCell {
+            do {
+                let film: Film = try sender.collectionView.rx.model(sender.indexPath)
+                self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+            } catch { fatalError(error.localizedDescription) }
         }
     }
 }
@@ -168,7 +171,19 @@ extension PersonViewController: SegueReachable {
     
     // MARK: - SegueReachable
     
-    static var segueIdentifier: String { return "PersonDetail" }
+    static var segueIdentifier: String { return PushPersonSegue.identifier }
+}
+
+// MARK: -
+
+extension PersonViewController: UITableViewDelegate {
+    
+    // MARK: - UITableViewDelegate functions
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sender = CollectionViewSelection(collectionView: collectionView, indexPath: indexPath)
+        self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: sender)
+    }
 }
 
 // MARK: -
@@ -190,3 +205,5 @@ extension PersonViewController: UICollectionViewDelegateFlowLayout {
         return 15.0
     }
 }
+
+extension PersonViewController: FilmDetailsFromCellTransitionable {}

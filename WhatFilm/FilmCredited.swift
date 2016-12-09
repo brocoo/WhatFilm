@@ -11,39 +11,16 @@ import SwiftyJSON
 
 public typealias FilmsCredited = (asCast: [FilmCredited], asCrew: [FilmCredited])
 
-public final class FilmCredited: NSObject, JSONFailableInitializable {
+public final class FilmCredited: Film {
 
     // MARK: - Properties
     
-    let category: PersonCategory
-    let id: Int
-    let posterPathString: String?
-    let adult: Bool
-    let releaseDate: Date
-    let title: String
-    
-    // MARK: - Computed properties
-    
-    var fullTitle: String {
-        let date = self.releaseDate as NSDate
-        return self.title + " (\(date.year()))"
-    }
-    
-    var posterPath: ImagePath? {
-        guard let posterPathString = self.posterPathString else { return nil }
-        return ImagePath.poster(path: posterPathString)
-    }
+    let category: PersonCategory?
     
     // MARK: - Initializer
     
-    init?(json: JSON) {
-        guard let category = PersonCategory(json: json) else { return nil }
-        self.id = json["id"].intValue
-        self.category = category
-        self.posterPathString = json["poster_path"].string
-        self.adult = json["adult"].boolValue
-        self.releaseDate = json["release_date"].dateValue
-        self.title = json["title"].stringValue
-        super.init()
+    public required init(json: JSON) {
+        self.category = PersonCategory(json: json)
+        super.init(json: json)
     }
 }

@@ -15,6 +15,13 @@ import SDWebImage
 public typealias ParametersList = [String: String]
 public typealias FilmsResultClosure = (Result<[Film]>) -> Void
 
+// MARK: -
+
+public struct CollectionViewSelection {
+    let collectionView: UICollectionView
+    let indexPath: IndexPath
+}
+
 // MARK: - URLParametersListSerializable protocol
 
 protocol URLParametersListSerializable {
@@ -134,6 +141,13 @@ extension UICollectionView {
         }
         return cell
     }
+}
+
+// MARK: - Reactive protocol
+
+protocol ReactiveDisposable {
+    
+    var disposeBag: DisposeBag { get }
 }
 
 // MARK: - Reactive extension (UIScrollView)

@@ -11,11 +11,13 @@ import RxSwift
 import RxCocoa
 import SDWebImage
 
-final class FilmDetailsViewController: UIViewController {
+// MARK: -
+
+public final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
 
     // MARK: - Properties
     
-    private let disposeBag: DisposeBag = DisposeBag()
+    let disposeBag: DisposeBag = DisposeBag()
     var viewModel: FilmDetailsViewModel?
     var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
     
@@ -45,14 +47,14 @@ final class FilmDetailsViewController: UIViewController {
     
     // MARK: - UIViewController life cycle
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
-        self.setupCollectionView()
+        self.setupCollectionViews()
         if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
     }
     
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
@@ -83,7 +85,7 @@ final class FilmDetailsViewController: UIViewController {
         self.videosLabel.apply(style: .filmDetailTitle)
     }
     
-    fileprivate func setupCollectionView() {
+    fileprivate func setupCollectionViews() {
         self.crewCollectionView.registerReusableCell(PersonCollectionViewCell.self)
         self.crewCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
         self.crewCollectionView.showsHorizontalScrollIndicator = false
@@ -219,12 +221,23 @@ final class FilmDetailsViewController: UIViewController {
     
     // MARK: - Navigation handling
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let personViewController = segue.destination as? PersonViewController, segue.identifier == PersonViewController.segueIdentifier {
-            guard let person = sender as? Person else { fatalError("No person provided for the 'PersonDetailViewController' instance") }
-            let personViewModel = PersonViewModel(withPersonId: person.id)
-            personViewController.viewModel = personViewModel
-            personViewController.backgroundImagePath = self.backgroundImagePath
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if let personViewController = segue.destination as? PersonViewController, segue.identifier == PersonViewController.segueIdentifier {
+//            guard let person = sender as? Person else { fatalError("No person provided for the 'PersonDetailViewController' instance") }
+//            let personViewModel = PersonViewModel(withPersonId: person.id)
+//            personViewController.viewModel = personViewModel
+//            personViewController.backgroundImagePath = self.backgroundImagePath
+//        }
+        if let personViewController = segue.destination as? PersonViewController,
+            let pushPersonSegue = segue as? PushPersonSegue,
+            let sender = sender as? CollectionViewSelection,
+            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? PersonCollectionViewCell {
+            do {
+                let person: Person = try sender.collectionView.rx.model(sender.indexPath)
+                personViewController.backgroundImagePath = self.backgroundImagePath
+                self.preparePushTransition(to: personViewController, with: person, fromCell: cell, andBackgroundImagePath: self.backgroundImagePath, via: pushPersonSegue)
+            } catch { fatalError(error.localizedDescription) }
+
         }
     }
 }
@@ -235,14 +248,26 @@ extension FilmDetailsViewController: SegueReachable {
     
     // MARK: - SegueReachable
     
-    static var segueIdentifier: String { return PushFilmDetailSegue.identifier }
+    static var segueIdentifier: String { return PushFilmDetailsSegue.identifier }
+}
+
+// MARK: - 
+
+extension FilmDetailsViewController: UICollectionViewDelegate {
+    
+    // MARK: - UITableViewDelegate functions
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sender = CollectionViewSelection(collectionView: collectionView, indexPath: indexPath)
+        self.performSegue(withIdentifier: PersonViewController.segueIdentifier, sender: sender)
+    }
 }
 
 // MARK: -
 
 extension FilmDetailsViewController: UICollectionViewDelegateFlowLayout {
     
-    // MARK: - UICollectionViewDelegateFlowLayout
+    // MARK: - UICollectionViewDelegateFlowLayout functions
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == self.videosCollectionView {
@@ -261,3 +286,5 @@ extension FilmDetailsViewController: UICollectionViewDelegateFlowLayout {
         return 15.0
     }
 }
+
+extension FilmDetailsViewController: PersonFromCellTransitionable { }

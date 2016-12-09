@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FilmCollectionViewCell: UICollectionViewCell {
+public final class FilmCollectionViewCell: UICollectionViewCell {
     
     // MARK: - IBOutlet properties
     
@@ -17,9 +17,10 @@ class FilmCollectionViewCell: UICollectionViewCell {
 
     // MARK: - UICollectionViewCell life cycle
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
-        self.backgroundColor = UIColor.groupTableViewBackground
+        self.backgroundColor = UIColor.clear
+        self.filmPosterImageView.backgroundColor = UIColor.white
         self.filmTitleLabel.font = UIFont.systemFont(ofSize: 12.0)
     }
     
@@ -30,10 +31,12 @@ class FilmCollectionViewCell: UICollectionViewCell {
             self.filmTitleLabel.text = nil
             self.filmTitleLabel.alpha = 0.0
             self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animated: true)
+            self.filmPosterImageView.alpha = 1.0
         } else {
             self.filmTitleLabel.text = title
             self.filmTitleLabel.alpha = 1.0
             self.filmPosterImageView.image = nil
+            self.filmPosterImageView.alpha = 0.25
         }
     }
 }

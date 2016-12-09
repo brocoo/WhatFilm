@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class PersonCollectionViewCell: UICollectionViewCell {
+public final class PersonCollectionViewCell: UICollectionViewCell {
     
     // MARK: - IBOutlet properties
     
@@ -19,7 +19,7 @@ final class PersonCollectionViewCell: UICollectionViewCell {
     
     // MARK: - UICollectionViewCell life cycle
 
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         self.setupUI()
     }
@@ -36,7 +36,7 @@ final class PersonCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Data handling
     
-    func populate(with person: Person) {
+    public func populate(with person: Person) {
         self.roleLabel.text = person.role
         self.profileImageView.image = nil
         if let profilePath = person.profilePath {

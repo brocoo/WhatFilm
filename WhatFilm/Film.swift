@@ -8,10 +8,8 @@
 
 import UIKit
 import SwiftyJSON
-import RxDataSources
-import DateTools
 
-public final class Film: NSObject, JSONInitializable {
+public class Film: NSObject, JSONInitializable {
     
     // MARK: - Properties
     
@@ -49,7 +47,7 @@ public final class Film: NSObject, JSONInitializable {
     
     // MARK: - JSONInitializable initializer
     
-    public init(json: JSON) {
+    public required init(json: JSON) {
         self.id = json["id"].intValue
         self.posterPathString = json["poster_path"].string
         self.adult = json["adult"].boolValue
@@ -66,16 +64,6 @@ public final class Film: NSObject, JSONInitializable {
         self.voteAverage = json["vote_average"].doubleValue
         super.init()
     }
-}
-
-// MARK: -
-
-extension Film: IdentifiableType {
-    
-    // MARK: - IdentifiableType
-    
-    public typealias Identity = Int
-    public var identity: Identity { return self.id }
 }
 
 // MARK: -

@@ -31,7 +31,7 @@
 		F9644B5A1DA7BA6300959622 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B591DA7BA6300959622 /* Video.swift */; };
 		F9644B5E1DA7C39A00959622 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */; };
 		F9644B5F1DA7C39A00959622 /* VideoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */; };
-		F975275D1DF1870B00ADFF03 /* PopFilmDetailsSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F975275C1DF1870B00ADFF03 /* PopFilmDetailsSegue.swift */; };
+		F9857BED1DF990F500F09513 /* PushPersonSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9857BEC1DF990F500F09513 /* PushPersonSegue.swift */; };
 		F9884F511DABB104007A90F7 /* PersonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9884F501DABB104007A90F7 /* PersonViewController.swift */; };
 		F9884F541DABB125007A90F7 /* PersonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9884F531DABB125007A90F7 /* PersonViewModel.swift */; };
 		F9884F561DABD201007A90F7 /* PersonDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9884F551DABD201007A90F7 /* PersonDetail.swift */; };
@@ -93,8 +93,7 @@
 		F9644B591DA7BA6300959622 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewCell.swift; sourceTree = "<group>"; };
 		F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCollectionViewCell.xib; sourceTree = "<group>"; };
-		F96C1AA21D91D88100564AA9 /* WhatFilmPad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WhatFilmPad.playground; sourceTree = SOURCE_ROOT; };
-		F975275C1DF1870B00ADFF03 /* PopFilmDetailsSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopFilmDetailsSegue.swift; sourceTree = "<group>"; };
+		F9857BEC1DF990F500F09513 /* PushPersonSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushPersonSegue.swift; sourceTree = "<group>"; };
 		F9884F4F1DAB96DD007A90F7 /* Dependencies-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Dependencies-Bridging-Header.h"; path = "WhatFilm/Dependencies-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		F9884F501DABB104007A90F7 /* PersonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonViewController.swift; sourceTree = "<group>"; };
 		F9884F531DABB125007A90F7 /* PersonViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonViewModel.swift; sourceTree = "<group>"; };
@@ -207,14 +206,6 @@
 			name = Assets;
 			sourceTree = "<group>";
 		};
-		F95A04E61D9C1D83007AB2C1 /* Playground */ = {
-			isa = PBXGroup;
-			children = (
-				F96C1AA21D91D88100564AA9 /* WhatFilmPad.playground */,
-			);
-			name = Playground;
-			sourceTree = "<group>";
-		};
 		F95A04E71D9C1D99007AB2C1 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,7 +218,6 @@
 		F95A04E81D9C3BBD007AB2C1 /* Film Details */ = {
 			isa = PBXGroup;
 			children = (
-				F975275B1DF1853F00ADFF03 /* Pop segue */,
 				F95C6ECF1DF0594600CEF516 /* Push segue */,
 				F95A04E91D9C4044007AB2C1 /* FilmDetailsViewController.swift */,
 				F95A04EB1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift */,
@@ -252,12 +242,12 @@
 			name = "Video Collection Cell";
 			sourceTree = "<group>";
 		};
-		F975275B1DF1853F00ADFF03 /* Pop segue */ = {
+		F9857BEB1DF990C900F09513 /* Push segue */ = {
 			isa = PBXGroup;
 			children = (
-				F975275C1DF1870B00ADFF03 /* PopFilmDetailsSegue.swift */,
+				F9857BEC1DF990F500F09513 /* PushPersonSegue.swift */,
 			);
-			name = "Pop segue";
+			name = "Push segue";
 			sourceTree = "<group>";
 		};
 		F9884F4E1DAB965F007A90F7 /* Bridge */ = {
@@ -271,6 +261,7 @@
 		F9884F521DABB109007A90F7 /* Person Details */ = {
 			isa = PBXGroup;
 			children = (
+				F9857BEB1DF990C900F09513 /* Push segue */,
 				F9884F501DABB104007A90F7 /* PersonViewController.swift */,
 				F9884F531DABB125007A90F7 /* PersonViewModel.swift */,
 			);
@@ -323,7 +314,6 @@
 			isa = PBXGroup;
 			children = (
 				F9884F4E1DAB965F007A90F7 /* Bridge */,
-				F95A04E61D9C1D83007AB2C1 /* Playground */,
 				F99DD6B81D80BD4F00179C5A /* Info.plist */,
 				F9230F551D9560FC0091B353 /* Services.plist */,
 				F95A04E31D9C1682007AB2C1 /* Assets */,
@@ -662,7 +652,6 @@
 				F95A04EC1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift in Sources */,
 				F99D46CF1D888F550014A7AF /* SearchViewModel.swift in Sources */,
 				F9884F511DABB104007A90F7 /* PersonViewController.swift in Sources */,
-				F975275D1DF1870B00ADFF03 /* PopFilmDetailsSegue.swift in Sources */,
 				F9D6EBC51D92F367002970E3 /* FilmCollectionViewCell.swift in Sources */,
 				F944190F1D8C1F5700804E7D /* PaginatedList.swift in Sources */,
 				F9D005541DAC027C004FC10D /* FilmCredited.swift in Sources */,
@@ -672,6 +661,7 @@
 				F91AC79A1D88643800E99849 /* APIConfiguration.swift in Sources */,
 				F95A04EE1D9C4873007AB2C1 /* FilmDetail.swift in Sources */,
 				F91AC78F1D884B1000E99849 /* Result.swift in Sources */,
+				F9857BED1DF990F500F09513 /* PushPersonSegue.swift in Sources */,
 				F9C6D6BB1D9587EE00BB6104 /* BaseFilmCollectionViewController.swift in Sources */,
 				F9884F541DABB125007A90F7 /* PersonViewModel.swift in Sources */,
 				F95C6ED11DF0597300CEF516 /* PushFilmDetailSegue.swift in Sources */,

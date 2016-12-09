@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class SearchViewController: BaseFilmCollectionViewController {
+class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable {
 
     // MARK: - IBOutlet Properties
     
@@ -19,13 +19,13 @@ class SearchViewController: BaseFilmCollectionViewController {
     @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var contentOverlayBottomMargin: NSLayoutConstraint!
-    private var loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    fileprivate var loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     // MARK: - Properties
     
-    private let keyboardObserver: KeyboardObserver = KeyboardObserver()
-    private let viewModel: SearchViewModel = SearchViewModel()
-    private let disposeBag: DisposeBag = DisposeBag()
+    fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
+    fileprivate let viewModel: SearchViewModel = SearchViewModel()
+    let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - UIViewController life cycle
     
@@ -53,13 +53,6 @@ class SearchViewController: BaseFilmCollectionViewController {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
-        
-        // Subscribe to collection view cell selection
-        self.collectionView.rx
-            .modelSelected(Film.self)
-            .subscribe(onNext: { [weak self] (film) in
-                self?.performSegue(withIdentifier: "FilmDetail", sender: film)
-            }).addDisposableTo(self.disposeBag)
         
         // Bind table view bottom reached event to loading the next page
         self.collectionView.rx
@@ -108,8 +101,8 @@ class SearchViewController: BaseFilmCollectionViewController {
         self.viewModel
             .isLoading
             .subscribe(onNext: { (isLoading) in
-//                if isLoading { self.loadingIndicator.startAnimating() }
-//                else { self.loadingIndicator.stopAnimating() }
+                if isLoading { self.loadingIndicator.startAnimating() }
+                else { self.loadingIndicator.stopAnimating() }
             }).addDisposableTo(self.disposeBag)
     }
     
@@ -158,13 +151,19 @@ class SearchViewController: BaseFilmCollectionViewController {
     // MARK: - Navigation handling
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController, segue.identifier == FilmDetailsViewController.segueIdentifier {
-            guard let film = sender as? Film else { fatalError("No film provided for the 'FilmDetailsViewController' instance") }
-            let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
-            filmDetailsViewController.viewModel = filmDetailViewModel
+        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
+            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
+            let indexPath = sender as? IndexPath,
+            let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
+            do {
+                let film: Film = try collectionView.rx.model(indexPath)
+                self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+            } catch { fatalError(error.localizedDescription) }
         }
     }
 }
+
+// MARK: -
 
 extension SearchViewController: UISearchBarDelegate {
     
@@ -174,3 +173,18 @@ extension SearchViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
+
+// MARK: -
+
+extension SearchViewController: UITableViewDelegate {
+    
+    // MARK: - UITableViewDelegate functions
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
+    }
+}
+
+// MARK: -
+
+extension SearchViewController: FilmDetailsFromCellTransitionable { }

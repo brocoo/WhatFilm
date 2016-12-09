@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class FeaturedViewController: BaseFilmCollectionViewController {
+final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDisposable {
     
     // MARK: - IBOutlet Properties
     
@@ -21,7 +21,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     
     fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
     fileprivate let viewModel: FeaturedViewModel = FeaturedViewModel()
-    fileprivate let disposeBag: DisposeBag = DisposeBag()
+    let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - UIViewController life cycle
     
@@ -106,55 +106,17 @@ final class FeaturedViewController: BaseFilmCollectionViewController {
     
     // MARK: - Navigation handling
     
-    @IBAction func unwindToFeaturedViewController(sender: UIStoryboardSegue) {
-    
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
-            let pushFilmDetailSegue = segue as? PushFilmDetailSegue,
+            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
             let indexPath = sender as? IndexPath,
             let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
             do {
                 let film: Film = try collectionView.rx.model(indexPath)
-                self.prepareTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: pushFilmDetailSegue)
+                self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
             } catch { fatalError(error.localizedDescription) }
         }
     }
-    
-    fileprivate func prepareTransition(to viewController: FilmDetailsViewController, with film: Film, fromCell cell: FilmCollectionViewCell, via segue: PushFilmDetailSegue) {
-        
-        // Create the view model
-        let filmDetailViewModel = FilmDetailsViewModel(withFilmId: film.id)
-        viewController.viewModel = filmDetailViewModel
-        
-        // Prepopulate with the selected film
-        viewController.rx.viewDidLoad.subscribe(onNext: { _ in
-            viewController.prePopulate(forFilm: film)
-        }).addDisposableTo(self.disposeBag)
-        
-        // Setup the segue for transition
-        segue.startingFrame = cell.convert(cell.bounds, to: self.view)
-        segue.posterImage = cell.filmPosterImageView.image
-    }
-    
-    
-    override func segueForUnwinding(to toViewController: UIViewController, from fromViewController: UIViewController, identifier: String?) -> UIStoryboardSegue {
-
-        return PopFilmDetailsSegue(identifier: "", source: fromViewController, destination: toViewController)
-        
-        //        if let id = identifier{
-//            if id == "idFirstSegueUnwind" {
-//                let unwindSegue = FirstCustomSegueUnwind(identifier: id, source: fromViewController, destination: toViewController, performHandler: { () -> Void in
-//                    
-//                })
-//                return unwindSegue
-//            }
-//        }
-//        
-//        return super.segueForUnwindingToViewController(toViewController, fromViewController: fromViewController, identifier: identifier)
-    }
-
 }
 
 // MARK: -
@@ -167,3 +129,5 @@ extension FeaturedViewController: UITableViewDelegate {
         self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
     }
 }
+
+extension FeaturedViewController: FilmDetailsFromCellTransitionable { }
