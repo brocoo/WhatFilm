@@ -459,7 +459,7 @@
                         <outlet property="scrollView" destination="Hir-bJ-Ihr" id="Son-ia-qW5"/>
                         <outlet property="videosCollectionView" destination="tIX-dz-y2t" id="gdO-jz-M14"/>
                         <outlet property="videosLabel" destination="9b6-Dy-wUw" id="aho-0o-5on"/>
-                        <segue destination="5jk-dz-GtO" kind="custom" identifier="PushPersonSegueIdentifier" customClass="PushPersonSegue" customModule="WhatFilm" customModuleProvider="target" id="OAq-Pi-jW2"/>
+                        <segue destination="5jk-dz-GtO" kind="show" identifier="PushPersonSegueIdentifier" id="OAq-Pi-jW2"/>
                         <segue destination="Qej-N1-7Gh" kind="unwind" identifier="PopFilmDetailSegueIdentifier" customClass="PopFilmDetailsSegue" customModule="WhatFilm" customModuleProvider="target" unwindAction="unwindToFeaturedViewControllerWithSender:" id="fJZ-fB-FaM"/>
                     </connections>
                 </viewController>

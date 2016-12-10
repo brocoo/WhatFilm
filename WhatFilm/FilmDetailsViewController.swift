@@ -196,16 +196,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             guard let video = event.element else { return }
             self?.play(video: video)
         }.addDisposableTo(self.disposeBag)
-        
-        self.crewCollectionView.rx.modelSelected(Person.self).subscribe { [weak self] (event) in
-            guard let person = event.element else { return }
-            self?.show(person: person)
-        }.addDisposableTo(self.disposeBag)
-        
-        self.castCollectionView.rx.modelSelected(Person.self).subscribe { [weak self] (event) in
-            guard let person = event.element else { return }
-            self?.show(person: person)
-        }.addDisposableTo(self.disposeBag)
     }
     
     // MARK: - Actions handling
@@ -215,30 +205,34 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         UIApplication.shared.openURL(url)
     }
     
-    fileprivate func show(person: Person) {
-        self.performSegue(withIdentifier: PersonViewController.segueIdentifier, sender: person)
-    }
-    
     // MARK: - Navigation handling
     
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if let personViewController = segue.destination as? PersonViewController, segue.identifier == PersonViewController.segueIdentifier {
-//            guard let person = sender as? Person else { fatalError("No person provided for the 'PersonDetailViewController' instance") }
-//            let personViewModel = PersonViewModel(withPersonId: person.id)
-//            personViewController.viewModel = personViewModel
-//            personViewController.backgroundImagePath = self.backgroundImagePath
-//        }
         if let personViewController = segue.destination as? PersonViewController,
-            let pushPersonSegue = segue as? PushPersonSegue,
-            let sender = sender as? CollectionViewSelection,
-            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? PersonCollectionViewCell {
+            let sender = sender as? CollectionViewSelection {
             do {
                 let person: Person = try sender.collectionView.rx.model(sender.indexPath)
+                let personViewModel = PersonViewModel(withPersonId: person.id)
+                personViewController.viewModel = personViewModel
                 personViewController.backgroundImagePath = self.backgroundImagePath
-                self.preparePushTransition(to: personViewController, with: person, fromCell: cell, andBackgroundImagePath: self.backgroundImagePath, via: pushPersonSegue)
+                personViewController.rx.viewDidLoad.subscribe(onNext: { _ in
+                    personViewController.prePopulate(forPerson: person)
+                }).addDisposableTo(self.disposeBag)
             } catch { fatalError(error.localizedDescription) }
-
         }
+        
+        // TODO: - Implement custom segue to person
+        
+//        if let personViewController = segue.destination as? PersonViewController,
+//            let pushPersonSegue = segue as? PushPersonSegue,
+//            let sender = sender as? CollectionViewSelection,
+//            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? PersonCollectionViewCell {
+//            do {
+//                let person: Person = try sender.collectionView.rx.model(sender.indexPath)
+//                personViewController.backgroundImagePath = self.backgroundImagePath
+//                self.preparePushTransition(to: personViewController, with: person, fromCell: cell, andBackgroundImagePath: self.backgroundImagePath, via: pushPersonSegue)
+//            } catch { fatalError(error.localizedDescription) }
+//        }
     }
 }
 
