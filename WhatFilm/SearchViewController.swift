@@ -75,7 +75,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             .films
             .withLatestFrom(self.searchBar.rx.text) { (films, query) -> String? in
                 guard films.count == 0 else { return nil }
-                if query == "" { return "Search films and TV shows"
+                if query == "" { return "Search thousands of films, old or new on TMDb..."
                 } else { return "No results found for '\(query)'" }
             }.subscribe(onNext: { [unowned self] (placeholderString) in
                 self.placeholderLabel.text = placeholderString
@@ -98,12 +98,12 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).addDisposableTo(self.disposeBag)
         
-        self.viewModel
-            .isLoading
-            .subscribe(onNext: { (isLoading) in
-                if isLoading { self.loadingIndicator.startAnimating() }
-                else { self.loadingIndicator.stopAnimating() }
-            }).addDisposableTo(self.disposeBag)
+//        self.viewModel
+//            .isLoading
+//            .subscribe(onNext: { (isLoading) in
+//                if isLoading { self.loadingIndicator.startAnimating() }
+//                else { self.loadingIndicator.stopAnimating() }
+//            }).addDisposableTo(self.disposeBag)
     }
     
     // MARK: - UI Setup
@@ -115,13 +115,13 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         // http://stackoverflow.com/questions/14272015/enable-search-button-when-searching-string-is-empty-in-default-search-bar
         if let searchTextField: UITextField = self.searchBar.subviews[0].subviews[1] as? UITextField {
             searchTextField.enablesReturnKeyAutomatically = false
-            searchTextField.attributedPlaceholder = NSAttributedString(string: "Search films and TV shows", attributes: TextStyle.placeholder.attributes)
+            searchTextField.attributedPlaceholder = NSAttributedString(string: "Search films on TMDb", attributes: TextStyle.placeholder.attributes)
         }
         self.searchBar.addSubview(self.loadingIndicator)
         self.searchBar.keyboardAppearance = .dark
 
         self.placeholderLabel.apply(style: .placeholder)
-        self.placeholderLabel.text = "Search films and TV shows"
+        self.placeholderLabel.text = "Search films on TMDb"
         self.placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     
