@@ -18,19 +18,19 @@
                 <rect key="frame" x="0.0" y="0.0" width="220" height="257"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UzJ-Cx-FH3">
-                        <rect key="frame" x="0.0" y="0.0" width="220" height="257"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ers-ol-ple">
-                        <rect key="frame" x="8" y="228.5" width="204" height="20.5"/>
+                        <rect key="frame" x="8" y="228" width="204" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UzJ-Cx-FH3">
+                        <rect key="frame" x="0.0" y="0.0" width="220" height="257"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </imageView>
                 </subviews>
             </view>
-            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="UzJ-Cx-FH3" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="3Fg-1q-RVy"/>
                 <constraint firstAttribute="bottom" secondItem="Ers-ol-ple" secondAttribute="bottom" constant="8" id="Gq6-PY-D3N"/>

@@ -31,6 +31,8 @@
 		F9644B5A1DA7BA6300959622 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B591DA7BA6300959622 /* Video.swift */; };
 		F9644B5E1DA7C39A00959622 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */; };
 		F9644B5F1DA7C39A00959622 /* VideoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */; };
+		F965EAD61DFEEE3D00CE1F15 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F965EAD51DFEEE3D00CE1F15 /* AboutViewController.swift */; };
+		F965EAD81DFEF36600CE1F15 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F965EAD71DFEF36600CE1F15 /* TabBarController.swift */; };
 		F9857BED1DF990F500F09513 /* PushPersonSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9857BEC1DF990F500F09513 /* PushPersonSegue.swift */; };
 		F9884F511DABB104007A90F7 /* PersonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9884F501DABB104007A90F7 /* PersonViewController.swift */; };
 		F9884F541DABB125007A90F7 /* PersonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9884F531DABB125007A90F7 /* PersonViewModel.swift */; };
@@ -93,6 +95,8 @@
 		F9644B591DA7BA6300959622 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		F9644B5C1DA7C39A00959622 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewCell.swift; sourceTree = "<group>"; };
 		F9644B5D1DA7C39A00959622 /* VideoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCollectionViewCell.xib; sourceTree = "<group>"; };
+		F965EAD51DFEEE3D00CE1F15 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		F965EAD71DFEF36600CE1F15 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		F9857BEC1DF990F500F09513 /* PushPersonSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushPersonSegue.swift; sourceTree = "<group>"; };
 		F9884F4F1DAB96DD007A90F7 /* Dependencies-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Dependencies-Bridging-Header.h"; path = "WhatFilm/Dependencies-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		F9884F501DABB104007A90F7 /* PersonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonViewController.swift; sourceTree = "<group>"; };
@@ -242,6 +246,14 @@
 			name = "Video Collection Cell";
 			sourceTree = "<group>";
 		};
+		F965EAD41DFEEE2B00CE1F15 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				F965EAD51DFEEE3D00CE1F15 /* AboutViewController.swift */,
+			);
+			name = About;
+			sourceTree = "<group>";
+		};
 		F9857BEB1DF990C900F09513 /* Push segue */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +350,7 @@
 		F99DD6C21D80BE7F00179C5A /* Journeys */ = {
 			isa = PBXGroup;
 			children = (
+				F965EAD41DFEEE2B00CE1F15 /* About */,
 				F9884F521DABB109007A90F7 /* Person Details */,
 				F9644B5B1DA7C37200959622 /* Video Collection Cell */,
 				F9FC1DB21DA6A436003CE651 /* Person Collection Cell */,
@@ -376,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				F9C6D6BA1D9587EE00BB6104 /* BaseFilmCollectionViewController.swift */,
+				F965EAD71DFEF36600CE1F15 /* TabBarController.swift */,
 			);
 			name = "Base UI Controllers";
 			sourceTree = "<group>";
@@ -643,6 +657,8 @@
 				F9FC1DB11DA69289003CE651 /* Person.swift in Sources */,
 				F943188E1D84463D006B2D23 /* Router.swift in Sources */,
 				F95A04E21D9C162F007AB2C1 /* StyleSheet.swift in Sources */,
+				F965EAD61DFEEE3D00CE1F15 /* AboutViewController.swift in Sources */,
+				F965EAD81DFEF36600CE1F15 /* TabBarController.swift in Sources */,
 				F94318901D85D6A4006B2D23 /* Tools.swift in Sources */,
 				F9644B5A1DA7BA6300959622 /* Video.swift in Sources */,
 				F944190D1D8C0C2200804E7D /* KeyboardObserver.swift in Sources */,

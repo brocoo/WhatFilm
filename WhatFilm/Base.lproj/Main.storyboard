@@ -27,11 +27,11 @@
             </objects>
             <point key="canvasLocation" x="92" y="308"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--About-->
         <scene sceneID="6Ij-Xc-wxC">
             <objects>
                 <navigationController id="9qt-pm-Khz" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="contacts" id="yS1-FU-bkj"/>
+                    <tabBarItem key="tabBarItem" title="About" selectedImage="About_Icon" id="yS1-FU-bkj"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="6yk-Ig-f8z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -44,10 +44,10 @@
             </objects>
             <point key="canvasLocation" x="92" y="1063"/>
         </scene>
-        <!--View Controller-->
+        <!--About-->
         <scene sceneID="3xB-ma-xgZ">
             <objects>
-                <viewController id="9sn-Rp-N2M" sceneMemberID="viewController">
+                <viewController title="About" id="9sn-Rp-N2M" customClass="AboutViewController" customModule="WhatFilm" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rMN-Cq-DJi"/>
                         <viewControllerLayoutGuide type="bottom" id="TFq-6z-ex0"/>
@@ -55,9 +55,121 @@
                     <view key="view" contentMode="scaleToFill" id="xvz-ne-oqG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Brocoo" translatesAutoresizingMaskIntoConstraints="NO" id="bfq-U4-IYZ">
+                                <rect key="frame" x="137.5" y="79" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="60D-fL-GvH"/>
+                                    <constraint firstAttribute="height" constant="100" id="dcA-vY-ZUL"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatFilm is an open source project built by Julien Ducret using data from TMDb." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sQy-ZP-8b3">
+                                <rect key="frame" x="30" y="194" width="315" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iOL-ck-iwQ" userLabel="View - Separator">
+                                <rect key="frame" x="30" y="230" width="315" height="1"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="URW-RL-KwT"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatFilm v1.0 build 1" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ieq-xP-LZT">
+                                <rect key="frame" x="15" y="582" width="345" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sO8-G0-4BB">
+                                <rect key="frame" x="62" y="246" width="250" height="40"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMi-j2-6gN" userLabel="Button - Mail">
+                                        <rect key="frame" x="70" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="rMi-j2-6gN" secondAttribute="height" multiplier="1:1" id="Wak-c4-t9Z"/>
+                                        </constraints>
+                                        <state key="normal" image="Mail_Icon"/>
+                                        <connections>
+                                            <action selector="mailButtonTappedWithSender:" destination="9sn-Rp-N2M" eventType="touchUpInside" id="iiR-Tc-f8V"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blH-k8-cqX" userLabel="Button - Github">
+                                        <rect key="frame" x="140" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="blH-k8-cqX" secondAttribute="height" multiplier="1:1" id="Pn3-6m-37c"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="GitHub_Icon"/>
+                                        <connections>
+                                            <action selector="githubButtonTappedWithSender:" destination="9sn-Rp-N2M" eventType="touchUpInside" id="x0g-2j-g0Y"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uyv-Tj-11a">
+                                        <rect key="frame" x="210" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="Uyv-Tj-11a" secondAttribute="height" multiplier="1:1" id="9kS-XJ-Tsg"/>
+                                        </constraints>
+                                        <state key="normal" image="LinkedIn_Icon"/>
+                                        <connections>
+                                            <action selector="linkedInButtonTappedWithSender:" destination="9sn-Rp-N2M" eventType="touchUpInside" id="pvE-ML-2cU"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9QN-XQ-RGf">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="9QN-XQ-RGf" secondAttribute="height" multiplier="1:1" id="uob-TB-VgB"/>
+                                        </constraints>
+                                        <state key="normal" image="Share_Icon"/>
+                                        <connections>
+                                            <action selector="shareButtonTappedWithSender:" destination="9sn-Rp-N2M" eventType="touchUpInside" id="OxR-w1-8Ep"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="9QN-XQ-RGf" firstAttribute="leading" secondItem="sO8-G0-4BB" secondAttribute="leading" id="0rL-mn-k4K"/>
+                                    <constraint firstAttribute="bottom" secondItem="Uyv-Tj-11a" secondAttribute="bottom" id="2dQ-RC-7gk"/>
+                                    <constraint firstAttribute="bottom" secondItem="blH-k8-cqX" secondAttribute="bottom" id="742-49-RJh"/>
+                                    <constraint firstAttribute="height" constant="40" id="BW7-kN-ZAe"/>
+                                    <constraint firstItem="blH-k8-cqX" firstAttribute="top" secondItem="sO8-G0-4BB" secondAttribute="top" id="E4A-yP-jcC"/>
+                                    <constraint firstAttribute="trailing" secondItem="Uyv-Tj-11a" secondAttribute="trailing" id="FrP-fh-CeB"/>
+                                    <constraint firstItem="9QN-XQ-RGf" firstAttribute="top" secondItem="sO8-G0-4BB" secondAttribute="top" id="HyX-1b-OLA"/>
+                                    <constraint firstAttribute="bottom" secondItem="9QN-XQ-RGf" secondAttribute="bottom" id="OU5-Pr-7pb"/>
+                                    <constraint firstItem="rMi-j2-6gN" firstAttribute="top" secondItem="sO8-G0-4BB" secondAttribute="top" id="VHA-tW-4tJ"/>
+                                    <constraint firstItem="Uyv-Tj-11a" firstAttribute="leading" secondItem="blH-k8-cqX" secondAttribute="trailing" constant="30" id="aGq-fE-kiI"/>
+                                    <constraint firstAttribute="bottom" secondItem="rMi-j2-6gN" secondAttribute="bottom" id="gks-O7-Jwh"/>
+                                    <constraint firstItem="rMi-j2-6gN" firstAttribute="leading" secondItem="9QN-XQ-RGf" secondAttribute="trailing" constant="30" id="qYw-HF-voF"/>
+                                    <constraint firstItem="blH-k8-cqX" firstAttribute="leading" secondItem="rMi-j2-6gN" secondAttribute="trailing" constant="30" id="sCm-JU-DvJ"/>
+                                    <constraint firstItem="Uyv-Tj-11a" firstAttribute="top" secondItem="sO8-G0-4BB" secondAttribute="top" id="sOo-4d-Wl9"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="sO8-G0-4BB" firstAttribute="centerX" secondItem="xvz-ne-oqG" secondAttribute="centerX" id="4nn-NH-dc8"/>
+                            <constraint firstItem="bfq-U4-IYZ" firstAttribute="centerX" secondItem="xvz-ne-oqG" secondAttribute="centerX" id="UA5-eh-vPp"/>
+                            <constraint firstAttribute="trailing" secondItem="iOL-ck-iwQ" secondAttribute="trailing" constant="30" id="Uq6-No-Mgb"/>
+                            <constraint firstItem="TFq-6z-ex0" firstAttribute="top" secondItem="Ieq-xP-LZT" secondAttribute="bottom" constant="15" id="VaI-JJ-1pW"/>
+                            <constraint firstAttribute="trailing" secondItem="sQy-ZP-8b3" secondAttribute="trailing" constant="30" id="XBM-Fe-x8g"/>
+                            <constraint firstAttribute="trailing" secondItem="Ieq-xP-LZT" secondAttribute="trailing" constant="15" id="Y6S-N0-jfG"/>
+                            <constraint firstItem="iOL-ck-iwQ" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="30" id="Ypm-3U-Oa7"/>
+                            <constraint firstItem="sQy-ZP-8b3" firstAttribute="top" secondItem="bfq-U4-IYZ" secondAttribute="bottom" constant="15" id="bLv-vc-gf6"/>
+                            <constraint firstItem="bfq-U4-IYZ" firstAttribute="top" secondItem="rMN-Cq-DJi" secondAttribute="bottom" constant="15" id="h0a-A0-0Xb"/>
+                            <constraint firstItem="sO8-G0-4BB" firstAttribute="top" secondItem="iOL-ck-iwQ" secondAttribute="bottom" constant="15" id="h3c-2C-BZm"/>
+                            <constraint firstItem="sQy-ZP-8b3" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="30" id="uPh-TI-RGT"/>
+                            <constraint firstItem="iOL-ck-iwQ" firstAttribute="top" secondItem="sQy-ZP-8b3" secondAttribute="bottom" constant="15" id="wzL-VS-cFG"/>
+                            <constraint firstItem="Ieq-xP-LZT" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="15" id="xc7-Ry-5ym"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="aNc-Jt-8ZZ"/>
+                    <navigationItem key="navigationItem" title="About" id="aNc-Jt-8ZZ"/>
+                    <connections>
+                        <outlet property="githubButton" destination="blH-k8-cqX" id="1Xb-ki-wxF"/>
+                        <outlet property="linkedInButton" destination="Uyv-Tj-11a" id="iqn-UU-rM6"/>
+                        <outlet property="mailButton" destination="rMi-j2-6gN" id="EQX-9Q-dpK"/>
+                        <outlet property="shareButton" destination="9QN-XQ-RGf" id="pHm-Q7-tPL"/>
+                        <outlet property="versionLabel" destination="Ieq-xP-LZT" id="nXJ-cZ-YLm"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fLz-et-CSt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -66,7 +178,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="NWN-Ra-gl4">
             <objects>
-                <tabBarController id="lYx-uM-kH8" sceneMemberID="viewController">
+                <tabBarController id="lYx-uM-kH8" customClass="TabBarController" customModule="WhatFilm" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="MEz-9q-HIc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -787,11 +899,17 @@
         </scene>
     </scenes>
     <resources>
+        <image name="About_Icon" width="30" height="30"/>
+        <image name="Brocoo" width="180" height="180"/>
+        <image name="GitHub_Icon" width="120" height="117"/>
+        <image name="LinkedIn_Icon" width="111" height="111"/>
+        <image name="Mail_Icon" width="120" height="120"/>
         <image name="Rating_Icon" width="120" height="120"/>
         <image name="Search_Icon" width="480" height="480"/>
+        <image name="Share_Icon" width="120" height="120"/>
         <image name="Time_Icon" width="120" height="120"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="hSJ-Le-ayz"/>
+        <segue reference="cqr-bt-aqs"/>
     </inferredMetricsTieBreakers>
 </document>

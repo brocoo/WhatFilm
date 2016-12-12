@@ -11,9 +11,9 @@ import SwiftyJSON
 import RxSwift
 import RxCocoa
 import SDWebImage
+import Alamofire
 
 public typealias ParametersList = [String: String]
-public typealias FilmsResultClosure = (Result<[Film]>) -> Void
 
 // MARK: -
 
@@ -40,6 +40,20 @@ protocol JSONFailableInitializable {
     
     init?(json: JSON)
 }
+
+// MARK: - NSUserDefault
+
+extension UserDefaults {
+    
+    class func performOnce(forKey key: String, perform: () -> Void, elsePerform: (() -> Void)? = nil) {
+        let once = self.standard.object(forKey: key)
+        self.standard.set(true, forKey: key)
+        self.standard.synchronize()
+        if once == nil { perform() }
+        else { elsePerform?() }
+    }
+}
+
 
 // MARK: - JSON
 
@@ -202,11 +216,11 @@ extension Reactive where Base: UIViewController {
 
 extension UIImageView {
     
-    func setImage(fromTMDbPath path: ImagePath, withSize size: ImageSize, animated: Bool = true, withPlaceholder placeholder: UIImage? = nil) {
+    func setImage(fromTMDbPath path: ImagePath, withSize size: ImageSize, animatedOnce: Bool = true, withPlaceholder placeholder: UIImage? = nil) {
         guard let imageURL = TMDbAPI.instance.imageManager?.url(fromTMDbPath: path, withSize: size) else { return }
         let hasImage: Bool = (self.image != nil)
         self.sd_setImage(with: imageURL, placeholderImage: nil, options: .avoidAutoSetImage) { [weak self] (image, error, cacheType, url) in
-            if animated && !hasImage {
+            if animatedOnce && !hasImage && cacheType == .none {
                 self?.alpha = 0.0
                 UIView.animate(withDuration: 0.5) { self?.alpha = 1.0 }
             }

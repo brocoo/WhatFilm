@@ -117,7 +117,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         if let backdropPath = filmDetail.backdropPath {
             if let posterPath = filmDetail.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium) }
             self.backdropImageView.contentMode = .scaleAspectFill
-            self.backdropImageView.setImage(fromTMDbPath: backdropPath, withSize: .medium, animated: true)
+            self.backdropImageView.setImage(fromTMDbPath: backdropPath, withSize: .medium, animatedOnce: true)
             self.backdropImageView.backgroundColor = UIColor.clear
         } else if let posterPath = filmDetail.posterPath {
             self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
@@ -135,7 +135,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     }
     
     public func prePopulate(forFilm film: Film) {
-        if let posterPath = film.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animated: true) }
+        if let posterPath = film.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animatedOnce: true) }
         self.filmTitleLabel.text = film.fullTitle.uppercased()
         self.filmOverviewLabel.text = film.overview
     }
