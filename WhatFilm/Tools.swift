@@ -272,3 +272,9 @@ extension UIApplication {
         return delegate.window ?? nil
     }
 }
+
+func unique<S: Sequence, E: Hashable>(source: S) -> [E] where E==S.Iterator.Element {
+    var seen: [E:Bool] = [:]
+    return source.filter { seen.updateValue(true, forKey: $0) == nil }
+}
+

@@ -17,14 +17,14 @@ import Foundation
 
 extension String {
     
-    func lowercasedFirstLetter() -> String {
+    var lowercasedFirstLetter: String {
         let first = String(characters.prefix(1)).lowercased()
         let other = String(characters.dropFirst())
         return first + other
     }
     
-    mutating func lowercasingFirstLetter() {
-        self = self.lowercasedFirstLetter()
+    mutating func lowercaseFirstLetter() {
+        self = self.lowercasedFirstLetter
     }
 }
 
@@ -133,12 +133,12 @@ func buildFileContent(withColours colours: [Colour], andTextStyles textStyles: [
     contentString += "\n// MARK: - CommonColor enum\n"
     contentString += "\npublic enum CommonColor {\n\n"
     for colour in colours {
-        contentString += "\tcase \(colour.name.lowercasedFirstLetter())\n"
+        contentString += "\tcase \(colour.name.lowercasedFirstLetter)\n"
     }
     contentString += "\n\tvar rgba: [CGFloat] {\n"
     contentString += "\t\tswitch self {\n"
     for colour in colours {
-        contentString += "\t\tcase .\(colour.name.lowercasedFirstLetter()): return ["
+        contentString += "\t\tcase .\(colour.name.lowercasedFirstLetter): return ["
         contentString += "\(colour.rgb[0]) / 255.0, \(colour.rgb[1]) / 255.0, \(colour.rgb[2]) / 255.0,"
         contentString += " 1.0]\n"
     }
@@ -164,19 +164,19 @@ func buildFileContent(withColours colours: [Colour], andTextStyles textStyles: [
     contentString += "\n// MARK: - TextStyle enum\n"
     contentString += "\npublic enum TextStyle {\n\n"
     for textStyle in textStyles {
-        contentString += "\tcase \(textStyle.name.lowercasedFirstLetter())\n"
+        contentString += "\tcase \(textStyle.name.lowercasedFirstLetter)\n"
     }
     contentString += "\n\tpublic var font: UIFont {\n"
     contentString += "\n\t\tswitch self {\n"
     for textStyle in textStyles {
-        contentString += "\t\tcase .\(textStyle.name.lowercasedFirstLetter()): return UIFont(name: \"\(textStyle.fontName)\", size: \(textStyle.size))!\n"
+        contentString += "\t\tcase .\(textStyle.name.lowercasedFirstLetter): return UIFont(name: \"\(textStyle.fontName)\", size: \(textStyle.size))!\n"
     }
     contentString += "\t\t}\n"
     contentString += "\t}\n"
     contentString += "\n\tpublic var color: UIColor {\n"
     contentString += "\n\t\tswitch self {\n"
     for textStyle in textStyles {
-        contentString += "\t\tcase .\(textStyle.name.lowercasedFirstLetter()): return UIColor(commonColor: .\(textStyle.colour.name.lowercasedFirstLetter()))\n"
+        contentString += "\t\tcase .\(textStyle.name.lowercasedFirstLetter): return UIColor(commonColor: .\(textStyle.colour.name.lowercasedFirstLetter))\n"
     }
     contentString += "\t\t}\n"
     contentString += "\t}\n"

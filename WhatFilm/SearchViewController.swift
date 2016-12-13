@@ -121,7 +121,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         self.searchBar.keyboardAppearance = .dark
 
         self.placeholderLabel.apply(style: .placeholder)
-        self.placeholderLabel.text = "Search films on TMDb"
+        self.placeholderLabel.text = "Search thousands of films, old or new on TMDb..."
         self.placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     

@@ -23,7 +23,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
     }
     
     fileprivate func setupUI() {
-        self.videoThumbnailImageView.backgroundColor = UIColor(commonColor: .grey)
+        self.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
         self.videoThumbnailImageView.contentMode = .scaleAspectFill
     }
 }

@@ -66,7 +66,7 @@ public enum TextStyle {
         case .filmDetailTitle: return UIFont(name: "AvenirNext-DemiBold", size: 20.0)!
         case .bodyDemiBold: return UIFont(name: "AvenirNext-DemiBold", size: 14.0)!
         case .bodyTiny: return UIFont(name: "AvenirNext-Medium", size: 9.0)!
-        case .body: return UIFont(name: "AvenirNext-Medium", size: 14.0)!
+        case .body: return UIFont(name: "AvenirNext-Medium", size: 16.0)!
         }
     }
     

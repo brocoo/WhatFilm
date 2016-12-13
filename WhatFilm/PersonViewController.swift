@@ -24,12 +24,17 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     @IBOutlet weak var fakeNavigationBar: UIView!
     @IBOutlet weak var fakeNavigationBarHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var profileImageContainerView: UIView!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var personInitialsLabel: UILabel!
     @IBOutlet weak var personNameLabel: UILabel!
     @IBOutlet weak var personAgeLabel: UILabel!
+    @IBOutlet weak var crewView: UIView!
+    @IBOutlet weak var crewViewHeight: NSLayoutConstraint!
     @IBOutlet weak var crewLabel: UILabel!
     @IBOutlet weak var crewCollectionView: UICollectionView!
+    @IBOutlet weak var castView: UIView!
+    @IBOutlet weak var castViewHeight: NSLayoutConstraint!
     @IBOutlet weak var castLabel: UILabel!
     @IBOutlet weak var castCollectionView: UICollectionView!
     @IBOutlet weak var personBiographyLabel: UILabel!
@@ -52,10 +57,10 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     
     fileprivate func setupUI() {
         self.fakeNavigationBar.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
-        self.profileImageView.layer.cornerRadius = 50.0
-        self.profileImageView.layer.masksToBounds = true
+        self.profileImageContainerView.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
+        self.profileImageContainerView.layer.cornerRadius = 50.0
+        self.profileImageContainerView.layer.masksToBounds = true
         self.profileImageView.contentMode = .scaleAspectFill
-        self.profileImageView.backgroundColor = UIColor.groupTableViewBackground
         self.personInitialsLabel.apply(style: .bodySmall)
         self.personInitialsLabel.text = nil
         self.personNameLabel.apply(style: .filmDetailTitle)
@@ -80,16 +85,39 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     // MARK: - Reactive setup
     
     fileprivate func setupBindings(forViewModel viewModel: PersonViewModel) {
+        
         viewModel
             .personDetail
-            .subscribe(onNext: { [unowned self] (personDetail) in
-                self.populate(forPerson: personDetail)
+            .subscribe(onNext: { [weak self] (personDetail) in
+                self?.populate(forPerson: personDetail)
             })
             .addDisposableTo(self.disposeBag)
         
         viewModel
             .filmsCredits
-            .map({ $0.asCrew })
+            .subscribe(onNext: { [weak self] (credits) in
+                let defaultHeight: CGFloat = 15.0 + TextStyle.filmDetailTitle.font.lineHeight + 8.0 + 200.0
+                if credits.asCast.count > 0 {
+                    self?.castLabel.text = "APPEARS IN"
+                    self?.castViewHeight.constant = defaultHeight
+                } else {
+                    self?.castLabel.text = nil
+                    self?.castViewHeight.constant = 0.0
+                }
+                if credits.asCrew.count > 0 {
+                    self?.crewLabel.text = "WORKED ON"
+                    self?.crewViewHeight.constant = defaultHeight
+                } else {
+                    self?.crewLabel.text = nil
+                    self?.crewViewHeight.constant = 0.0
+                }
+                self?.scrollView.layoutIfNeeded()
+            })
+            .addDisposableTo(self.disposeBag)
+        
+        viewModel
+            .filmsCredits
+            .map({ $0.asCrew.withoutDuplicates })
             .bindTo(self.crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
@@ -97,18 +125,18 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         
         viewModel
             .filmsCredits
-            .map({ $0.asCast })
+            .map({ $0.asCast.withoutDuplicates })
             .bindTo(self.castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.addDisposableTo(self.disposeBag)
         
         self.backgroundImagePath
-            .subscribe(onNext: { [unowned self] (imagePath) in
+            .subscribe(onNext: { [weak self] (imagePath) in
                 if let imagePath = imagePath {
-                    self.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
+                    self?.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
                 } else {
-                    self.blurredImageView.image = nil
+                    self?.blurredImageView.image = nil
                 }
             }).addDisposableTo(self.disposeBag)
     }
@@ -116,12 +144,10 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     // MARK: - Data handling
     
     fileprivate func populate(forPerson person: PersonDetail) {
+        self.personInitialsLabel.text = person.initials
+        self.profileImageView.image = nil
         if let profilePath = person.profilePath {
-            self.personInitialsLabel.text = nil
             self.profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
-        } else {
-            self.personInitialsLabel.text = person.initials
-            self.profileImageView.image = nil
         }
         self.personNameLabel.text = person.name
         self.personAgeLabel.text = self.age(forPerson: person)

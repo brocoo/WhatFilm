@@ -38,10 +38,16 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     @IBOutlet weak var filmRatingImageView: UIImageView!
     @IBOutlet weak var filmRatingLabel: UILabel!
     @IBOutlet weak var creditsView: UIView!
-    @IBOutlet weak var crewLabel: UILabel!
-    @IBOutlet weak var crewCollectionView: UICollectionView!
+    @IBOutlet weak var castView: UIView!
+    @IBOutlet weak var castViewHeight: NSLayoutConstraint!
     @IBOutlet weak var castLabel: UILabel!
     @IBOutlet weak var castCollectionView: UICollectionView!
+    @IBOutlet weak var crewView: UIView!
+    @IBOutlet weak var crewViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var crewLabel: UILabel!
+    @IBOutlet weak var crewCollectionView: UICollectionView!
+    @IBOutlet weak var videosView: UIView!
+    @IBOutlet weak var videosViewHeight: NSLayoutConstraint!
     @IBOutlet weak var videosLabel: UILabel!
     @IBOutlet weak var videosCollectionView: UICollectionView!
     
@@ -121,7 +127,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             self.backdropImageView.backgroundColor = UIColor.clear
         } else if let posterPath = filmDetail.posterPath {
             self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
-            self.backdropImageView.contentMode = .scaleAspectFit
+            self.backdropImageView.contentMode = .scaleAspectFill
             self.backdropImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
             self.backdropImageView.backgroundColor = UIColor.clear
         } else {
@@ -132,6 +138,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         }
         self.filmTitleLabel.text = filmDetail.fullTitle.uppercased()
         self.filmOverviewLabel.text = filmDetail.overview
+        self.videosView.alpha = 0.0
     }
     
     public func prePopulate(forFilm film: Film) {
@@ -154,12 +161,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             return filmDetail.posterPath ?? filmDetail.backdropPath
         }
         
-        viewModel
-            .credits
-            .subscribe(onNext: { [weak self] (credits) in
-                UIView.animate(withDuration: 0.2) { self?.creditsView.alpha = 1.0 }
-            }).addDisposableTo(self.disposeBag)
-        
         self.scrollView.rx.contentOffset.subscribe { [weak self] (contentOffset) in
             self?.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
         }.addDisposableTo(self.disposeBag)
@@ -181,6 +182,31 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             }.addDisposableTo(self.disposeBag)
         
         viewModel
+            .credits
+            .subscribe(onNext: { [weak self] (credits) in
+                let defaultHeight: CGFloat = 15.0 + TextStyle.filmDetailTitle.font.lineHeight + 140.0
+                if credits.cast.count > 0 {
+                    self?.castLabel.text = "CAST"
+                    self?.castViewHeight.constant = defaultHeight
+                } else {
+                    self?.castLabel.text = nil
+                    self?.castViewHeight.constant = 0.0
+                }
+                if credits.crew.count > 0 {
+                    self?.crewLabel.text = "CREW"
+                    self?.crewViewHeight.constant = defaultHeight
+                } else {
+                    self?.crewLabel.text = nil
+                    self?.crewViewHeight.constant = 0.0
+                }
+                self?.scrollView.layoutIfNeeded()
+                UIView.animate(withDuration: 0.2) {
+                    self?.videosView.alpha = 1.0
+                    self?.creditsView.alpha = 1.0
+                }
+            }).addDisposableTo(self.disposeBag)
+        
+        viewModel
             .filmDetail
             .map({ $0.videos })
             .bindTo(self.videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
@@ -191,6 +217,20 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                     cell.videoThumbnailImageView.image = nil
                 }
             }.addDisposableTo(self.disposeBag)
+        
+        viewModel
+            .filmDetail
+            .map({ $0.videos })
+            .subscribe(onNext: { [weak self] (videos) in
+                if videos.count > 0 {
+                    self?.videosLabel.text = "VIDEOS"
+                    self?.videosViewHeight.constant = 15.0 + TextStyle.filmDetailTitle.font.lineHeight + 100.0
+                } else {
+                    self?.videosLabel.text = nil
+                    self?.videosViewHeight.constant = 0.0
+                }
+                self?.scrollView.layoutIfNeeded()
+            }).addDisposableTo(self.disposeBag)
         
         self.videosCollectionView.rx.modelSelected(Video.self).subscribe { [weak self] (event) in
             guard let video = event.element else { return }

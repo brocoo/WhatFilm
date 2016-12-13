@@ -79,3 +79,13 @@ extension Film {
     
     public override var debugDescription: String { return self.description }
 }
+
+// MARK: -
+
+extension Array where Element: Film {
+    
+    var withoutDuplicates: [Film] {
+        var exists: [Int: Bool] = [:]
+        return self.filter { exists.updateValue(true, forKey: $0.id) == nil }
+    }
+}
