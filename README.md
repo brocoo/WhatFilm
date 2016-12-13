@@ -1,3 +1,8 @@
+
+
+![Screenshot 1](http://i.imgur.com/gEEtZg0.png) 
+![Screenshot 2](http://i.imgur.com/QeliFwz.png)
+
 # WhatFilm
 
 Simple iOS app using TMDb API. 
