@@ -57,6 +57,7 @@ public final class SearchViewModel: NSObject {
             .debounce(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .flatMapLatest { [weak self] (query) -> Observable<[Film]> in
+                Analytics.track(searchQuery: query)
                 self?.isLoading.on(.next(true))
                 return TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger)
             }

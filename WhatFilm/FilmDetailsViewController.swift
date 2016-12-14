@@ -60,9 +60,13 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Analytics.track(viewContent: "Film Details", ofType: "View")
+    }
+    
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
         self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
         
         // Adjust scrollview insets based on film title

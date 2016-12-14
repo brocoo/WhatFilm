@@ -48,6 +48,11 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Analytics.track(viewContent: "Person Details", ofType: "View")
+    }
+    
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
@@ -186,6 +191,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             do {
                 let film: Film = try sender.collectionView.rx.model(sender.indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+                Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }
         }
     }

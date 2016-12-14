@@ -36,6 +36,11 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         self.setupBindings()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Analytics.track(viewContent: "Search", ofType: "View")
+    }
+    
     // MARK: - Reactive bindings setup
     
     fileprivate func setupBindings() {
@@ -158,6 +163,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             do {
                 let film: Film = try collectionView.rx.model(indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+                Analytics.track(viewContent: "Selected searched film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }
         }
     }

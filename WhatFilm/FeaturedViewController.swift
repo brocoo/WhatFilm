@@ -35,6 +35,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        Analytics.track(viewContent: "Featured list of film", ofType: "View")
     }
     
     // MARK: - Reactive bindings setup
@@ -114,6 +115,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
             do {
                 let film: Film = try collectionView.rx.model(indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+                Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }
         }
     }

@@ -47,6 +47,7 @@
 		F9D005541DAC027C004FC10D /* FilmCredited.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D005531DAC027C004FC10D /* FilmCredited.swift */; };
 		F9D6EBC51D92F367002970E3 /* FilmCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D6EBC31D92F367002970E3 /* FilmCollectionViewCell.swift */; };
 		F9D6EBC61D92F367002970E3 /* FilmCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D6EBC41D92F367002970E3 /* FilmCollectionViewCell.xib */; };
+		F9E9FE0E1E01BEA00093584C /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E9FE0D1E01BEA00093584C /* Analytics.swift */; };
 		F9F0547D1D8AF2B10000E6AC /* TMDbAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F0547C1D8AF2B10000E6AC /* TMDbAPI.swift */; };
 		F9FC1DB11DA69289003CE651 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC1DB01DA69289003CE651 /* Person.swift */; };
 		F9FC1DB51DA6A465003CE651 /* PersonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC1DB31DA6A465003CE651 /* PersonCollectionViewCell.swift */; };
@@ -112,6 +113,7 @@
 		F9D005531DAC027C004FC10D /* FilmCredited.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilmCredited.swift; sourceTree = "<group>"; };
 		F9D6EBC31D92F367002970E3 /* FilmCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilmCollectionViewCell.swift; sourceTree = "<group>"; };
 		F9D6EBC41D92F367002970E3 /* FilmCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilmCollectionViewCell.xib; sourceTree = "<group>"; };
+		F9E9FE0D1E01BEA00093584C /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		F9F0547C1D8AF2B10000E6AC /* TMDbAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMDbAPI.swift; sourceTree = "<group>"; };
 		F9FC1DB01DA69289003CE651 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		F9FC1DB31DA6A465003CE651 /* PersonCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 				F943188C1D844628006B2D23 /* Network */,
 				F91AC7901D88506E00E99849 /* DateManager.swift */,
 				F944190C1D8C0C2200804E7D /* KeyboardObserver.swift */,
+				F9E9FE0D1E01BEA00093584C /* Analytics.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				F9C6D6BB1D9587EE00BB6104 /* BaseFilmCollectionViewController.swift in Sources */,
 				F9884F541DABB125007A90F7 /* PersonViewModel.swift in Sources */,
 				F95C6ED11DF0597300CEF516 /* PushFilmDetailSegue.swift in Sources */,
+				F9E9FE0E1E01BEA00093584C /* Analytics.swift in Sources */,
 				F91AC7911D88506E00E99849 /* DateManager.swift in Sources */,
 				F9230F541D9560C60091B353 /* FeaturedViewController.swift in Sources */,
 				F95A04EA1D9C4044007AB2C1 /* FilmDetailsViewController.swift in Sources */,

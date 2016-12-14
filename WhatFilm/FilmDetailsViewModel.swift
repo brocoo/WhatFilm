@@ -14,12 +14,14 @@ public final class FilmDetailsViewModel: NSObject {
 
     // MARK: - Properties
     
+    let filmId: Int
     let filmDetail: Observable<FilmDetail>
     let credits: Observable<FilmCredits>
     
     // MARK: - Initializer
     
     init(withFilmId id: Int) {
+        self.filmId = id
         
         self.filmDetail = Observable
             .just(())

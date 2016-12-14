@@ -26,6 +26,11 @@ public final class AboutViewController: UIViewController {
         self.setupUI()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Analytics.track(viewContent: "About", ofType: "View")
+    }
+    
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
