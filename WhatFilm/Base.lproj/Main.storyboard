@@ -63,7 +63,7 @@
                                     <constraint firstAttribute="height" constant="100" id="dcA-vY-ZUL"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatFilm is an open source project built by Julien Ducret using data from TMDb." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sQy-ZP-8b3">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatMovie is an open source project built by Julien Ducret using data from TMDb." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sQy-ZP-8b3">
                                 <rect key="frame" x="30" y="194" width="315" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -76,7 +76,7 @@
                                     <constraint firstAttribute="height" constant="1" id="URW-RL-KwT"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatFilm v1.0 build 1" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ieq-xP-LZT">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WhatMovie v1.0 build 1" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ieq-xP-LZT">
                                 <rect key="frame" x="15" y="582" width="345" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -144,6 +144,12 @@
                                     <constraint firstItem="Uyv-Tj-11a" firstAttribute="top" secondItem="sO8-G0-4BB" secondAttribute="top" id="sOo-4d-Wl9"/>
                                 </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="App icon by Shmidt Sergey from the Noun Project." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b5t-qF-UMH">
+                                <rect key="frame" x="15" y="561" width="345" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -157,13 +163,17 @@
                             <constraint firstItem="sQy-ZP-8b3" firstAttribute="top" secondItem="bfq-U4-IYZ" secondAttribute="bottom" constant="15" id="bLv-vc-gf6"/>
                             <constraint firstItem="bfq-U4-IYZ" firstAttribute="top" secondItem="rMN-Cq-DJi" secondAttribute="bottom" constant="15" id="h0a-A0-0Xb"/>
                             <constraint firstItem="sO8-G0-4BB" firstAttribute="top" secondItem="iOL-ck-iwQ" secondAttribute="bottom" constant="15" id="h3c-2C-BZm"/>
+                            <constraint firstItem="b5t-qF-UMH" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="15" id="iuU-fP-rii"/>
+                            <constraint firstAttribute="trailing" secondItem="b5t-qF-UMH" secondAttribute="trailing" constant="15" id="l6B-ss-bHl"/>
                             <constraint firstItem="sQy-ZP-8b3" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="30" id="uPh-TI-RGT"/>
                             <constraint firstItem="iOL-ck-iwQ" firstAttribute="top" secondItem="sQy-ZP-8b3" secondAttribute="bottom" constant="15" id="wzL-VS-cFG"/>
                             <constraint firstItem="Ieq-xP-LZT" firstAttribute="leading" secondItem="xvz-ne-oqG" secondAttribute="leading" constant="15" id="xc7-Ry-5ym"/>
+                            <constraint firstItem="Ieq-xP-LZT" firstAttribute="top" secondItem="b5t-qF-UMH" secondAttribute="bottom" id="xuX-tP-WEW"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="About" id="aNc-Jt-8ZZ"/>
                     <connections>
+                        <outlet property="creditLabel" destination="b5t-qF-UMH" id="9rD-sy-1kh"/>
                         <outlet property="githubButton" destination="blH-k8-cqX" id="1Xb-ki-wxF"/>
                         <outlet property="linkedInButton" destination="Uyv-Tj-11a" id="iqn-UU-rM6"/>
                         <outlet property="mailButton" destination="rMi-j2-6gN" id="EQX-9Q-dpK"/>

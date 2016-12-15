@@ -17,6 +17,7 @@ public final class AboutViewController: UIViewController {
     @IBOutlet weak var mailButton: UIButton!
     @IBOutlet weak var githubButton: UIButton!
     @IBOutlet weak var linkedInButton: UIButton!
+    @IBOutlet weak var creditLabel: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
     // MARK: - UIViewController life cycle
@@ -35,16 +36,19 @@ public final class AboutViewController: UIViewController {
     
     fileprivate func setupUI() {
         self.title = "About"
+        self.creditLabel.text = "App icon by Shmidt Sergey from the Noun Project."
+        self.creditLabel.apply(style: TextStyle.bodyTiny)
         let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        self.versionLabel.text = "WhatFilm v\(versionNumber) build \(buildNumber)"
+        self.versionLabel.apply(style: TextStyle.bodyDemiBold)
+        self.versionLabel.text = "WhatMovie v\(versionNumber) build \(buildNumber)"
     }
     
     // MARK: - IBAction functions
     
     @IBAction func shareButtonTapped(sender: UIButton) {
         
-        let shareText: String = "Check out WhatFilm!"
+        let shareText: String = "Check out WhatMovie!"
         let url: URL = URL(string: "https://itunes.apple.com/us/app/spores/id718495353?mt=8")!
         let items: [Any] = [shareText, url]
         
@@ -61,7 +65,7 @@ public final class AboutViewController: UIViewController {
             mailComposerViewController.mailComposeDelegate = self
             mailComposerViewController.setToRecipients(["brocoo+whatfilm@gmail.com"])
             mailComposerViewController.setSubject("Hello!")
-            mailComposerViewController.setMessageBody("\n\n\n\nSent from WhatFilm iOS - v\(versionNumber) build \(buildNumber)", isHTML: false)
+            mailComposerViewController.setMessageBody("\n\n\n\nSent from WhatMovie iOS - v\(versionNumber) build \(buildNumber)", isHTML: false)
             self.present(mailComposerViewController, animated: true, completion: nil)
             
         } else {

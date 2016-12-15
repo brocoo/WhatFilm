@@ -262,6 +262,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                 personViewController.rx.viewDidLoad.subscribe(onNext: { _ in
                     personViewController.prePopulate(forPerson: person)
                 }).addDisposableTo(self.disposeBag)
+                Analytics.track(viewContent: "Selected person", ofType: "Person", withId: "\(person.id)", withAttributes: ["Person": person.name])
             } catch { fatalError(error.localizedDescription) }
         }
         
