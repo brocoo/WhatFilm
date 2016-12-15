@@ -831,7 +831,7 @@
 				DEVELOPMENT_TEAM = PH2JAPR3D3;
 				INFOPLIST_FILE = WhatFilm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilmApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -851,7 +851,7 @@
 				DEVELOPMENT_TEAM = PH2JAPR3D3;
 				INFOPLIST_FILE = WhatFilm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilmApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
