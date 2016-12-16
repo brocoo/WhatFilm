@@ -189,7 +189,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             let sender = sender as? CollectionViewSelection,
             let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? FilmCollectionViewCell {
             do {
-                let film: Film = try sender.collectionView.rx.model(sender.indexPath)
+                let film: Film = try sender.collectionView.rx.model(at: sender.indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
                 Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }

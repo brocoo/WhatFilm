@@ -279,7 +279,7 @@ public enum Router: URLRequestConvertible {
                 return try URLEncoding.queryString.encode(request, with: urlParameters)
             }
         }()
-        print("[ROUTER] \(finalRequest.url?.absoluteString ?? " - ")")
+//        print("[ROUTER] \(finalRequest.url?.absoluteString ?? " - ")")
         return finalRequest
     }
 }

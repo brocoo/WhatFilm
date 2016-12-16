@@ -255,7 +255,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         if let personViewController = segue.destination as? PersonViewController,
             let sender = sender as? CollectionViewSelection {
             do {
-                let person: Person = try sender.collectionView.rx.model(sender.indexPath)
+                let person: Person = try sender.collectionView.rx.model(at: sender.indexPath)
                 let personViewModel = PersonViewModel(withPersonId: person.id)
                 personViewController.viewModel = personViewModel
                 personViewController.backgroundImagePath = self.backgroundImagePath

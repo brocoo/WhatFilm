@@ -113,7 +113,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
             let indexPath = sender as? IndexPath,
             let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
             do {
-                let film: Film = try collectionView.rx.model(indexPath)
+                let film: Film = try collectionView.rx.model(at: indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
                 Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }

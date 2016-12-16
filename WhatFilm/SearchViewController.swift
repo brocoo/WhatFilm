@@ -48,6 +48,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         // Bind search bar text to the view model
         self.searchBar.rx
             .text
+            .orEmpty
             .bindTo(self.viewModel.textSearchTrigger)
             .addDisposableTo(self.disposeBag)
         
@@ -161,7 +162,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             let indexPath = sender as? IndexPath,
             let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
             do {
-                let film: Film = try collectionView.rx.model(indexPath)
+                let film: Film = try collectionView.rx.model(at: indexPath)
                 self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
                 Analytics.track(viewContent: "Selected searched film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }

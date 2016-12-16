@@ -76,11 +76,11 @@ public final class TMDbAPI {
         return self.films(with: parameters).flatMap { (paginatedList) -> Observable<[Film]> in
             let newList = currentList + paginatedList.results
             if let _ = paginatedList.nextPage {
-                return [
+                return Observable.concat([
                     Observable.just(newList),
                     Observable.never().takeUntil(trigger),
                     self.films(fromList: newList, with: parameters.nextPage, loadNextPageTrigger: trigger)
-                ].concat()
+                    ])
             } else { return Observable.just(newList) }
         }
     }
@@ -114,11 +114,11 @@ public final class TMDbAPI {
         return self.popularFilms(atPage: page).flatMap { (paginatedList) -> Observable<[Film]> in
             let newList = currentList + paginatedList.results
             if let nextPage = paginatedList.nextPage {
-                return [
+                return Observable.concat([
                     Observable.just(newList),
                     Observable.never().takeUntil(trigger),
                     self.popularFilms(fromList: newList, atPage: nextPage, loadNextPageTrigger: trigger)
-                    ].concat()
+                ])
             } else { return Observable.just(newList) }
         }
     }
