@@ -12,13 +12,35 @@ import UIKit
 
 public class BaseFilmCollectionViewController: UIViewController {
     
-    // MARK: -  IBOutlet properties
+    // MARK: - IBOutlet properties
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    // MARK: - UIViewController handling
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.collectionViewItemsPerRow = self.itemsPerRow(for: UIScreen.main.bounds.size)
+    }
+    
+    // MARK: - Rotation handling
+    
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        guard self.isViewLoaded else { return }
+        self.collectionViewItemsPerRow = self.itemsPerRow(for: size)
+        self.collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    fileprivate func itemsPerRow(for size: CGSize) -> Int {
+        if size.width > 768 { return 4 }
+        else if size.width > 414 { return 3 }
+        else { return 2 }
+    }
+    
     // MARK: - UICollectionViewCell layout properties
     
-    fileprivate let collectionViewItemsPerRow: Int = 2
+    fileprivate var collectionViewItemsPerRow: Int = 2
     fileprivate let collectionViewMargin: CGFloat = 15.0
     fileprivate let collectionViewItemSizeRatio: CGFloat = ImageSize.posterRatio
     fileprivate var collectionViewItemWidth: CGFloat {
