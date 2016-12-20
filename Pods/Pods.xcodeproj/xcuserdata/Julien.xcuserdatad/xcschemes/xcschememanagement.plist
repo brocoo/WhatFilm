@@ -8,97 +8,81 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>0</integer>
 		</dict>
 		<key>DateTools.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
 		</dict>
 		<key>Pods-WhatFilm.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
 		</dict>
 		<key>RxCocoa.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>3</integer>
 		</dict>
 		<key>RxDataSources.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>4</integer>
 		</dict>
 		<key>RxSwift.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>5</integer>
 		</dict>
 		<key>SDWebImage.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>6</integer>
 		</dict>
 		<key>SwiftyJSON.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>7</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>019B8DD7F9406148F9C695DB96EBC4A3</key>
+		<key>0D90D47836CEF2016414A3E34A885EC5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3EC5B44E78BF234D7932D06ED0010A79</key>
+		<key>14EC8ECCE4DE7F371598CBF5F02CB926</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>88E9EC28B8B46C3631E6B242B50F4442</key>
+		<key>1818FF36F23664ACBA1CA3EFDB8AE560</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9AC8BDBC9629FF2562BE1F54EB2319B3</key>
+		<key>391309BFC978B63854D555E9FBB35D2C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A2BF39ECB205269E8557DA16791DDF5D</key>
+		<key>47391C7956C182F298AFAD605F750FF7</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B1089D2854CB2BED165EB0236F3F87F1</key>
+		<key>665B9C8393471328D1B3C8FFC637852F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D18DA3881D5FB8809E6576C83568FCEF</key>
+		<key>79C040AFDDCE1BCBF6D8B5EB0B85887F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>EBFAF4F7EF63F19CD48D985368145511</key>
+		<key>AFEDA8059B169E4068B6DCC4D2F0B0E9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
