@@ -164,10 +164,11 @@ protocol ReactiveDisposable {
     var disposeBag: DisposeBag { get }
 }
 
-// MARK: - Reactive extension (UIScrollView)
-// https://github.com/tryswift/RxPagination/blob/master/Pagination/UIScrollView%2BRx.swift
+// MARK: - Reactive extensions
 
 extension Reactive where Base: UIScrollView {
+    
+    // MARK: - UIScrollView reactive extension
     
     public var reachedBottom: Observable<Void> {
         let scrollView = self.base as UIScrollView
@@ -190,6 +191,8 @@ extension Reactive where Base: UIScrollView {
 }
 
 extension Reactive where Base: UIViewController {
+    
+    // MARK: - UIViewController reactive extension
     
     public var viewDidLoad: Observable<Void> {
         return self.sentMessage(#selector(UIViewController.viewDidLoad)).map({ _ in return () })

@@ -265,19 +265,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                 Analytics.track(viewContent: "Selected person", ofType: "Person", withId: "\(person.id)", withAttributes: ["Person": person.name])
             } catch { fatalError(error.localizedDescription) }
         }
-        
-        // TODO: - Implement custom segue to person
-        
-//        if let personViewController = segue.destination as? PersonViewController,
-//            let pushPersonSegue = segue as? PushPersonSegue,
-//            let sender = sender as? CollectionViewSelection,
-//            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? PersonCollectionViewCell {
-//            do {
-//                let person: Person = try sender.collectionView.rx.model(sender.indexPath)
-//                personViewController.backgroundImagePath = self.backgroundImagePath
-//                self.preparePushTransition(to: personViewController, with: person, fromCell: cell, andBackgroundImagePath: self.backgroundImagePath, via: pushPersonSegue)
-//            } catch { fatalError(error.localizedDescription) }
-//        }
     }
 }
 
@@ -297,6 +284,7 @@ extension FilmDetailsViewController: UICollectionViewDelegate {
     // MARK: - UITableViewDelegate functions
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard collectionView == self.castCollectionView || collectionView == self.crewCollectionView else { return }
         let sender = CollectionViewSelection(collectionView: collectionView, indexPath: indexPath)
         self.performSegue(withIdentifier: PersonViewController.segueIdentifier, sender: sender)
     }
