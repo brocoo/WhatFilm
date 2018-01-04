@@ -94,7 +94,7 @@ public final class AboutViewController: UIViewController {
     // MARK: -
     
     fileprivate func open(url: URL, withAlertMessage message: String) {
-        UserDefaults.performOnce(forKey: "", perform: { _ in
+        UserDefaults.performOnce(forKey: "", perform: { 
             let alert = UIAlertController(title: "Leave the app?", message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Continue", style: .default) { _ in
                 alert.dismiss(animated: true, completion: nil)

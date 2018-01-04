@@ -244,7 +244,7 @@ protocol SegueReachable: class {
 extension TextStyle {
     
     var attributes: [String: AnyObject] {
-        return [NSFontAttributeName: self.font, NSForegroundColorAttributeName: self.color]
+        return [NSAttributedStringKey.font.rawValue: self.font, NSAttributedStringKey.foregroundColor.rawValue: self.color]
     }
 }
 

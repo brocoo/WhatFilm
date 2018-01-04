@@ -41,9 +41,9 @@ public struct Settings {
         UITabBar.appearance().barTintColor = UIColor(commonColor: .offBlack)
         
         // Global font
-        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: TextStyle.navigationTitle.font]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: TextStyle.navigationTitle.font]
         UILabel.appearance().font = TextStyle.body.font
-        UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName: TextStyle.body.font], for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.font: TextStyle.body.font], for: .normal)
         
         // UINavigation bar
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
