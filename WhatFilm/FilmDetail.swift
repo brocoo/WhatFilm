@@ -22,7 +22,7 @@ public final class FilmDetail: Film {
     // MARK: - JSONInitializable initializer
     
     public required init(json: JSON) {
-        self.homepage = json["homepage"].URL
+        self.homepage = json["homepage"].url
         self.imdbId = json["imdb_id"].int
         self.filmOverview = json["overview"].string
         self.runtime = json["runtime"].int

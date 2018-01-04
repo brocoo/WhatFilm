@@ -243,8 +243,8 @@ protocol SegueReachable: class {
 
 extension TextStyle {
     
-    var attributes: [String: AnyObject] {
-        return [NSAttributedStringKey.font.rawValue: self.font, NSAttributedStringKey.foregroundColor.rawValue: self.color]
+    var attributes: [NSAttributedStringKey: AnyObject] {
+        return [NSAttributedStringKey.font: self.font, NSAttributedStringKey.foregroundColor: self.color]
     }
 }
 

@@ -9,23 +9,30 @@
 #if os(iOS) || os(tvOS)
 
 import UIKit
-#if !RX_NO_MODULE
 import RxSwift
-#endif
-
 
 extension Reactive where Base: UISegmentedControl {
+    /// Reactive wrapper for `selectedSegmentIndex` property.
+    public var selectedSegmentIndex: ControlProperty<Int> {
+        return value
+    }
     
     /// Reactive wrapper for `selectedSegmentIndex` property.
     public var value: ControlProperty<Int> {
-        return UIControl.rx.value(
-            self.base,
+        return base.rx.controlPropertyWithDefaultEvents(
             getter: { segmentedControl in
                 segmentedControl.selectedSegmentIndex
             }, setter: { segmentedControl, value in
                 segmentedControl.selectedSegmentIndex = value
             }
         )
+    }
+
+    /// Reactive wrapper for `setEnabled(_:forSegmentAt:)`
+    public func enabled(forSegmentAt segmentAt: Int) -> Binder<Bool> {
+        return Binder(self.base) { (segmentedControl, segmentEnabled) -> () in
+            segmentedControl.setEnabled(segmentEnabled, forSegmentAt: segmentAt)
+        }
     }
     
 }

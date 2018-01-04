@@ -1,52 +1,45 @@
 PODS:
-  - Alamofire (4.2.0)
-  - Crashlytics (3.8.3):
-    - Fabric (~> 1.6.3)
-  - DateTools (1.7.0)
-  - Fabric (1.6.11)
-  - RxCocoa (3.0.1):
-    - RxSwift (~> 3.0)
-  - RxDataSources (1.0.0):
-    - RxCocoa (~> 3.0)
-    - RxSwift (~> 3.0)
-  - RxSwift (3.0.1)
-  - SDWebImage (3.8.2):
-    - SDWebImage/Core (= 3.8.2)
-  - SDWebImage/Core (3.8.2)
-  - SwiftyJSON (2.3.2)
+  - Alamofire (4.6.0)
+  - Crashlytics (3.9.3):
+    - Fabric (~> 1.7.2)
+  - DateTools (2.0.0)
+  - Differentiator (3.0.2)
+  - Fabric (1.7.2)
+  - RxCocoa (4.1.0):
+    - RxSwift (~> 4.0)
+  - RxDataSources (3.0.2):
+    - Differentiator (~> 3.0)
+    - RxCocoa (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxSwift (4.1.0)
+  - SDWebImage (4.2.3):
+    - SDWebImage/Core (= 4.2.3)
+  - SDWebImage/Core (4.2.3)
+  - SwiftyJSON (4.0.0)
 
 DEPENDENCIES:
   - Alamofire
   - Crashlytics
   - DateTools
   - Fabric
-  - RxCocoa (~> 3.0.0.alpha.1)
-  - RxDataSources (~> 1.0.0-beta.2)
-  - RxSwift (~> 3.0.0.alpha.1)
+  - RxCocoa
+  - RxDataSources
+  - RxSwift
   - SDWebImage
-  - SwiftyJSON (from `https://github.com/BaiduHiDeviOS/SwiftyJSON.git`, branch `swift3`)
-
-EXTERNAL SOURCES:
-  SwiftyJSON:
-    :branch: swift3
-    :git: https://github.com/BaiduHiDeviOS/SwiftyJSON.git
-
-CHECKOUT OPTIONS:
-  SwiftyJSON:
-    :commit: de5dc3b1b421805769590d331178551bbb0e5733
-    :git: https://github.com/BaiduHiDeviOS/SwiftyJSON.git
+  - SwiftyJSON
 
 SPEC CHECKSUMS:
-  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
-  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
-  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
-  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
-  RxCocoa: 15a52fc590dcc700cb4a690a633b5c5184ce3a78
-  RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
-  RxSwift: af5680055c4ad04480189c52d28385b1029493a6
-  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
-  SwiftyJSON: 6118fb49d7519c4d31a0c1f3d5af936e9047b556
+  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
+  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
+  DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
+  Differentiator: a87be69eba49ec4ab460c7671143ee3a9eececfd
+  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
+  RxCocoa: cc1fec49cdc8fabe645964de7c51c099a36c2aa8
+  RxDataSources: cb7c31e652a87ebb919da45f716bbb87b3765f6b
+  RxSwift: 4219941c1244c88002901bd87a69d3aea9ae71f0
+  SDWebImage: 791bb72962b3492327ddcac4b1880bd1b5458431
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 54115c052001477d983fba009990919397456ea4
+PODFILE CHECKSUM: 73e65caecf83911bb790adfea547bd019e5cca1b
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.3.1

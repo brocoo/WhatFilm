@@ -231,8 +231,12 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .success([]) }
-                let jsonArray = JSON(data: data)["results"].arrayValue
-                return .success(jsonArray.map({ Film(json: $0) }))
+                do {
+                    let jsonArray = try JSON(data: data)["results"].arrayValue
+                    return .success(jsonArray.map({ Film(json: $0) }))
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }
@@ -248,14 +252,18 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .success(PaginatedList.Empty()) }
-                let json = JSON(data: data)
-                guard
-                    let page = json["page"].int,
-                    let totalResults = json["total_results"].int,
-                    let totalPages = json["total_pages"].int else { return .success(PaginatedList.Empty()) }
-                let films = json["results"].arrayValue.map({ Film(json: $0) })
-                let paginatedList = PaginatedList(page: page - 1, totalResults: totalResults, totalPages: totalPages, results: films)
-                return .success(paginatedList)
+                do {
+                    let json = try JSON(data: data)
+                    guard
+                        let page = json["page"].int,
+                        let totalResults = json["total_results"].int,
+                        let totalPages = json["total_pages"].int else { return .success(PaginatedList.Empty()) }
+                    let films = json["results"].arrayValue.map({ Film(json: $0) })
+                    let paginatedList = PaginatedList(page: page - 1, totalResults: totalResults, totalPages: totalPages, results: films)
+                    return .success(paginatedList)
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }
@@ -271,9 +279,13 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .failure(DataError.noData) }
-                let json = JSON(data: data)
-                let filmDetail = FilmDetail(json: json)
-                return .success(filmDetail)
+                do {
+                    let json = try JSON(data: data)
+                    let filmDetail = FilmDetail(json: json)
+                    return .success(filmDetail)
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }
@@ -289,11 +301,15 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .failure(DataError.noData) }
-                let json = JSON(data: data)
-                let cast: [Person] = json["cast"].arrayValue.flatMap({ Person(json: $0) })
-                let crew: [Person] = json["crew"].arrayValue.flatMap({ Person(json: $0) })
-                let filmCredits = FilmCredits(cast: cast, crew: crew)
-                return .success(filmCredits)
+                do {
+                    let json = try JSON(data: data)
+                    let cast: [Person] = json["cast"].arrayValue.flatMap({ Person(json: $0) })
+                    let crew: [Person] = json["crew"].arrayValue.flatMap({ Person(json: $0) })
+                    let filmCredits = FilmCredits(cast: cast, crew: crew)
+                    return .success(filmCredits)
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }
@@ -309,9 +325,13 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .failure(DataError.noData) }
-                let json = JSON(data: data)
-                let person = PersonDetail(json: json)
-                return .success(person)
+                do {
+                    let json = try JSON(data: data)
+                    let person = PersonDetail(json: json)
+                    return .success(person)
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }
@@ -327,11 +347,15 @@ extension Alamofire.DataRequest {
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .failure(DataError.noData) }
-                let json = JSON(data: data)
-                let cast = json["cast"].arrayValue.flatMap({ FilmCredited(json: $0) })
-                let crew = json["crew"].arrayValue.flatMap({ FilmCredited(json: $0) })
-                let filmsCredited = FilmsCredited(asCast: cast, asCrew: crew)
-                return .success(filmsCredited)
+                do {
+                    let json = try JSON(data: data)
+                    let cast = json["cast"].arrayValue.flatMap({ FilmCredited(json: $0) })
+                    let crew = json["crew"].arrayValue.flatMap({ FilmCredited(json: $0) })
+                    let filmsCredited = FilmsCredited(asCast: cast, asCrew: crew)
+                    return .success(filmsCredited)
+                } catch {
+                    return .failure(error)
+                }
             }
         }
     }

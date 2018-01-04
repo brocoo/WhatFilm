@@ -133,7 +133,7 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
     
     fileprivate func setupCollectionView() {
         self.collectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.collectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.collectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
     }
     
     fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
