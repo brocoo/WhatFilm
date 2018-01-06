@@ -45,7 +45,7 @@ public final class SearchViewModel: NSObject {
                 self?.isLoading.on(.next(false))
             }, onDisposed: { [weak self] in
                 self?.isLoading.on(.next(false))
-            }).addDisposableTo(self.disposaBag)
+            }).disposed(by: self.disposaBag)
     }
     
     fileprivate func setupFilms() -> Observable<[Film]> {
@@ -61,6 +61,6 @@ public final class SearchViewModel: NSObject {
                 self?.isLoading.on(.next(true))
                 return TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger)
             }
-            .shareReplay(1)
+            .share(replay: 1)
     }
 }

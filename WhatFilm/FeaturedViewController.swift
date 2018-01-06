@@ -46,40 +46,40 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
         self.refreshControl.rx
             .controlEvent(.valueChanged)
             .filter({ self.refreshControl.isRefreshing })
-            .bindTo(self.viewModel.reloadTrigger)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.viewModel.reloadTrigger)
+            .disposed(by: self.disposeBag)
         
         // Bind view model films to the table view
         self.viewModel
             .films
-            .bindTo(self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         // Bind view model films to the refresh control
         self.viewModel.films
             .subscribe { _ in
                 self.refreshControl.endRefreshing()
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         // Bind table view bottom reached event to loading the next page
         self.collectionView.rx
             .reachedBottom
-            .bindTo(self.viewModel.nextPageTrigger)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.viewModel.nextPageTrigger)
+            .disposed(by: self.disposeBag)
         
         // Bind keyboard updates to table view inset
         self.keyboardObserver
             .willShow
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
         self.keyboardObserver
             .willHide
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - UI Setup
@@ -88,7 +88,7 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
     
     fileprivate func setupCollectionView() {
         self.collectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.collectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.collectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.collectionView.addSubview(self.refreshControl)
     }
     

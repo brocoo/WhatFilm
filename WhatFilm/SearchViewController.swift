@@ -31,9 +31,9 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupUI()
-        self.setupCollectionView()
-        self.setupBindings()
+        setupUI()
+        setupCollectionView()
+        setupBindings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,100 +46,103 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
     fileprivate func setupBindings() {
         
         // Bind search bar text to the view model
-        self.searchBar.rx
+        searchBar
+            .rx
             .text
             .orEmpty
-            .bindTo(self.viewModel.textSearchTrigger)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: viewModel.textSearchTrigger)
+            .disposed(by: disposeBag)
         
         // Bind view model films to the table view
-        self.viewModel
+        viewModel
             .films
-            .bindTo(self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: disposeBag)
         
         // Bind table view bottom reached event to loading the next page
-        self.collectionView.rx
+        collectionView.rx
             .reachedBottom
-            .bindTo(self.viewModel.nextPageTrigger)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: viewModel.nextPageTrigger)
+            .disposed(by: disposeBag)
         
         // Bind scrolling updates to dismiss keyboard when tableView is not empty
-        self.collectionView.rx
+        collectionView.rx
             .startedDragging
-            .withLatestFrom(self.viewModel.films)
+            .withLatestFrom(viewModel.films)
             .filter { (films) -> Bool in
                 return films.count > 0
             }.subscribe(onNext: { [unowned self] _ in
                 self.searchBar.endEditing(true)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: disposeBag)
         
         // Bind the placeholder appearance to the data source
-        self.viewModel
+        viewModel
             .films
-            .withLatestFrom(self.searchBar.rx.text) { (films, query) -> String? in
+            .withLatestFrom(searchBar.rx.text) { (films, searchQuery) -> String? in
+                
                 guard films.count == 0 else { return nil }
-                if query == "" { return "Search thousands of films, old or new on TMDb..."
-                } else { return "No results found for '\(query)'" }
+                guard let query = searchQuery, query.count > 0 else { return "Search thousands of films, old or new on TMDb..." }
+                return "No results found for '\(query)'"
+                
             }.subscribe(onNext: { [unowned self] (placeholderString) in
                 self.placeholderLabel.text = placeholderString
                 UIView.animate(withDuration: 0.2) {
                     self.placeholderView.alpha = placeholderString == nil ? 0.0 : 1.0
                     self.collectionView.alpha = placeholderString == nil ? 1.0 : 0.0
                 }
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: disposeBag)
         
         // Bind keyboard updates to table view inset
-        self.keyboardObserver
+        keyboardObserver
             .willShow
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: disposeBag)
         
-        self.keyboardObserver
+        keyboardObserver
             .willHide
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: disposeBag)
         
-//        self.viewModel
+//        viewModel
 //            .isLoading
 //            .subscribe(onNext: { (isLoading) in
-//                if isLoading { self.loadingIndicator.startAnimating() }
-//                else { self.loadingIndicator.stopAnimating() }
-//            }).addDisposableTo(self.disposeBag)
+//                if isLoading { loadingIndicator.startAnimating() }
+//                else { loadingIndicator.stopAnimating() }
+//            }).addDisposableTo(disposeBag)
     }
     
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
         
-        self.searchBar.returnKeyType = .done
-        self.searchBar.delegate = self
+        searchBar.returnKeyType = .done
+        searchBar.delegate = self
         // http://stackoverflow.com/questions/14272015/enable-search-button-when-searching-string-is-empty-in-default-search-bar
-        if let searchTextField: UITextField = self.searchBar.subviews[0].subviews[1] as? UITextField {
+        if let searchTextField: UITextField = searchBar.subviews[0].subviews[1] as? UITextField {
             searchTextField.enablesReturnKeyAutomatically = false
             searchTextField.attributedPlaceholder = NSAttributedString(string: "Search films on TMDb", attributes: TextStyle.placeholder.attributes)
         }
-        self.searchBar.addSubview(self.loadingIndicator)
-        self.searchBar.keyboardAppearance = .dark
+        searchBar.addSubview(loadingIndicator)
+        searchBar.keyboardAppearance = .dark
 
-        self.placeholderLabel.apply(style: .placeholder)
-        self.placeholderLabel.text = "Search thousands of films, old or new on TMDb..."
-        self.placeholderView.tintColor = UIColor(commonColor: .grey)
+        placeholderLabel.apply(style: .placeholder)
+        placeholderLabel.text = "Search thousands of films, old or new on TMDb..."
+        placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     
     fileprivate func setupCollectionView() {
-        self.collectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.collectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
+        collectionView.registerReusableCell(FilmCollectionViewCell.self)
+        collectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: bottom, right: 0)
         if let duration = duration {
-            self.view.layoutIfNeeded()
+            view.layoutIfNeeded()
             UIView.animate(withDuration: duration, animations: {
                 self.collectionView.contentInset = inset
                 self.collectionView.scrollIndicatorInsets = inset
@@ -147,10 +150,10 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
                 self.view.layoutIfNeeded()
             })
         } else {
-            self.collectionView.contentInset = inset
-            self.collectionView.scrollIndicatorInsets = inset
-            self.contentOverlayBottomMargin.constant = bottom - self.bottomLayoutGuide.length
-            self.view.layoutIfNeeded()
+            collectionView.contentInset = inset
+            collectionView.scrollIndicatorInsets = inset
+            contentOverlayBottomMargin.constant = bottom - bottomLayoutGuide.length
+            view.layoutIfNeeded()
         }
     }
     
@@ -160,10 +163,10 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
             let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
             let indexPath = sender as? IndexPath,
-            let cell = self.collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
+            let cell = collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
             do {
                 let film: Film = try collectionView.rx.model(at: indexPath)
-                self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+                preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
                 Analytics.track(viewContent: "Selected searched film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
             } catch { fatalError(error.localizedDescription) }
         }
@@ -188,7 +191,7 @@ extension SearchViewController: UITableViewDelegate {
     // MARK: - UITableViewDelegate functions
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
     }
 }
 

@@ -41,7 +41,7 @@ public final class TMDbAPI {
                 return ImageManager(apiConfiguration: apiConfiguration)
             }.subscribe(onNext: { (imageManager) in
                 self.imageManager = imageManager
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Configuration

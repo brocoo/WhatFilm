@@ -52,14 +52,7 @@ public final class Person: NSObject, JSONFailableInitializable {
         return ImagePath.profile(path: profilePathString)
     }
     
-    var initials: String {
-        let components: [String] = self.name.components(separatedBy: " ")
-        let size = min(components.count, 3)
-        return components[0..<size].reduce("") { (aggregate, subname) -> String in
-            guard subname.characters.count > 0 else { return "" }
-            return aggregate + String(subname.characters.prefix(1))
-        }
-    }
+    var initials: String { return name.initials(upTo: 3) }
     
     var role: String {
         switch self.category {

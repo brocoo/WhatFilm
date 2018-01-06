@@ -53,32 +53,32 @@ public final class KeyboardObserver {
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillChangeFrame)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.willChangeFrame)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.willChangeFrame)
+            .disposed(by: self.disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidChangeFrame)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.didChangeFrame)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.didChangeFrame)
+            .disposed(by: self.disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.willShow)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.willShow)
+            .disposed(by: self.disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidShow)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.didShow)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.didShow)
+            .disposed(by: self.disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.willHide)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.willHide)
+            .disposed(by: self.disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidHide)
             .map { KeyboardInfo(notification: $0) }
-            .bindTo(self.didHide)
-            .addDisposableTo(self.disposeBag)
+            .bind(to: self.didHide)
+            .disposed(by: self.disposeBag)
     }
 }

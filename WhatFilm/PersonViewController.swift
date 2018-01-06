@@ -80,10 +80,10 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     
     fileprivate func setupCollectionView() {
         self.crewCollectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.crewCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.crewCollectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.crewCollectionView.showsHorizontalScrollIndicator = false
         self.castCollectionView.registerReusableCell(FilmCollectionViewCell.self)
-        self.castCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.castCollectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.castCollectionView.showsHorizontalScrollIndicator = false
     }
     
@@ -96,7 +96,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             .subscribe(onNext: { [weak self] (personDetail) in
                 self?.populate(forPerson: personDetail)
             })
-            .addDisposableTo(self.disposeBag)
+            .disposed(by: self.disposeBag)
         
         viewModel
             .filmsCredits
@@ -118,23 +118,23 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
                 }
                 self?.scrollView.layoutIfNeeded()
             })
-            .addDisposableTo(self.disposeBag)
+            .disposed(by: self.disposeBag)
         
         viewModel
             .filmsCredits
             .map({ $0.asCrew.withoutDuplicates })
-            .bindTo(self.crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: self.crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         viewModel
             .filmsCredits
             .map({ $0.asCast.withoutDuplicates })
-            .bindTo(self.castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: self.castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         self.backgroundImagePath
             .subscribe(onNext: { [weak self] (imagePath) in
@@ -143,7 +143,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
                 } else {
                     self?.blurredImageView.image = nil
                 }
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Data handling

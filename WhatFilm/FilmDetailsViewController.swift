@@ -97,13 +97,13 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     
     fileprivate func setupCollectionViews() {
         self.crewCollectionView.registerReusableCell(PersonCollectionViewCell.self)
-        self.crewCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.crewCollectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.crewCollectionView.showsHorizontalScrollIndicator = false
         self.castCollectionView.registerReusableCell(PersonCollectionViewCell.self)
-        self.castCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.castCollectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.castCollectionView.showsHorizontalScrollIndicator = false
         self.videosCollectionView.registerReusableCell(VideoCollectionViewCell.self)
-        self.videosCollectionView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+        self.videosCollectionView.rx.setDelegate(self).disposed(by: self.disposeBag)
         self.videosCollectionView.showsHorizontalScrollIndicator = false
     }
     
@@ -159,7 +159,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             .filmDetail
             .subscribe(onNext: { [weak self] (filmDetail) in
                 self?.populate(forFilmDetail: filmDetail)
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
         
         self.backgroundImagePath = viewModel.filmDetail.map { (filmDetail) -> ImagePath? in
             return filmDetail.posterPath ?? filmDetail.backdropPath
@@ -167,23 +167,23 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         
         self.scrollView.rx.contentOffset.subscribe { [weak self] (contentOffset) in
             self?.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
-        }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         viewModel
             .credits
             .map({ $0.crew })
-            .bindTo(self.crewCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
+            .bind(to: self.crewCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         viewModel
             .credits
             .map({ $0.cast })
-            .bindTo(self.castCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
+            .bind(to: self.castCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         viewModel
             .credits
@@ -208,19 +208,19 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                     self?.videosView.alpha = 1.0
                     self?.creditsView.alpha = 1.0
                 }
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
         
         viewModel
             .filmDetail
             .map({ $0.videos })
-            .bindTo(self.videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
+            .bind(to: self.videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
                 (row, video, cell) in
                 if let thumbnailURL = video.youtubeThumbnailURL {
                     cell.videoThumbnailImageView.sd_setImage(with: thumbnailURL)
                 } else {
                     cell.videoThumbnailImageView.image = nil
                 }
-            }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
         
         viewModel
             .filmDetail
@@ -234,12 +234,12 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                     self?.videosViewHeight.constant = 0.0
                 }
                 self?.scrollView.layoutIfNeeded()
-            }).addDisposableTo(self.disposeBag)
+            }).disposed(by: self.disposeBag)
         
         self.videosCollectionView.rx.modelSelected(Video.self).subscribe { [weak self] (event) in
             guard let video = event.element else { return }
             self?.play(video: video)
-        }.addDisposableTo(self.disposeBag)
+            }.disposed(by: self.disposeBag)
     }
     
     // MARK: - Actions handling
@@ -261,7 +261,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                 personViewController.backgroundImagePath = self.backgroundImagePath
                 personViewController.rx.viewDidLoad.subscribe(onNext: { _ in
                     personViewController.prePopulate(forPerson: person)
-                }).addDisposableTo(self.disposeBag)
+                }).disposed(by: self.disposeBag)
                 Analytics.track(viewContent: "Selected person", ofType: "Person", withId: "\(person.id)", withAttributes: ["Person": person.name])
             } catch { fatalError(error.localizedDescription) }
         }

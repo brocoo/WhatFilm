@@ -28,7 +28,7 @@ extension PersonFromCellTransitionable where Self: UIViewController {
         if let reactiveDisposable = self as? ReactiveDisposable {
             viewController.rx.viewDidLoad.subscribe(onNext: { _ in
                 viewController.prePopulate(forPerson: person)
-            }).addDisposableTo(reactiveDisposable.disposeBag)
+            }).disposed(by: reactiveDisposable.disposeBag)
         }
         
         viewController.backgroundImagePath = path

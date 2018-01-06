@@ -27,7 +27,7 @@ extension FilmDetailsFromCellTransitionable where Self: UIViewController {
         if let reactiveDisposable = self as? ReactiveDisposable {
             viewController.rx.viewDidLoad.subscribe(onNext: { _ in
                 viewController.prePopulate(forFilm: film)
-            }).addDisposableTo(reactiveDisposable.disposeBag)
+            }).disposed(by: reactiveDisposable.disposeBag)
         }
         
         // Setup the segue for transition
