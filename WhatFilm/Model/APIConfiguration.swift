@@ -7,9 +7,21 @@
 //
 
 import Foundation
-import SwiftyJSON
 
-public struct APIConfiguration: JSONInitializable {
+public struct APIConfiguration: Decodable {
+    
+    // MARK: - Keys
+    
+    enum CodingKeys: String, CodingKey {
+        case images
+        case baseURL = "base_url"
+        case secureBaseURL = "secure_base_url"
+        case backdropSizes = "backdrop_sizes"
+        case logSizes = "logo_sizes"
+        case posterSizes = "poster_sizes"
+        case profileSizes = "profile_sizes"
+        case stillSizes = "still_sizes"
+    }
     
     // MARK: - Properties
     
@@ -21,15 +33,16 @@ public struct APIConfiguration: JSONInitializable {
     let profileSizes: [String]
     let stillSizes: [String]
     
-    // MARK: - JSONInitializable initializer
+    // MARK: - Initializer
     
-    init(json: JSON) {
-        self.imagesBaseURLString = json["images"]["base_url"].stringValue
-        self.imagesSecureBaseURLString = json["images"]["secure_base_url"].stringValue
-        self.backdropSizes = json["images"]["backdrop_sizes"].arrayValue.map({ $0.stringValue })
-        self.logoSizes = json["images"]["logo_sizes"].arrayValue.map({ $0.stringValue })
-        self.posterSizes = json["images"]["poster_sizes"].arrayValue.map({ $0.stringValue })
-        self.profileSizes = json["images"]["profile_sizes"].arrayValue.map({ $0.stringValue })
-        self.stillSizes = json["images"]["still_sizes"].arrayValue.map({ $0.stringValue })
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self).nestedContainer(keyedBy: CodingKeys.self, forKey: .images)
+        self.imagesBaseURLString = try container.decode(String.self, forKey: .baseURL)
+        self.imagesSecureBaseURLString = try container.decode(String.self, forKey: .secureBaseURL)
+        self.backdropSizes = try container.decode([String].self, forKey: .backdropSizes)
+        self.logoSizes = try container.decode([String].self, forKey: .logSizes)
+        self.posterSizes = try container.decode([String].self, forKey: .posterSizes)
+        self.profileSizes = try container.decode([String].self, forKey: .profileSizes)
+        self.stillSizes = try container.decode([String].self, forKey: .stillSizes)
     }
 }

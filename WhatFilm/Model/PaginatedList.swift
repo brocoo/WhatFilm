@@ -8,7 +8,7 @@
 
 import UIKit
 
-public struct PaginatedList<T> {
+public struct PaginatedList<T: Decodable> {
 
     // MARK: - Properties
     
@@ -38,6 +38,33 @@ public struct PaginatedList<T> {
     
     static func Empty() -> PaginatedList { return PaginatedList(page: 0, totalResults: 0, totalPages: 0, results: []) }
 }
+
+// MARK: -
+
+extension PaginatedList: Decodable {
+    
+    // MARK: - Keys
+    
+    private enum CodingKeys: String, CodingKey {
+        case page
+        case totalResults = "total_results"
+        case totalPages = "total_pages"
+        case results
+    }
+    
+    // MARK: - Initializer
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let page = try container.decode(Int.self, forKey: .page) - 1
+        let totalResults = try container.decode(Int.self, forKey: .totalResults)
+        let totalPages = try container.decode(Int.self, forKey: .totalPages)
+        let results = try container.decode([T].self, forKey: .results)
+        self.init(page: page, totalResults: totalResults, totalPages: totalPages, results: results)
+    }
+}
+
+// MARK: -
 
 extension PaginatedList {
     

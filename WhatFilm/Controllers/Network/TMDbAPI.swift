@@ -9,7 +9,6 @@
 import UIKit
 import Alamofire
 import RxSwift
-import SwiftyJSON
 
 public final class TMDbAPI {
     
@@ -51,12 +50,16 @@ public final class TMDbAPI {
             let request = Alamofire
                 .request(Router.configuration)
                 .validate()
-                .responseJSON { (response) in
+                .responseData { (response) in
                     switch response.result {
                     case .success(let data):
-                        let apiConfiguration = APIConfiguration(json: JSON(data))
-                        observer.onNext(apiConfiguration)
-                        observer.onCompleted()
+                        do {
+                            let apiConfiguration = try JSONDecoder().decode(APIConfiguration.self, from: data)
+                            observer.onNext(apiConfiguration)
+                            observer.onCompleted()
+                        } catch {
+                            observer.onError(error)
+                        }
                     case .failure(let error):
                         observer.onError(error)
                     }
@@ -201,12 +204,12 @@ public final class TMDbAPI {
         }
     }
     
-    public func filmsCredited(forPersonId id: Int) -> Observable<FilmsCredited> {
-        return Observable<FilmsCredited>.create { (observer) -> Disposable in
+    public func filmsCredited(forPersonId id: Int) -> Observable<PersonCreditedFilms> {
+        return Observable<PersonCreditedFilms>.create { (observer) -> Disposable in
             let request = Alamofire
                 .request(Router.personCredits(id: id))
                 .validate()
-                .responseCreditedFilms { (response) in
+                .responsePersonCreditedFilms { (response) in
                     switch response.result {
                     case .success(let creditedFilms):
                         observer.onNext(creditedFilms)
@@ -232,8 +235,8 @@ extension Alamofire.DataRequest {
             else {
                 guard let data = data else { return .success([]) }
                 do {
-                    let jsonArray = try JSON(data: data)["results"].arrayValue
-                    return .success(jsonArray.map({ Film(json: $0) }))
+                    let films = try JSONDecoder().decode([Film].self, from: data)
+                    return .success(films)
                 } catch {
                     return .failure(error)
                 }
@@ -253,13 +256,7 @@ extension Alamofire.DataRequest {
             else {
                 guard let data = data else { return .success(PaginatedList.Empty()) }
                 do {
-                    let json = try JSON(data: data)
-                    guard
-                        let page = json["page"].int,
-                        let totalResults = json["total_results"].int,
-                        let totalPages = json["total_pages"].int else { return .success(PaginatedList.Empty()) }
-                    let films = json["results"].arrayValue.map({ Film(json: $0) })
-                    let paginatedList = PaginatedList(page: page - 1, totalResults: totalResults, totalPages: totalPages, results: films)
+                    let paginatedList = try JSONDecoder().decode(PaginatedList<Film>.self, from: data)
                     return .success(paginatedList)
                 } catch {
                     return .failure(error)
@@ -280,8 +277,7 @@ extension Alamofire.DataRequest {
             else {
                 guard let data = data else { return .failure(DataError.noData) }
                 do {
-                    let json = try JSON(data: data)
-                    let filmDetail = FilmDetail(json: json)
+                    let filmDetail = try JSONDecoder().decode(FilmDetail.self, from: data)
                     return .success(filmDetail)
                 } catch {
                     return .failure(error)
@@ -302,10 +298,7 @@ extension Alamofire.DataRequest {
             else {
                 guard let data = data else { return .failure(DataError.noData) }
                 do {
-                    let json = try JSON(data: data)
-                    let cast: [Person] = json["cast"].arrayValue.flatMap({ Person(json: $0) })
-                    let crew: [Person] = json["crew"].arrayValue.flatMap({ Person(json: $0) })
-                    let filmCredits = FilmCredits(cast: cast, crew: crew)
+                    let filmCredits = try JSONDecoder().decode(FilmCredits.self, from: data)
                     return .success(filmCredits)
                 } catch {
                     return .failure(error)
@@ -326,8 +319,7 @@ extension Alamofire.DataRequest {
             else {
                 guard let data = data else { return .failure(DataError.noData) }
                 do {
-                    let json = try JSON(data: data)
-                    let person = PersonDetail(json: json)
+                    let person = try JSONDecoder().decode(PersonDetail.self, from: data)
                     return .success(person)
                 } catch {
                     return .failure(error)
@@ -342,17 +334,14 @@ extension Alamofire.DataRequest {
     
     // MARK: - Credited films for person response serializer
     
-    static func creditedFilmsResponseSerializer() -> DataResponseSerializer<FilmsCredited> {
+    static func personCreditedFilmsResponseSerializer() -> DataResponseSerializer<PersonCreditedFilms> {
         return DataResponseSerializer { (request, response, data, error) in
             if let error = error { return .failure(error) }
             else {
                 guard let data = data else { return .failure(DataError.noData) }
                 do {
-                    let json = try JSON(data: data)
-                    let cast = json["cast"].arrayValue.flatMap({ FilmCredited(json: $0) })
-                    let crew = json["crew"].arrayValue.flatMap({ FilmCredited(json: $0) })
-                    let filmsCredited = FilmsCredited(asCast: cast, asCrew: crew)
-                    return .success(filmsCredited)
+                    let personCreditedFilms = try JSONDecoder().decode(PersonCreditedFilms.self, from: data)
+                    return .success(personCreditedFilms)
                 } catch {
                     return .failure(error)
                 }
@@ -360,7 +349,7 @@ extension Alamofire.DataRequest {
         }
     }
     
-    @discardableResult func responseCreditedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmsCredited>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.creditedFilmsResponseSerializer(), completionHandler: completionHandler)
+    @discardableResult func responsePersonCreditedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PersonCreditedFilms>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataRequest.personCreditedFilmsResponseSerializer(), completionHandler: completionHandler)
     }
 }

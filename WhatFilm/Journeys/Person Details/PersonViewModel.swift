@@ -15,7 +15,7 @@ final class PersonViewModel: NSObject {
     // MARK: - Properties
     
     let personDetail: Observable<PersonDetail>
-    let filmsCredits: Observable<FilmsCredited>
+    let filmsCredits: Observable<PersonCreditedFilms>
     
     // MARK: - Initializer
     

@@ -102,14 +102,14 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             .filmsCredits
             .subscribe(onNext: { [weak self] (credits) in
                 let defaultHeight: CGFloat = 15.0 + TextStyle.filmDetailTitle.font.lineHeight + 8.0 + 200.0
-                if credits.asCast.count > 0 {
+                if credits.cast.count > 0 {
                     self?.castLabel.text = "APPEARS IN"
                     self?.castViewHeight.constant = defaultHeight
                 } else {
                     self?.castLabel.text = nil
                     self?.castViewHeight.constant = 0.0
                 }
-                if credits.asCrew.count > 0 {
+                if credits.crew.count > 0 {
                     self?.crewLabel.text = "WORKED ON"
                     self?.crewViewHeight.constant = defaultHeight
                 } else {
@@ -122,7 +122,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         
         viewModel
             .filmsCredits
-            .map({ $0.asCrew.withoutDuplicates })
+            .map({ $0.crew.withoutDuplicates })
             .bind(to: self.crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
@@ -130,7 +130,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         
         viewModel
             .filmsCredits
-            .map({ $0.asCast.withoutDuplicates })
+            .map({ $0.cast.withoutDuplicates })
             .bind(to: self.castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
@@ -171,7 +171,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     }
     
     fileprivate func age(forPerson person: PersonDetail) -> String? {
-        guard let birthDate = person.birthdate else { return nil }
+        guard let birthDate = person.birthDate else { return nil }
         guard let birthDateString = (birthDate as NSDate).formattedDate(with: .medium) else { return nil }
         guard let age = person.age else { return nil }
         if let deathDate = person.deathDate {

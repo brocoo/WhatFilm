@@ -7,9 +7,6 @@
 //
 
 import UIKit
-import SwiftyJSON
-
-public typealias FilmCredits = (cast: [Person], crew: [Person])
 
 // MARK: -
 
@@ -21,22 +18,37 @@ public enum PersonCategory {
 
 // MARK: -
 
-extension PersonCategory: JSONFailableInitializable {
+extension PersonCategory: Decodable {
     
-    // MARK: - JSONFailableInitializable
+    // MARK: - Keys
     
-    init?(json: JSON) {
-        if let character = json["character"].string {
+    enum CodingKeys: String, CodingKey {
+        case character
+        case job
+    }
+    
+    // MARK: - Decodable
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if container.contains(.character) {
+            let character = try container.decode(String.self, forKey: .character)
             self = .cast(character: character)
-        } else if let job = json["job"].string {
+        } else if container.contains(.job) {
+            let job = try container.decode(String.self, forKey: .job)
             self = .crew(job: job)
-        } else { return nil }
+        } else {
+            let keys = [CodingKeys.character, CodingKeys.job]
+            let debugDescription = "Expected PersonCategory object"
+            let context = DecodingError.Context(codingPath: keys, debugDescription: debugDescription)
+            throw DecodingError.typeMismatch(PersonCategory.self, context)
+        }
     }
 }
 
 // MARK: -
 
-public final class Person: NSObject, JSONFailableInitializable {
+public final class Person {
 
     // MARK: - Properties
     
@@ -61,13 +73,34 @@ public final class Person: NSObject, JSONFailableInitializable {
         }
     }
     
-    // MARK: - Initializer (JSONFailableInitializable)
+    // MARK: - Initializer
     
-    init?(json: JSON) {
-        guard let category = PersonCategory(json: json) else { return nil }
-        self.id = json["id"].intValue
-        self.name = json["name"].stringValue
+    init(id: Int, name: String, category: PersonCategory, profilePathString: String?) {
+        self.id = id
+        self.name = name
         self.category = category
-        self.profilePathString = json["profile_path"].string
+        self.profilePathString = profilePathString
+    }
+}
+
+extension Person: Decodable {
+    
+    // MARK: - Keys
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case profilePath = "profile_path"
+    }
+    
+    // MARK: - Initializer
+    
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let id = try container.decode(Int.self, forKey: .id)
+        let name = try container.decode(String.self, forKey: .name)
+        let category = try PersonCategory(from: decoder)
+        let profilePathString = try container.decodeIfPresent(String.self, forKey: .profilePath)
+        self.init(id: id, name: name, category: category, profilePathString: profilePathString)
     }
 }

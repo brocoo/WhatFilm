@@ -7,9 +7,6 @@
 //
 
 import UIKit
-import SwiftyJSON
-
-public typealias FilmsCredited = (asCast: [FilmCredited], asCrew: [FilmCredited])
 
 public final class FilmCredited: Film {
 
@@ -19,8 +16,8 @@ public final class FilmCredited: Film {
     
     // MARK: - Initializer
     
-    public required init(json: JSON) {
-        self.category = PersonCategory(json: json)
-        super.init(json: json)
+    public required init(from decoder: Decoder) throws {
+        self.category = try PersonCategory(from: decoder)
+        try super.init(from: decoder)
     }
 }

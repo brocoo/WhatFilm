@@ -6,7 +6,6 @@ target 'WhatFilm' do
 
   # Pods for WhatFilm
   pod 'Alamofire'
-  pod 'SwiftyJSON'
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxDataSources'

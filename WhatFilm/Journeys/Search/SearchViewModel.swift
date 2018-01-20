@@ -10,7 +10,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Alamofire
-import SwiftyJSON
 
 public final class SearchViewModel: NSObject {
     

@@ -7,13 +7,21 @@
 //
 
 import UIKit
-import SwiftyJSON
 
-final class Video: NSObject, JSONFailableInitializable {
+final class Video: Decodable {
+    
+    // MARK: - Keys
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case key
+        case name
+        case size
+    }
 
     // MARK: - Properties
     
-    let id: Int
+    let id: String
     let key: String
     let name: String
     let size: Int
@@ -26,13 +34,11 @@ final class Video: NSObject, JSONFailableInitializable {
     
     // MARK: - Initializer
     
-    init?(json: JSON) {
-        guard let key = json["key"].string else { return nil }
-        guard let site = json["site"].string, site == "YouTube" else { return nil }
-        self.id = json["id"].intValue
-        self.key = key
-        self.name = json["name"].stringValue
-        self.size = json["size"].intValue
-        super.init()
+    init(decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.key = try container.decode(String.self, forKey: .key)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.size = try container.decode(Int.self, forKey: .size)
     }
 }

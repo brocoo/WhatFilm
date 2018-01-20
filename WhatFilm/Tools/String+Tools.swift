@@ -20,4 +20,12 @@ extension String {
     func initials(upTo maxLength: Int) -> String {
         return String(initials.prefix(maxLength))
     }
+    
+    var asISO8601Date: Date? {
+        return DateManager.sharedFormatter.date(from: self)
+    }
+    
+    var asURL: URL? {
+        return URL(string: self)
+    }
 }

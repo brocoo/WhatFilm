@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import RxSwift
 import RxCocoa
 import SDWebImage
@@ -29,18 +28,6 @@ protocol URLParametersListSerializable {
     var URLParametersList: ParametersList { get }
 }
 
-// MARK: - JSONInitializable protocol
-
-protocol JSONInitializable {
-    
-    init(json: JSON)
-}
-
-protocol JSONFailableInitializable {
-    
-    init?(json: JSON)
-}
-
 // MARK: - NSUserDefault
 
 extension UserDefaults {
@@ -51,39 +38,6 @@ extension UserDefaults {
         self.standard.synchronize()
         if once == nil { perform() }
         else { elsePerform?() }
-    }
-}
-
-
-// MARK: - JSON
-
-extension JSON {
-    
-    public var date: Date? {
-        get {
-            switch self.type {
-            case .string:
-                guard let dateString = self.object as? String else { return nil }
-                return DateManager.SharedFormatter.date(from: dateString)
-            default:
-                return nil
-            }
-        }
-        set {
-            if let newValue = newValue {
-                self.object = DateManager.SharedFormatter.string(from: newValue)
-            } else {
-                self.object = NSNull()
-            }
-        }
-    }
-    
-    public var dateValue: Date {
-        get {
-            guard let date = self.date else { return Date() }
-            return date
-        }
-        set { self.date = newValue }
     }
 }
 
@@ -280,4 +234,3 @@ func unique<S: Sequence, E: Hashable>(source: S) -> [E] where E==S.Iterator.Elem
     var seen: [E:Bool] = [:]
     return source.filter { seen.updateValue(true, forKey: $0) == nil }
 }
-

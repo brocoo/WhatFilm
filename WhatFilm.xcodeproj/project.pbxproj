@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		205DE82B20000E940071DAE6 /* String+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205DE82A20000E940071DAE6 /* String+Tools.swift */; };
+		20616F0A20138470004FC384 /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20616F0920138470004FC384 /* ProfileImage.swift */; };
+		208B19C62013F9300000F3F7 /* PersonCreditedFilms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208B19C52013F9300000F3F7 /* PersonCreditedFilms.swift */; };
+		20E88E24200F84C000676D08 /* FilmCredits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E88E23200F84C000676D08 /* FilmCredits.swift */; };
 		BE9FDABBA3FFE520B199735D /* Pods_WhatFilm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 804EDF323D502AD110111843 /* Pods_WhatFilm.framework */; };
 		F9163BAB1E006A1B00618ABA /* Services.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9163BAA1E006A1B00618ABA /* Services.plist */; };
 		F91AC78F1D884B1000E99849 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91AC78E1D884B1000E99849 /* Result.swift */; };
@@ -68,6 +71,9 @@
 
 /* Begin PBXFileReference section */
 		205DE82A20000E940071DAE6 /* String+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Tools.swift"; sourceTree = "<group>"; };
+		20616F0920138470004FC384 /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
+		208B19C52013F9300000F3F7 /* PersonCreditedFilms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonCreditedFilms.swift; sourceTree = "<group>"; };
+		20E88E23200F84C000676D08 /* FilmCredits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmCredits.swift; sourceTree = "<group>"; };
 		4CDE941203556B9E1E9F6231 /* Pods-WhatFilm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatFilm.release.xcconfig"; path = "Pods/Target Support Files/Pods-WhatFilm/Pods-WhatFilm.release.xcconfig"; sourceTree = "<group>"; };
 		804EDF323D502AD110111843 /* Pods_WhatFilm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhatFilm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF617C246769580856BE0678 /* Pods-WhatFilm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatFilm.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WhatFilm/Pods-WhatFilm.debug.xcconfig"; sourceTree = "<group>"; };
@@ -146,6 +152,14 @@
 				4CDE941203556B9E1E9F6231 /* Pods-WhatFilm.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		20616F082013843C004FC384 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				20616F0920138470004FC384 /* ProfileImage.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		2062F47D200BC5E70087872F /* Base UI Controllers */ = {
@@ -261,6 +275,7 @@
 		20C37CF0200122D100F0D31B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				20616F082013843C004FC384 /* Helper */,
 				20C37CF2200122E000F0D31B /* Film */,
 				20C37CF1200122DB00F0D31B /* Person */,
 				F91AC7991D88643800E99849 /* APIConfiguration.swift */,
@@ -276,6 +291,7 @@
 			children = (
 				F9FC1DB01DA69289003CE651 /* Person.swift */,
 				F9884F551DABD201007A90F7 /* PersonDetail.swift */,
+				208B19C52013F9300000F3F7 /* PersonCreditedFilms.swift */,
 			);
 			path = Person;
 			sourceTree = "<group>";
@@ -286,6 +302,7 @@
 				F94E649B1D86F5FD000FF48E /* Film.swift */,
 				F95A04ED1D9C4873007AB2C1 /* FilmDetail.swift */,
 				F9D005531DAC027C004FC10D /* FilmCredited.swift */,
+				20E88E23200F84C000676D08 /* FilmCredits.swift */,
 			);
 			path = Film;
 			sourceTree = "<group>";
@@ -583,7 +600,6 @@
 				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -594,7 +610,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -678,7 +693,9 @@
 				F9884F511DABB104007A90F7 /* PersonViewController.swift in Sources */,
 				F9D6EBC51D92F367002970E3 /* FilmCollectionViewCell.swift in Sources */,
 				F944190F1D8C1F5700804E7D /* PaginatedList.swift in Sources */,
+				20616F0A20138470004FC384 /* ProfileImage.swift in Sources */,
 				F9D005541DAC027C004FC10D /* FilmCredited.swift in Sources */,
+				20E88E24200F84C000676D08 /* FilmCredits.swift in Sources */,
 				F9644B5E1DA7C39A00959622 /* VideoCollectionViewCell.swift in Sources */,
 				F91AC79A1D88643800E99849 /* APIConfiguration.swift in Sources */,
 				205DE82B20000E940071DAE6 /* String+Tools.swift in Sources */,
@@ -695,6 +712,7 @@
 				F94E649C1D86F5FD000FF48E /* Film.swift in Sources */,
 				F95A04E51D9C169A007AB2C1 /* Settings.swift in Sources */,
 				F91AC79C1D8864FC00E99849 /* ImageManager.swift in Sources */,
+				208B19C62013F9300000F3F7 /* PersonCreditedFilms.swift in Sources */,
 				F9F0547D1D8AF2B10000E6AC /* TMDbAPI.swift in Sources */,
 				F9884F561DABD201007A90F7 /* PersonDetail.swift in Sources */,
 				F9FC1DB51DA6A465003CE651 /* PersonCollectionViewCell.swift in Sources */,

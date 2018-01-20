@@ -12,7 +12,7 @@ public final class DateManager: NSObject {
     
     // MARK: - Properties
     
-    static var SharedFormatter: DateFormatter = {
+    static var sharedFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter

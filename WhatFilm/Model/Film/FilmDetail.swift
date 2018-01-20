@@ -7,9 +7,19 @@
 //
 
 import UIKit
-import SwiftyJSON
 
 public final class FilmDetail: Film {
+    
+    // MARK: - Keys
+    
+    private enum CodingKeys: String, CodingKey {
+        case homepage
+        case imdbId
+        case filmOverview
+        case runtime
+        case videos
+        case results
+    }
     
     // MARK: - Properties
     
@@ -21,12 +31,13 @@ public final class FilmDetail: Film {
     
     // MARK: - JSONInitializable initializer
     
-    public required init(json: JSON) {
-        self.homepage = json["homepage"].url
-        self.imdbId = json["imdb_id"].int
-        self.filmOverview = json["overview"].string
-        self.runtime = json["runtime"].int
-        self.videos = json["videos"]["results"].arrayValue.flatMap({ Video(json: $0) })
-        super.init(json: json)
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.homepage = try container.decodeIfPresent(String.self, forKey: .homepage)?.asURL
+        self.imdbId = try container.decodeIfPresent(Int.self, forKey: .imdbId)
+        self.filmOverview = try container.decodeIfPresent(String.self, forKey: .filmOverview)
+        self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
+        self.videos = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .videos).decode([Video].self, forKey: .results)
+        try super.init(from: decoder)
     }
 }
