@@ -10,9 +10,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 import SDWebImage
-import Alamofire
-
-public typealias ParametersList = [String: String]
 
 // MARK: -
 
@@ -23,9 +20,9 @@ public struct CollectionViewSelection {
 
 // MARK: - URLParametersListSerializable protocol
 
-protocol URLParametersListSerializable {
+protocol URLParametersSerializable {
     
-    var URLParametersList: ParametersList { get }
+    var asURLParameters: [URLParameter] { get }
 }
 
 // MARK: - NSUserDefault
@@ -218,7 +215,6 @@ public enum DataError: Error {
     
     case noData
 }
-
 
 // MARK: - Key window
 

@@ -42,40 +42,39 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
     
     fileprivate func setupBindings() {
         
-        // Bind refresh control to data reload
-        self.refreshControl.rx
+        refreshControl.rx
             .controlEvent(.valueChanged)
-            .filter({ self.refreshControl.isRefreshing })
-            .bind(to: self.viewModel.reloadTrigger)
-            .disposed(by: self.disposeBag)
+            .filter { self.refreshControl.isRefreshing }
+            .bind(to: viewModel.reloadTrigger)
+            .disposed(by: disposeBag)
         
-        // Bind view model films to the table view
-        self.viewModel
-            .films
-            .bind(to: self.collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+        viewModel
+            .filmsTask
+            .filter { !$0.isLoading }
+            .map { $0.result?.value ?? [] }
+            .asObservable()
+            .bind(to: collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
         
-        // Bind view model films to the refresh control
-        self.viewModel.films
-            .subscribe { _ in
-                self.refreshControl.endRefreshing()
-            }.disposed(by: self.disposeBag)
+        viewModel
+            .filmsTask
+            .drive(onNext: { (task) in
+                self.setupUI(for: task)
+            }).disposed(by: disposeBag)
         
-        // Bind table view bottom reached event to loading the next page
-        self.collectionView.rx
+        collectionView.rx
             .reachedBottom
             .bind(to: self.viewModel.nextPageTrigger)
             .disposed(by: self.disposeBag)
         
-        // Bind keyboard updates to table view inset
-        self.keyboardObserver
+        keyboardObserver
             .willShow
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: self.disposeBag)
-        self.keyboardObserver
+        keyboardObserver
             .willHide
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
@@ -103,6 +102,10 @@ final class FeaturedViewController: BaseFilmCollectionViewController, ReactiveDi
             self.collectionView.contentInset = inset
             self.collectionView.scrollIndicatorInsets = inset
         }
+    }
+    
+    fileprivate func setupUI(`for` task: Task<[Film]>) {
+        refreshControl.endRefreshing()
     }
     
     // MARK: - Navigation handling

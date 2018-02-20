@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Alamofire
 import RxSwift
 
 public final class TMDbAPI {
@@ -21,9 +20,27 @@ public final class TMDbAPI {
     fileprivate let disposeBag: DisposeBag = DisposeBag()
     fileprivate(set) var imageManager: ImageManager? = nil
     
+    lazy private var service: Service = setupService()
+    
+    lazy private var apiKey: String = {
+        guard let filePath: String = Bundle.main.path(forResource: "Services", ofType: "plist") else { fatalError("Couldn't find Services.plist") }
+        guard let dict = NSDictionary(contentsOfFile: filePath) else { fatalError("Can't read Services.plist") }
+        guard let apiKey = dict["TMDbAPIKey"] as? String else { fatalError("Couldn't find a value for 'TMDbAPIKey'") }
+        return apiKey
+    }()
+    
     // MARK: - Initializer (private)
     
     fileprivate init() {}
+    
+    // MARK: - Service
+    
+    private func setupService() -> Service {
+        let urlSession = URLSession.shared
+        let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
+        let configuration = ServiceConfiguration(urlScheme: "https", urlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
+        return Service(session: urlSession, configuration: configuration)
+    }
 
     // MARK: - 
     
@@ -43,35 +60,39 @@ public final class TMDbAPI {
             }).disposed(by: self.disposeBag)
     }
     
+    
+    // MARK: - Helper functions]
+    
+    private func executeAsObservable<T: Decodable>(_ request: RequestProtocol) -> Observable<T> {
+        return Observable.create { (observer) -> Disposable in
+            let completion: (DecodableResponse<T>) -> Void = { response in
+                switch response.decodedData {
+                case .success(let data):
+                    observer.onNext(data)
+                    observer.onCompleted()
+                case .failure(let error):
+                    observer.onError(error)
+                }
+            }
+            do {
+                try self.service.perform(request: request, onCompletion: completion)
+            } catch {
+                observer.onError(error)
+            }
+            return Disposables.create()
+        }.observeOn(MainScheduler.instance)
+    }
+    
     // MARK: - Configuration
     
     fileprivate func configuration() -> Observable<APIConfiguration> {
-        return Observable.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.configuration)
-                .validate()
-                .responseData { (response) in
-                    switch response.result {
-                    case .success(let data):
-                        do {
-                            let apiConfiguration = try JSONDecoder().decode(APIConfiguration.self, from: data)
-                            observer.onNext(apiConfiguration)
-                            observer.onCompleted()
-                        } catch {
-                            observer.onError(error)
-                        }
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                }
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.configuration)
     }
     
     // MARK: - Search films
     
     public func films(withTitle title: String, startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
-        let parameters: FilmSearchParameters = FilmSearchParameters(query: title, atPage: page)
+        let parameters: FilmSearchParameters = FilmSearchParameters(query: title, page: page)
         return TMDbAPI.instance.films(fromList: [], with: parameters, loadNextPageTrigger: trigger)
     }
     
@@ -90,21 +111,7 @@ public final class TMDbAPI {
     
     fileprivate func films(with parameters: FilmSearchParameters) -> Observable<PaginatedList<Film>> {
         guard !parameters.query.isEmpty else { return Observable.just(PaginatedList.Empty()) }
-        return Observable<PaginatedList<Film>>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.searchFilms(parameters: parameters))
-                .validate()
-                .responsePaginatedFilms(queue: nil, completionHandler: { (response) in
-                    switch response.result {
-                    case .success(let paginatedList):
-                        observer.onNext(paginatedList)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                })
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.searchFilms(parameters: parameters))
     }
     
     // MARK: - Popular films
@@ -127,229 +134,28 @@ public final class TMDbAPI {
     }
     
     fileprivate func popularFilms(atPage page: Int = 0) -> Observable<PaginatedList<Film>> {
-        return Observable<PaginatedList<Film>>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.popularFilms(page: page))
-                .validate()
-                .responsePaginatedFilms(queue: nil, completionHandler: { (response) in
-                    switch response.result {
-                    case .success(let paginatedList):
-                        observer.onNext(paginatedList)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                })
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.popularFilms(page: page))
     }
     
     // MARK: - Film detail
     
     public func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
-        return Observable<FilmDetail>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.filmDetail(filmId: filmId))
-                .validate()
-                .responseFilmDetail { (response) in
-                    switch response.result {
-                    case .success(let filmDetail):
-                        observer.onNext(filmDetail)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                }
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.filmDetail(filmId: filmId))
     }
     
     // MARK: - Film credits
     
     public func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
-        return Observable<FilmCredits>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.filmCredits(filmId: filmId))
-                .validate()
-                .responseFilmCredits { (response) in
-                    switch response.result {
-                    case .success(let filmCredits):
-                        observer.onNext(filmCredits)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                }
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.filmCredits(filmId: filmId))
     }
     
     // MARK: - Person
     
     public func person(forId id: Int) -> Observable<PersonDetail> {
-        return Observable<PersonDetail>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.person(id: id))
-                .validate()
-                .responsePersonDetail { (response) in
-                    switch response.result {
-                    case .success(let personDetail):
-                        observer.onNext(personDetail)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                }
-            return Disposables.create { request.cancel() }
-        }
+        return executeAsObservable(Endpoint.person(id: id))
     }
     
     public func filmsCredited(forPersonId id: Int) -> Observable<PersonCreditedFilms> {
-        return Observable<PersonCreditedFilms>.create { (observer) -> Disposable in
-            let request = Alamofire
-                .request(Router.personCredits(id: id))
-                .validate()
-                .responsePersonCreditedFilms { (response) in
-                    switch response.result {
-                    case .success(let creditedFilms):
-                        observer.onNext(creditedFilms)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
-                }
-            return Disposables.create { request.cancel() }
-        }
-    }
-}
-
-// MARK: -
-
-extension Alamofire.DataRequest {
-    
-    // MARK: - Films response serializer
-    
-    static func filmsResponseSerializer() -> DataResponseSerializer<[Film]> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .success([]) }
-                do {
-                    let films = try JSONDecoder().decode([Film].self, from: data)
-                    return .success(films)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responseFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<[Film]>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.filmsResponseSerializer(), completionHandler: completionHandler)
-    }
-    
-    // MARK: - Paginated list of films response serializer
-    
-    static func paginatedFilmsResponseSerializer() -> DataResponseSerializer<PaginatedList<Film>> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .success(PaginatedList.Empty()) }
-                do {
-                    let paginatedList = try JSONDecoder().decode(PaginatedList<Film>.self, from: data)
-                    return .success(paginatedList)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responsePaginatedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PaginatedList<Film>>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.paginatedFilmsResponseSerializer(), completionHandler: completionHandler)
-    }
-    
-    // MARK: - Film detail response serializer
-    
-    static func filmDetailResponseSerializer() -> DataResponseSerializer<FilmDetail> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .failure(DataError.noData) }
-                do {
-                    let filmDetail = try JSONDecoder().decode(FilmDetail.self, from: data)
-                    return .success(filmDetail)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responseFilmDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmDetail>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.filmDetailResponseSerializer(), completionHandler: completionHandler)
-    }
-    
-    // MARK: - Film credits response serializer
-    
-    static func filmCreditsResponseSerializer() -> DataResponseSerializer<FilmCredits> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .failure(DataError.noData) }
-                do {
-                    let filmCredits = try JSONDecoder().decode(FilmCredits.self, from: data)
-                    return .success(filmCredits)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responseFilmCredits(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<FilmCredits>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.filmCreditsResponseSerializer(), completionHandler: completionHandler)
-    }
-    
-    // MARK: - Person response serializer
-    
-    static func personResponseSerializer() -> DataResponseSerializer<PersonDetail> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .failure(DataError.noData) }
-                do {
-                    let person = try JSONDecoder().decode(PersonDetail.self, from: data)
-                    return .success(person)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responsePersonDetail(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PersonDetail>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.personResponseSerializer(), completionHandler: completionHandler)
-    }
-    
-    // MARK: - Credited films for person response serializer
-    
-    static func personCreditedFilmsResponseSerializer() -> DataResponseSerializer<PersonCreditedFilms> {
-        return DataResponseSerializer { (request, response, data, error) in
-            if let error = error { return .failure(error) }
-            else {
-                guard let data = data else { return .failure(DataError.noData) }
-                do {
-                    let personCreditedFilms = try JSONDecoder().decode(PersonCreditedFilms.self, from: data)
-                    return .success(personCreditedFilms)
-                } catch {
-                    return .failure(error)
-                }
-            }
-        }
-    }
-    
-    @discardableResult func responsePersonCreditedFilms(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<PersonCreditedFilms>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.personCreditedFilmsResponseSerializer(), completionHandler: completionHandler)
+        return executeAsObservable(Endpoint.personCredits(id: id))
     }
 }

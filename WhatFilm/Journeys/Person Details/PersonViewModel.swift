@@ -10,30 +10,38 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class PersonViewModel: NSObject {
+final class PersonViewModel {
+    
+    // MARK: - UI Drivers
+    
+    lazy private(set) var personDetail = makePersonDetailDriver()
+    lazy private(set) var filmsCredits = makePersonFilmsCredit()
     
     // MARK: - Properties
     
-    let personDetail: Observable<PersonDetail>
-    let filmsCredits: Observable<PersonCreditedFilms>
+    private let personId: Int
     
     // MARK: - Initializer
     
     init(withPersonId id: Int) {
-        
-        self.personDetail = Observable
+        self.personId = id
+    }
+    
+    // MARK: -
+    
+    private func makePersonDetailDriver() -> Driver<Result<PersonDetail>> {
+        return Observable
             .just(())
-            .flatMapLatest { _ in
-                return TMDbAPI.instance.person(forId: id)
-            }.share(replay: 1)
-        
-        
-        self.filmsCredits = Observable
+            .flatMapLatest { TMDbAPI.instance.person(forId: self.personId) }
+            .asResult()
+            .asDriver(onErrorJustReturn: Result(GeneralError.default))
+    }
+    
+    private func makePersonFilmsCredit() -> Driver<Result<PersonCreditedFilms>> {
+        return Observable
             .just(())
-            .flatMapLatest { _ in
-                return TMDbAPI.instance.filmsCredited(forPersonId: id)
-            }.share(replay: 1)
-        
-        super.init()
+            .flatMapLatest { TMDbAPI.instance.filmsCredited(forPersonId: self.personId) }
+            .asResult()
+            .asDriver(onErrorJustReturn: Result(GeneralError.default))
     }
 }

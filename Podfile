@@ -5,7 +5,6 @@ target 'WhatFilm' do
   use_frameworks!
 
   # Pods for WhatFilm
-  pod 'Alamofire'
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxDataSources'

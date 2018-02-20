@@ -9,34 +9,40 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import Alamofire
 
-final class FeaturedViewModel: NSObject {
+final class FeaturedViewModel {
     
     // MARK: - Properties
     
-    let disposaBag: DisposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     
-    // Input
+    // MARK: - Reactive triggers (input)
+    
     let reloadTrigger: PublishSubject<Void> = PublishSubject()
     let nextPageTrigger: PublishSubject<Void> = PublishSubject()
     
-    // Output
-    lazy private(set) var films: Observable<[Film]> = self.setupFilms()
+    // MARK: - Reactive drivers (output)
+    
+    lazy private(set) var filmsTask: Driver<Task<[Film]>> = makeFilmsDriver()
+    
+    // MARK: - Initializer
+    
+    init() { }
     
     // MARK: - Reactive Setup
     
-    fileprivate func setupFilms() -> Observable<[Film]> {
+    fileprivate func makeFilmsDriver() -> Driver<Task<[Film]>> {
         
-        let trigger = self.nextPageTrigger.asObservable().debounce(0.2, scheduler: MainScheduler.instance)
+        let nextPage = nextPageTrigger.debounce(0.2, scheduler: MainScheduler.instance)
         
-        return self.reloadTrigger
-            .asObservable()
+        let sequence = Observable.concat([
+            Observable.just(Task.loading),
+            TMDbAPI.instance.popularFilms(startingAtPage: 0, loadNextPageTrigger: nextPage).asTask()
+            ])
+        
+        return reloadTrigger
             .debounce(0.3, scheduler: MainScheduler.instance)
-            .flatMapLatest { (_) -> Observable<[Film]> in
-                return TMDbAPI.instance.popularFilms(startingAtPage: 0, loadNextPageTrigger: trigger)
-            }
-            .share(replay: 1)
+            .flatMap { sequence }
+            .asDriver(onErrorJustReturn: Task(GeneralError.default))
     }
-
 }

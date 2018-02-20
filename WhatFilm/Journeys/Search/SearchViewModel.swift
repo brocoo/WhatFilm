@@ -9,57 +9,45 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import Alamofire
 
-public final class SearchViewModel: NSObject {
+public final class SearchViewModel {
     
     // MARK: - Properties
     
     let disposaBag: DisposeBag = DisposeBag()
     
-    // Input
+    // MARK: - Input properties
+    
     let textSearchTrigger: PublishSubject<String> = PublishSubject()
     let nextPageTrigger: PublishSubject<Void> = PublishSubject()
     
-    // Output
-    lazy private(set) var films: Observable<[Film]> = self.setupFilms()
-    lazy private(set) var isLoading: PublishSubject<Bool> = PublishSubject()
+    // MARK: - UI Drivers
+    
+    lazy private(set) var filmsTask: Driver<Task<[Film]>> = makeFilmsTask()
+    lazy private(set) var films = filmsTask.map { $0.result?.value ?? [] }
     
     // MARK: - Initializer
     
-    override init() {
-        super.init()
-        self.setupIsLoading()
-    }
+    init() { }
     
     // MARK: - Reactive Setup
     
-    fileprivate func setupIsLoading() {
-        self.films
-            .subscribe(onNext: { [weak self] (films) in
-                self?.isLoading.on(.next(false))
-            }, onError: { [weak self] (error) in
-                self?.isLoading.on(.next(false))
-            }, onCompleted: { [weak self] in
-                self?.isLoading.on(.next(false))
-            }, onDisposed: { [weak self] in
-                self?.isLoading.on(.next(false))
-            }).disposed(by: self.disposaBag)
-    }
-    
-    fileprivate func setupFilms() -> Observable<[Film]> {
+    fileprivate func makeFilmsTask() -> Driver<Task<[Film]>> {
         
-        let trigger = self.nextPageTrigger.asObservable().debounce(0.2, scheduler: MainScheduler.instance)
+        let trigger = nextPageTrigger.asObservable().debounce(0.2, scheduler: MainScheduler.instance)
         
-        return self.textSearchTrigger
+        return textSearchTrigger
             .asObservable()
-            .debounce(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .flatMapLatest { [weak self] (query) -> Observable<[Film]> in
+            .debounce(0.3, scheduler: MainScheduler.instance)
+            .flatMapLatest { (query) -> Observable<Task<[Film]>> in
+                
                 Analytics.track(searchQuery: query)
-                self?.isLoading.on(.next(true))
-                return TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger)
-            }
-            .share(replay: 1)
+                return Observable.concat([
+                    Observable.just(Task.loading),
+                    TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger).asTask()
+                    ])
+                
+            }.asDriver(onErrorJustReturn: Task(GeneralError.default))
     }
 }

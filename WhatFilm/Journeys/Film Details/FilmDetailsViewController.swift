@@ -157,37 +157,47 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         
         viewModel
             .filmDetail
-            .subscribe(onNext: { [weak self] (filmDetail) in
-                self?.populate(forFilmDetail: filmDetail)
-            }).disposed(by: self.disposeBag)
+            .drive(onNext: { [weak self] (result) in
+                switch result {
+                case .success(let value): self?.populate(forFilmDetail: value)
+                case .failure: break
+                }
+            }).disposed(by: disposeBag)
         
-        self.backgroundImagePath = viewModel.filmDetail.map { (filmDetail) -> ImagePath? in
+        backgroundImagePath = viewModel.filmDetail.asObservable().map { (result) -> ImagePath? in
+            guard let filmDetail = result.value else { return nil }
             return filmDetail.posterPath ?? filmDetail.backdropPath
         }
         
-        self.scrollView.rx.contentOffset.subscribe { [weak self] (contentOffset) in
-            self?.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
-            }.disposed(by: self.disposeBag)
+        scrollView.rx
+            .contentOffset
+            .subscribe { [weak self] (contentOffset) in
+                self?.updateBackdropImageViewHeight(forScrollOffset: contentOffset.element)
+            }.disposed(by: disposeBag)
         
         viewModel
             .credits
-            .map({ $0.crew })
+            .map { $0.value?.crew ?? [] }
+            .asObservable()
             .bind(to: self.crewCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
-            }.disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
         
         viewModel
             .credits
-            .map({ $0.cast })
+            .map { $0.value?.cast ?? [] }
+            .asObservable()
             .bind(to: self.castCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
-            }.disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
         
         viewModel
             .credits
-            .subscribe(onNext: { [weak self] (credits) in
+            .map { $0.value }
+            .drive(onNext: { [weak self] (credits) in
+                guard let credits = credits else { return }
                 let defaultHeight: CGFloat = 15.0 + TextStyle.filmDetailTitle.font.lineHeight + 140.0
                 if credits.cast.count > 0 {
                     self?.castLabel.text = "CAST"
@@ -208,23 +218,25 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                     self?.videosView.alpha = 1.0
                     self?.creditsView.alpha = 1.0
                 }
-            }).disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
         
         viewModel
             .filmDetail
-            .map({ $0.videos })
-            .bind(to: self.videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
+            .map { $0.value?.videos ?? [] }
+            .asObservable()
+            .bind(to: videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
                 (row, video, cell) in
                 if let thumbnailURL = video.youtubeThumbnailURL {
                     cell.videoThumbnailImageView.sd_setImage(with: thumbnailURL)
                 } else {
                     cell.videoThumbnailImageView.image = nil
                 }
-            }.disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
         
         viewModel
             .filmDetail
-            .map({ $0.videos })
+            .map { $0.value?.videos ?? [] }
+            .asObservable()
             .subscribe(onNext: { [weak self] (videos) in
                 if videos.count > 0 {
                     self?.videosLabel.text = "VIDEOS"
@@ -236,9 +248,12 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                 self?.scrollView.layoutIfNeeded()
             }).disposed(by: self.disposeBag)
         
-        self.videosCollectionView.rx.modelSelected(Video.self).subscribe { [weak self] (event) in
-            guard let video = event.element else { return }
-            self?.play(video: video)
+        videosCollectionView.rx
+            .modelSelected(Video.self)
+            .subscribe { [weak self] (event) in
+                guard let video = event.element else { return }
+                self?.play(video: video)
+                
             }.disposed(by: self.disposeBag)
     }
     

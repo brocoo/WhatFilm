@@ -14,7 +14,7 @@ public final class TabBarController: UITabBarController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.setupUI()
+        setupUI()
     }
     
     // MARK: - UI Setup
