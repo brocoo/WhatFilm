@@ -17,9 +17,12 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
 
     // MARK: - Properties
     
+    var viewModel: FilmDetailsViewModel!
+    
+    // MARK: - Reactive properties
+    
+    private lazy var backgroundImagePath: Driver<ImagePath> = makeBackgroundImagePath()
     let disposeBag: DisposeBag = DisposeBag()
-    var viewModel: FilmDetailsViewModel?
-    var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
     
     // MARK: - IBOutlet properties
     
@@ -118,6 +121,19 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     
     // MARK: - Populate
     
+    fileprivate func makeBackgroundImagePath() -> Driver<ImagePath> {
+        
+        return viewModel
+            .filmDetail
+            .flatMap { (result) -> Driver<ImagePath> in
+                let value: ImagePath? = {
+                    guard let filmDetail = result.value else { return nil }
+                    return filmDetail.posterPath ?? filmDetail.backdropPath
+                }()
+                return Driver.from(optional: value)
+        }
+    }
+    
     fileprivate func populate(forFilmDetail filmDetail: FilmDetail) {
         UIView.animate(withDuration: 0.2) { self.filmSubDetailsView.alpha = 1.0 }
         if let runtime = filmDetail.runtime { self.filmRuntimeLabel.text = "\(runtime) min" }
@@ -163,11 +179,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
                 case .failure: break
                 }
             }).disposed(by: disposeBag)
-        
-        backgroundImagePath = viewModel.filmDetail.asObservable().map { (result) -> ImagePath? in
-            guard let filmDetail = result.value else { return nil }
-            return filmDetail.posterPath ?? filmDetail.backdropPath
-        }
         
         scrollView.rx
             .contentOffset

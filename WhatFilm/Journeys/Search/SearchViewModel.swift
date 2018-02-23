@@ -16,14 +16,14 @@ public final class SearchViewModel {
     
     let disposaBag: DisposeBag = DisposeBag()
     
-    // MARK: - Input properties
-    
+    // MARK: - Reactive triggers (input)
+
     let textSearchTrigger: PublishSubject<String> = PublishSubject()
     let nextPageTrigger: PublishSubject<Void> = PublishSubject()
     
-    // MARK: - UI Drivers
-    
-    lazy private(set) var filmsTask: Driver<Task<[Film]>> = makeFilmsTask()
+    // MARK: - Reactive drivers (output)
+
+    lazy private(set) var filmsTask = makeFilmsTask()
     lazy private(set) var films = filmsTask.map { $0.result?.value ?? [] }
     
     // MARK: - Initializer

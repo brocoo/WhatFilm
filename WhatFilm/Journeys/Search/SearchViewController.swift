@@ -103,13 +103,6 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
-        
-//        viewModel
-//            .isLoading
-//            .subscribe(onNext: { (isLoading) in
-//                if isLoading { loadingIndicator.startAnimating() }
-//                else { loadingIndicator.stopAnimating() }
-//            }).addDisposableTo(disposeBag)
     }
     
     // MARK: - UI Setup

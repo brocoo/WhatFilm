@@ -16,7 +16,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     
     let disposeBag: DisposeBag = DisposeBag()
     var viewModel: PersonViewModel?
-    var backgroundImagePath: Observable<ImagePath?> = Observable.empty()
+    var backgroundImagePath: Driver<ImagePath>!
     
     // MARK: - IBOutlet properties
     
@@ -141,12 +141,8 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             }.disposed(by: self.disposeBag)
         
         backgroundImagePath
-            .subscribe(onNext: { [weak self] (imagePath) in
-                if let imagePath = imagePath {
-                    self?.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
-                } else {
-                    self?.blurredImageView.image = nil
-                }
+            .drive(onNext: { [weak self] (imagePath) in
+                self?.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
             }).disposed(by: self.disposeBag)
     }
     
