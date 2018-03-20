@@ -255,7 +255,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Featured" id="ey3-UL-gyo"/>
                     <connections>
-                        <outlet property="collectionView" destination="SLi-5s-8zd" id="GPh-dj-xb5"/>
+                        <outlet property="collectionView" destination="SLi-5s-8zd" id="Y55-ge-yxS"/>
                         <segue destination="97y-3B-ovb" kind="custom" identifier="PushFilmDetailSegueIdentifier" customClass="PushFilmDetailsSegue" customModule="WhatFilm" customModuleProvider="target" id="YFb-Pj-ben"/>
                     </connections>
                 </viewController>
@@ -946,7 +946,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Search" id="MAZ-wi-kEC"/>
                     <connections>
-                        <outlet property="collectionView" destination="Icn-Yo-xdE" id="ueh-wW-QQH"/>
+                        <outlet property="collectionView" destination="Icn-Yo-xdE" id="1vG-yf-vsr"/>
                         <outlet property="contentOverlayBottomMargin" destination="3wV-4P-gG5" id="Mfr-a4-XeD"/>
                         <outlet property="placeholderImageView" destination="DxX-RV-J3y" id="vVg-sZ-aQd"/>
                         <outlet property="placeholderLabel" destination="Ttc-xt-Meq" id="oSb-7M-GkF"/>
@@ -972,6 +972,6 @@
         <image name="Time_Icon" width="120" height="120"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="YFb-Pj-ben"/>
+        <segue reference="cqr-bt-aqs"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ResponseProtocol {
+protocol ResponseProtocol: CustomStringConvertible, CustomDebugStringConvertible {
     
     // MARK: - Properties
     
@@ -19,3 +19,20 @@ protocol ResponseProtocol {
     
     init(request: RequestProtocol, data: Result<Data>)
 }
+
+// MARK: -
+
+extension ResponseProtocol {
+    
+    // MARK: - CustomStringConvertible
+    
+    var description: String {
+        switch self.data {
+        case .success: return "[RESPONSE PROTOCOL] ✅ SUCCESSFUL \(request.path)"
+        case .failure(let error): return "[RESPONSE PROTOCOL] ❌ FAILURE \(request.path)\n\(error)"
+        }
+    }
+    
+    var debugDescription: String { return description }
+}
+

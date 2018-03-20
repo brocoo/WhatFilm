@@ -38,76 +38,6 @@ extension UserDefaults {
     }
 }
 
-// MARK: - ReusableView protocol
-
-protocol ReusableView: class {
-    
-    static var DefaultReuseIdentifier: String { get }
-}
-
-extension ReusableView where Self: UIView {
-    
-    static var DefaultReuseIdentifier: String { return NSStringFromClass(self) }
-}
-
-// MARK: - NibLoadableView protocol
-
-protocol NibLoadableView: class {
-    
-    static var nibName: String { get }
-}
-
-extension NibLoadableView where Self: UIView {
-    
-    static var nibName: String {
-        return NSStringFromClass(self).components(separatedBy: ".").last!
-    }
-}
-
-// MARK: - UITableView extension
-
-extension UITableView {
-    
-    func registerReusableCell<T: UITableViewCell>(_: T.Type) where T: ReusableView {
-        self.register(T.self, forCellReuseIdentifier: T.DefaultReuseIdentifier)
-    }
-    
-    func registerReusableCell<T: UITableViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView {
-        let bundle = Bundle(for: T.self)
-        let nib = UINib(nibName: T.nibName, bundle: bundle)
-        self.register(nib, forCellReuseIdentifier: T.DefaultReuseIdentifier)
-    }
-    
-    func dequeueReusableCell<T: UITableViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView {
-        guard let cell = self.dequeueReusableCell(withIdentifier: T.DefaultReuseIdentifier, for: indexPath) as? T else {
-            fatalError("Could not dequeue cell with identifier: \(T.DefaultReuseIdentifier)")
-        }
-        return cell
-    }
-}
-
-// MARK: - UICollectionView extension
-
-extension UICollectionView {
-    
-    func registerReusableCell<T: UICollectionViewCell>(_: T.Type) where T: ReusableView {
-        self.register(T.self, forCellWithReuseIdentifier: T.DefaultReuseIdentifier)
-    }
-    
-    func registerReusableCell<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView {
-        let bundle = Bundle(for: T.self)
-        let nib = UINib(nibName: T.nibName, bundle: bundle)
-        self.register(nib, forCellWithReuseIdentifier: T.DefaultReuseIdentifier)
-    }
-    
-    func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView {
-        guard let cell = dequeueReusableCell(withReuseIdentifier: T.DefaultReuseIdentifier, for: indexPath) as? T else {
-            fatalError("Could not dequeue cell with identifier: \(T.DefaultReuseIdentifier)")
-        }
-        return cell
-    }
-}
-
 // MARK: - Reactive protocol
 
 protocol ReactiveDisposable {
@@ -116,30 +46,6 @@ protocol ReactiveDisposable {
 }
 
 // MARK: - Reactive extensions
-
-extension Reactive where Base: UIScrollView {
-    
-    // MARK: - UIScrollView reactive extension
-    
-    public var reachedBottom: Observable<Void> {
-        let scrollView = self.base as UIScrollView
-        return self.contentOffset.flatMap{ [weak scrollView] (contentOffset) -> Observable<Void> in
-            guard let scrollView = scrollView else { return Observable.empty() }
-            let visibleHeight = scrollView.frame.height - self.base.contentInset.top - scrollView.contentInset.bottom
-            let y = contentOffset.y + scrollView.contentInset.top
-            let threshold = max(0.0, scrollView.contentSize.height - visibleHeight)
-            return (y > threshold) ? Observable.just(()) : Observable.empty()
-        }
-    }
-    
-    public var startedDragging: Observable<Void> {
-        let scrollView = self.base as UIScrollView
-        return scrollView.panGestureRecognizer.rx
-            .event
-            .filter({ $0.state == .began })
-            .map({ _ in () })
-    }
-}
 
 extension Reactive where Base: UIViewController {
     
@@ -229,4 +135,13 @@ extension UIApplication {
 func unique<S: Sequence, E: Hashable>(source: S) -> [E] where E==S.Iterator.Element {
     var seen: [E:Bool] = [:]
     return source.filter { seen.updateValue(true, forKey: $0) == nil }
+}
+
+// MARK: - UIEdgeInsets
+
+extension UIEdgeInsets {
+    
+    init(all value: CGFloat) {
+        self.init(top: value, left: value, bottom: value, right: value)
+    }
 }

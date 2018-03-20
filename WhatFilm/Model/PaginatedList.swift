@@ -17,6 +17,18 @@ public struct PaginatedList<T: Decodable> {
     let totalPages: Int
     let results: [T]
     
+    // MARK: - Computed properties
+    
+    public var count: Int { return results.count }
+    
+    var nextPage: Int? {
+        let nextPage = page + 1
+        guard nextPage < totalPages else { return nil }
+        return nextPage
+    }
+    
+    var hasMorePages: Bool { return nextPage != nil }
+    
     // MARK: - Initializer
     
     init(page: Int, totalResults: Int, totalPages: Int, results: [T]) {
@@ -28,15 +40,37 @@ public struct PaginatedList<T: Decodable> {
     
     // MARK: - Helper functions / properties
     
-    var count: Int { return self.results.count }
-    
-    var nextPage: Int? {
-        let nextPage = self.page + 1
-        guard nextPage < self.totalPages else { return nil }
-        return nextPage
+    func appending(_ nextList: PaginatedList) throws -> PaginatedList {
+        guard nextList.page == nextPage else { throw PaginationError.wrongNextPage }
+        return PaginatedList(page: nextList.page, totalResults: nextList.totalResults, totalPages: nextList.totalPages, results: results + nextList.results)
     }
     
-    static func Empty() -> PaginatedList { return PaginatedList(page: 0, totalResults: 0, totalPages: 0, results: []) }
+    var asArray: Array<T> { return results }
+    
+    static var empty: PaginatedList { return PaginatedList(page: 0, totalResults: 0, totalPages: 0, results: []) }
+}
+
+// MARK: -
+
+extension PaginatedList: RandomAccessCollection {
+    
+    // MARK: - Collection
+    
+    public var startIndex: Int {
+        return results.startIndex
+    }
+    
+    public var endIndex: Int {
+        return results.endIndex
+    }
+    
+    public func index(after i: Int) -> Int {
+        return results.index(after: i)
+    }
+    
+    public subscript(index: Int) -> T {
+        return results[index]
+    }
 }
 
 // MARK: -
@@ -66,11 +100,9 @@ extension PaginatedList: Decodable {
 
 // MARK: -
 
-extension PaginatedList {
+enum PaginationError: Error {
     
-    // MARK: - Subscript
+    // MARK: - Cases
     
-    subscript(index: Int) -> T {
-        return self.results[index]
-    }
+    case wrongNextPage
 }

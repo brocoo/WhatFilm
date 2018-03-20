@@ -13,18 +13,11 @@ public struct FilmSearchParameters {
     // MARK: - Properties
     
     let query: String
-    let page: Int?
+    var page: Int?
     let language: String?
     let includeAdult: Bool?
     let year: Int?
     let primaryReleaseYear: Int?
-    
-    // MARK: - Computed properties
-    
-    var nextPage: FilmSearchParameters {
-        guard let page = page else { return self }
-        return FilmSearchParameters(query: query, page: page + 1, language: language, includeAdult: includeAdult, year: year, primaryReleaseYear: primaryReleaseYear)
-    }
     
     // MARK: - Initializers
     

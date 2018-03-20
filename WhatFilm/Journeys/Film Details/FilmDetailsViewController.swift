@@ -190,7 +190,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             .credits
             .map { $0.value?.crew ?? [] }
             .asObservable()
-            .bind(to: self.crewCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
+            .bind(to: self.crewCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.defaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
             }.disposed(by: disposeBag)
@@ -199,7 +199,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             .credits
             .map { $0.value?.cast ?? [] }
             .asObservable()
-            .bind(to: self.castCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.DefaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
+            .bind(to: self.castCollectionView.rx.items(cellIdentifier: PersonCollectionViewCell.defaultReuseIdentifier, cellType: PersonCollectionViewCell.self)) {
                 (row, person, cell) in
                 cell.populate(with: person)
             }.disposed(by: disposeBag)
@@ -235,7 +235,7 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
             .filmDetail
             .map { $0.value?.videos ?? [] }
             .asObservable()
-            .bind(to: videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.DefaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
+            .bind(to: videosCollectionView.rx.items(cellIdentifier: VideoCollectionViewCell.defaultReuseIdentifier, cellType: VideoCollectionViewCell.self)) {
                 (row, video, cell) in
                 if let thumbnailURL = video.youtubeThumbnailURL {
                     cell.videoThumbnailImageView.sd_setImage(with: thumbnailURL)

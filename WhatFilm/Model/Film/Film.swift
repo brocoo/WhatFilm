@@ -98,6 +98,26 @@ extension Film: CustomStringConvertible {
 
 // MARK: -
 
+extension Film: Equatable {
+    
+    // MARK: - Equatable
+    
+    public static func ==(lhs: Film, rhs: Film) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+// MARK: -
+
+extension Film: Hashable {
+    
+    // MARK: - Hashable
+    
+    public var hashValue: Int { return id }
+}
+
+// MARK: -
+
 extension Array where Element: Film {
     
     var withoutDuplicates: [Film] {

@@ -32,6 +32,7 @@ final class Service {
         let task = session.dataTask(with: urlRequest) { [weak self] (data, urlResponse, error) in
             guard let `self` = self else { return }
             let response: T = self.makeResponse(from: request, data: data, urlResponse: urlResponse, error: error)
+            print(response)
             onCompletion(response)
         }
         task.resume()

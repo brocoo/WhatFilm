@@ -10,10 +10,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable {
+class SearchViewController: UIViewController, ReactiveDisposable {
 
     // MARK: - IBOutlet Properties
     
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var placeholderView: UIView!
     @IBOutlet weak var placeholderImageView: UIImageView!
     @IBOutlet weak var placeholderLabel: UILabel!
@@ -24,15 +25,19 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
     // MARK: - Properties
     
     fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
+    fileprivate let sizeObserver: PublishSubject<CGSize> = PublishSubject()
     fileprivate let viewModel: SearchViewModel = SearchViewModel()
     let disposeBag: DisposeBag = DisposeBag()
+    
+    // MARK: - Lazy properties
+    
+    lazy private var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
     
     // MARK: - UIViewController life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupCollectionView()
         setupBindings()
     }
     
@@ -41,9 +46,22 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         Analytics.track(viewContent: "Search", ofType: "View")
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        sizeObserver.onNext(size)
+    }
+    
     // MARK: - Reactive bindings setup
     
     fileprivate func setupBindings() {
+        
+        filmsCollectionViewManager.collectionView = collectionView
+        
+        filmsCollectionViewManager
+            .itemSelected
+            .drive(onNext: { [unowned self] (film, indexPath) in
+                self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: (film, indexPath))
+            }).disposed(by: disposeBag)
         
         searchBar
             .rx
@@ -51,14 +69,6 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             .orEmpty
             .bind(to: viewModel.textSearchTrigger)
             .disposed(by: disposeBag)
-        
-        viewModel
-            .films
-            .asObservable()
-            .bind(to: collectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
-                (row, film, cell) in
-                cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
-            }.disposed(by: disposeBag)
         
         collectionView.rx
             .reachedBottom
@@ -73,6 +83,13 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
             }.subscribe(onNext: { [unowned self] _ in
                 self.searchBar.endEditing(true)
             }).disposed(by: disposeBag)
+        
+        collectionView.rx
+            .observe(CGRect.self, "bounds")
+            .flatMap { Observable.from(optional: $0?.size) }
+            .distinctUntilChanged()
+            .bind(to: sizeObserver)
+            .disposed(by: disposeBag)
         
         viewModel
             .films
@@ -124,11 +141,6 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
         placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     
-    fileprivate func setupCollectionView() {
-        collectionView.registerReusableCell(FilmCollectionViewCell.self)
-        collectionView.rx.setDelegate(self).disposed(by: disposeBag)
-    }
-    
     fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: bottom, right: 0)
         if let duration = duration {
@@ -150,16 +162,13 @@ class SearchViewController: BaseFilmCollectionViewController, ReactiveDisposable
     // MARK: - Navigation handling
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
+        guard let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
             let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
-            let indexPath = sender as? IndexPath,
-            let cell = collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell {
-            do {
-                let film: Film = try collectionView.rx.model(at: indexPath)
-                preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
-                Analytics.track(viewContent: "Selected searched film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
-            } catch { fatalError(error.localizedDescription) }
-        }
+            let tuple = sender as? (Film, IndexPath),
+            let cell = collectionView.cellForItem(at: tuple.1) as? FilmCollectionViewCell else { return }
+        let film = tuple.0
+        preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
+        Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
     }
 }
 
@@ -171,17 +180,6 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-    }
-}
-
-// MARK: -
-
-extension SearchViewController: UITableViewDelegate {
-    
-    // MARK: - UITableViewDelegate functions
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: indexPath)
     }
 }
 

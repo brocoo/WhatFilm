@@ -23,7 +23,7 @@ final class FeaturedViewModel {
     
     // MARK: - Reactive drivers (output)
     
-    lazy private(set) var filmsTask: Driver<Task<[Film]>> = makeFilmsDriver()
+    lazy private(set) var filmsTask = makeFilmsDriver()
     
     // MARK: - Initializer
     
@@ -31,7 +31,7 @@ final class FeaturedViewModel {
     
     // MARK: - Reactive Setup
     
-    fileprivate func makeFilmsDriver() -> Driver<Task<[Film]>> {
+    fileprivate func makeFilmsDriver() -> Driver<Task<PaginatedList<Film>>> {
         
         let nextPage = nextPageTrigger.debounce(0.2, scheduler: MainScheduler.instance)
         

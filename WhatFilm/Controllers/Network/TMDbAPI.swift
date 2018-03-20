@@ -91,50 +91,59 @@ public final class TMDbAPI {
     
     // MARK: - Search films
     
-    public func films(withTitle title: String, startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
+    public func films(withTitle title: String, startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<PaginatedList<Film>> {
         let parameters: FilmSearchParameters = FilmSearchParameters(query: title, page: page)
-        return TMDbAPI.instance.films(fromList: [], with: parameters, loadNextPageTrigger: trigger)
+        return films(currentPaginatedList: nil, with: parameters, loadNextPageTrigger: trigger)
     }
     
-    fileprivate func films(fromList currentList: [Film], with parameters: FilmSearchParameters, loadNextPageTrigger trigger: Observable<Void>) -> Observable<[Film]> {
-        return self.films(with: parameters).flatMap { (paginatedList) -> Observable<[Film]> in
-            let newList = currentList + paginatedList.results
-            if let _ = paginatedList.nextPage {
-                return Observable.concat([
-                    Observable.just(newList),
-                    Observable.never().takeUntil(trigger),
-                    self.films(fromList: newList, with: parameters.nextPage, loadNextPageTrigger: trigger)
-                    ])
-            } else { return Observable.just(newList) }
+    fileprivate func films(currentPaginatedList currentList: PaginatedList<Film>?, with parameters: FilmSearchParameters, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
+        let films: Observable<PaginatedList<Film>> = executeAsObservable(Endpoint.searchFilms(parameters: parameters))
+        return films.flatMap { (list) -> Observable<PaginatedList<Film>> in
+            do {
+                let newList = try { () throws -> (PaginatedList<Film>) in
+                    guard let currentList = currentList else { return list }
+                    return try currentList.appending(list)
+                    }()
+                let newParameters: FilmSearchParameters? = {
+                    guard let nextPage = newList.nextPage else { return nil }
+                    var newParameters = parameters
+                    newParameters.page = nextPage
+                    return newParameters
+                }()
+                if let newParameters = newParameters {
+                    return Observable.concat([
+                        Observable.just(newList),
+                        Observable.never().takeUntil(trigger),
+                        self.films(currentPaginatedList: newList, with: newParameters, loadNextPageTrigger: trigger)
+                        ])
+                } else { return Observable.just(newList) }
+            } catch { return Observable.error(error) }
         }
-    }
-    
-    fileprivate func films(with parameters: FilmSearchParameters) -> Observable<PaginatedList<Film>> {
-        guard !parameters.query.isEmpty else { return Observable.just(PaginatedList.Empty()) }
-        return executeAsObservable(Endpoint.searchFilms(parameters: parameters))
     }
     
     // MARK: - Popular films
     
-    public func popularFilms(startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<[Film]> {
-        return TMDbAPI.instance.popularFilms(fromList: [], atPage: page, loadNextPageTrigger: trigger)
+    public func popularFilms(startingAtPage page: Int = 0, loadNextPageTrigger trigger: Observable<Void> = Observable.empty()) -> Observable<PaginatedList<Film>> {
+        return popularFilms(currentPaginatedList: nil, atPage: page, loadNextPageTrigger: trigger)
     }
     
-    fileprivate func popularFilms(fromList currentList: [Film], atPage page: Int, loadNextPageTrigger trigger: Observable<Void>) -> Observable<[Film]> {
-        return self.popularFilms(atPage: page).flatMap { (paginatedList) -> Observable<[Film]> in
-            let newList = currentList + paginatedList.results
-            if let nextPage = paginatedList.nextPage {
-                return Observable.concat([
-                    Observable.just(newList),
-                    Observable.never().takeUntil(trigger),
-                    self.popularFilms(fromList: newList, atPage: nextPage, loadNextPageTrigger: trigger)
-                ])
-            } else { return Observable.just(newList) }
+    fileprivate func popularFilms(currentPaginatedList currentList: PaginatedList<Film>?, atPage page: Int, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
+        let popularFilms: Observable<PaginatedList<Film>> = executeAsObservable(Endpoint.popularFilms(page: page))
+        return popularFilms.flatMap { (list) -> Observable<PaginatedList<Film>> in
+            do {
+                let newList = try { () throws -> (PaginatedList<Film>) in
+                    guard let currentList = currentList else { return list }
+                    return try currentList.appending(list)
+                }()
+                if let nextPage = newList.nextPage {
+                    return Observable.concat([
+                        Observable.just(newList),
+                        Observable.never().takeUntil(trigger),
+                        self.popularFilms(currentPaginatedList: newList, atPage: nextPage, loadNextPageTrigger: trigger)
+                        ])
+                } else { return Observable.just(newList) }
+            } catch { return Observable.error(error) }
         }
-    }
-    
-    fileprivate func popularFilms(atPage page: Int = 0) -> Observable<PaginatedList<Film>> {
-        return executeAsObservable(Endpoint.popularFilms(page: page))
     }
     
     // MARK: - Film detail

@@ -76,6 +76,7 @@ enum Endpoint: RequestProtocol {
         var urlParameters = [URLParameter]()
         if let page = page { urlParameters.append(key: "page", value: "\(page + 1)") }
         switch self {
+        case .searchFilms(let parameters): urlParameters.append(key: "query", value: parameters.query)
         case .filmDetail: urlParameters.append(key: "append_to_response", value: "videos")
         case .person: urlParameters.append(key: "append_to_response", value: "images")
         default: break

@@ -126,7 +126,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             .filmsCredits
             .map({ $0.value?.crew.withoutDuplicates ?? [] })
             .asObservable()
-            .bind(to: crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: crewCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.defaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.disposed(by: self.disposeBag)
@@ -135,7 +135,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             .filmsCredits
             .map({ $0.value?.cast.withoutDuplicates ?? [] })
             .asObservable()
-            .bind(to: castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.DefaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
+            .bind(to: castCollectionView.rx.items(cellIdentifier: FilmCollectionViewCell.defaultReuseIdentifier, cellType: FilmCollectionViewCell.self)) {
                 (row, film, cell) in
                 cell.populate(withPosterPath: film.posterPath, andTitle: film.fullTitle)
             }.disposed(by: self.disposeBag)
