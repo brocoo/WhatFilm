@@ -30,7 +30,6 @@ final class FilmsCollectionViewManager: NSObject {
     
     private var dataSource: PaginatedList<Film>
     private var itemSize: CGSize = .zero
-    private var hasMorePages: Bool = false
     
     // MARK: - Reactive properties
     
@@ -53,12 +52,11 @@ final class FilmsCollectionViewManager: NSObject {
     // MARK: - Setup
     
     private func setupBinding(with films: Driver<Task<PaginatedList<Film>>>, sizeObserver: Observable<CGSize>) {
+        
         films
             .map { $0.result?.value ?? PaginatedList.empty }
             .drive(onNext: { [weak self] (list) in
-                self?.dataSource = list
-                self?.hasMorePages = list.hasMorePages
-                self?.collectionView?.reloadData()
+                self?.updateDataSource(with: list)
             }).disposed(by: disposeBag)
         
         sizeObserver
@@ -76,6 +74,23 @@ final class FilmsCollectionViewManager: NSObject {
         collectionView.dataSource = self
         collectionView.registerReusableCell(FilmCollectionViewCell.self)
         collectionView.registerSupplementaryView(LoaderCollectionReusableView.self, ofKind: UICollectionElementKindSectionFooter)
+    }
+    
+    // MARK: -
+    
+    private func updateDataSource(with paginatedList: PaginatedList<Film>) {
+        dataSource = paginatedList
+        guard let collectionView = collectionView else { return }
+        switch paginatedList.lastContentUpdate {
+        case .created:
+            collectionView.reloadData()
+        case .newPageAdded(let pageIndex):
+            let indexPaths = paginatedList.indexes(forPage: pageIndex).map { IndexPath(row: $0, section: 0) }
+            collectionView.performBatchUpdates({
+                collectionView.insertItems(at: indexPaths)
+            }, completion: nil)
+        }
+
     }
 }
 
@@ -116,6 +131,10 @@ extension FilmsCollectionViewManager: UICollectionViewDelegate {
         collectionView.deselectItem(at: indexPath, animated: true)
         itemSelectedStream.onNext((dataSource[indexPath.row], indexPath))
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        view.isHidden = !dataSource.hasMoreContent
+    }
 }
 
 // MARK: -
@@ -137,8 +156,11 @@ extension FilmsCollectionViewManager: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        guard dataSource.hasMorePages else { return .zero }
-        return CGSize(width: collectionView.bounds.width, height: LoaderCollectionReusableView.height)
+        let height: CGFloat = {
+            guard dataSource.hasMoreContent else { return 0.5 }
+            return LoaderCollectionReusableView.height
+        }()
+        return CGSize(width: collectionView.bounds.width, height: height)
     }
 }
 

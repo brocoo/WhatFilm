@@ -160,7 +160,6 @@ extension ObservableType {
                 case .error(let error): return Result<Self.E>.failure(error)
                 case .completed: return nil
                 }
-            }.filter { $0 != nil }
-            .map { $0! }
+            }.flatMap { Observable.from(optional: $0) }
     }
 }

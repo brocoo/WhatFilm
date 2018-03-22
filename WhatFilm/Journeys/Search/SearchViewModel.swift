@@ -24,7 +24,7 @@ public final class SearchViewModel {
     // MARK: - Reactive drivers (output)
 
     lazy private(set) var filmsTask = makeFilmsTask()
-    lazy private(set) var films = filmsTask.map { $0.result?.value ?? PaginatedList.empty }
+    lazy private(set) var films = filmsTask.map { $0.result?.value ?? PagedList.empty }
     
     // MARK: - Initializer
     
@@ -32,7 +32,7 @@ public final class SearchViewModel {
     
     // MARK: - Reactive Setup
     
-    fileprivate func makeFilmsTask() -> Driver<Task<PaginatedList<Film>>> {
+    fileprivate func makeFilmsTask() -> Driver<Task<PagedList<Film>>> {
         
         let trigger = nextPageTrigger.asObservable().debounce(0.2, scheduler: MainScheduler.instance)
         
@@ -40,7 +40,7 @@ public final class SearchViewModel {
             .asObservable()
             .distinctUntilChanged()
             .debounce(0.3, scheduler: MainScheduler.instance)
-            .flatMapLatest { (query) -> Observable<Task<PaginatedList<Film>>> in
+            .flatMapLatest { (query) -> Observable<Task<PagedList<Film>>> in
                 
                 Analytics.track(searchQuery: query)
                 return Observable.concat([

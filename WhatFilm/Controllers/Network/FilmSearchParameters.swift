@@ -29,6 +29,14 @@ public struct FilmSearchParameters {
         self.year = year
         self.primaryReleaseYear = primaryReleaseYear
     }
+    
+    // MARK: - Helper functions
+    
+    func forPage(_ page: Int) -> FilmSearchParameters {
+        var newParameters = self
+        newParameters.page = page
+        return newParameters
+    }
 }
 
 // MARK: -
