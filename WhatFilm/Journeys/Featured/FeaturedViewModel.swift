@@ -31,7 +31,7 @@ final class FeaturedViewModel {
     
     // MARK: - Reactive Setup
     
-    fileprivate func makeFilmsDriver() -> Driver<Task<PagedList<Film>>> {
+    fileprivate func makeFilmsDriver() -> Driver<Task<PaginatedList<Film>>> {
         
         let nextPage = nextPageTrigger.debounce(0.2, scheduler: MainScheduler.instance)
         

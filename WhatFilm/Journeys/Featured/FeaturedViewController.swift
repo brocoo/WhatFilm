@@ -116,7 +116,7 @@ final class FeaturedViewController: UIViewController, ReactiveDisposable {
         }
     }
     
-    fileprivate func setupUI(`for` task: Task<PagedList<Film>>) {
+    fileprivate func setupUI(`for` task: Task<PaginatedList<Film>>) {
         refreshControl.endRefreshing()
     }
     
