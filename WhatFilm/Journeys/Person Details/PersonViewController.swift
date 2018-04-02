@@ -10,13 +10,15 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public final class PersonViewController: UIViewController, ReactiveDisposable {
+final class PersonViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - Properties
     
     let disposeBag: DisposeBag = DisposeBag()
-    var viewModel: PersonViewModel?
-    var backgroundImagePath: Driver<ImagePath>!
+    private let backgroundImagePath: Driver<ImagePath>
+    private let viewModel: PersonViewModel
+    private let router: Router
+    fileprivate(set) var selectedCell: FilmCollectionViewCell?
     
     // MARK: - IBOutlet properties
     
@@ -39,13 +41,26 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     @IBOutlet weak var castCollectionView: UICollectionView!
     @IBOutlet weak var personBiographyLabel: UILabel!
     
+    // MARK: - Initializer
+    
+    init(viewModel: PersonViewModel, backgroundImagePath: Driver<ImagePath>, router: Router) {
+        self.viewModel = viewModel
+        self.backgroundImagePath = backgroundImagePath
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        return nil
+    }
+    
     // MARK: - UIViewController life cycle
 
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupCollectionView()
-        if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
+        setupBindings()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -69,13 +84,20 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         personInitialsLabel.apply(style: .bodySmall)
         personInitialsLabel.text = nil
         personNameLabel.apply(style: .filmDetailTitle)
-        personNameLabel.text = nil
+        personNameLabel.text = viewModel.person.name
         personAgeLabel.apply(style: .filmRating)
         personAgeLabel.text = nil
         crewLabel.apply(style: .filmDetailTitle)
         castLabel.apply(style: .filmDetailTitle)
         personBiographyLabel.apply(style: .bodyDemiBold)
         personBiographyLabel.text = nil
+        if let profilePath = viewModel.person.profilePath {
+            personInitialsLabel.text = nil
+            profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
+        } else {
+            personInitialsLabel.text = viewModel.person.initials
+            profileImageView.image = nil
+        }
     }
     
     fileprivate func setupCollectionView() {
@@ -89,7 +111,7 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - Reactive setup
     
-    fileprivate func setupBindings(forViewModel viewModel: PersonViewModel) {
+    fileprivate func setupBindings() {
         
         viewModel
             .personDetail
@@ -159,17 +181,6 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
         personBiographyLabel.text = person.biography
     }
     
-    public func prePopulate(forPerson person: Person) {
-        if let profilePath = person.profilePath {
-            self.personInitialsLabel.text = nil
-            self.profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
-        } else {
-            self.personInitialsLabel.text = person.initials
-            self.profileImageView.image = nil
-        }
-        self.personNameLabel.text = person.name
-    }
-    
     fileprivate func age(forPerson person: PersonDetail) -> String? {
         guard let birthDate = person.birthDate else { return nil }
         guard let birthDateString = (birthDate as NSDate).formattedDate(with: .medium) else { return nil }
@@ -180,30 +191,6 @@ public final class PersonViewController: UIViewController, ReactiveDisposable {
             return birthDateString + " (\(age))"
         }
     }
-    
-    // MARK: - Navigation handling
-    
-    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
-            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
-            let sender = sender as? CollectionViewSelection,
-            let cell = sender.collectionView.cellForItem(at: sender.indexPath) as? FilmCollectionViewCell {
-            do {
-                let film: Film = try sender.collectionView.rx.model(at: sender.indexPath)
-                self.preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
-                Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
-            } catch { fatalError(error.localizedDescription) }
-        }
-    }
-}
-
-// MARK: -
-
-extension PersonViewController: SegueReachable {
-    
-    // MARK: - SegueReachable
-    
-    static var segueIdentifier: String { return PushPersonSegue.identifier }
 }
 
 // MARK: -
@@ -213,8 +200,9 @@ extension PersonViewController: UITableViewDelegate {
     // MARK: - UITableViewDelegate functions
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let sender = CollectionViewSelection(collectionView: collectionView, indexPath: indexPath)
-        self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: sender)
+        guard let film: Film = try? collectionView.rx.model(at: indexPath) else { return }
+        selectedCell = collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell
+        router.showFilmDetails(for: film, from: self)
     }
 }
 
@@ -238,4 +226,9 @@ extension PersonViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension PersonViewController: FilmDetailsFromCellTransitionable {}
+// MARK: -
+
+extension PersonViewController: FilmDetailsTransitionable {
+    
+    // MARK: - FilmDetailsTransitionable
+}

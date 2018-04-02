@@ -9,9 +9,9 @@
 import UIKit
 import MessageUI
 
-public final class AboutViewController: UIViewController {
+final class AboutViewController: UIViewController {
 
-    // MARK: - Properties
+    // MARK: - IBOutlet Properties
     
     @IBOutlet weak var shareButton: UIButton!
     @IBOutlet weak var mailButton: UIButton!
@@ -20,14 +20,31 @@ public final class AboutViewController: UIViewController {
     @IBOutlet weak var creditLabel: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
+    // MARK: - Properties
+    
+    private let router: Router
+    private var buttons: [UIButton] { return [shareButton, mailButton, githubButton, linkedInButton] }
+    
+    // MARK: - Initializer
+    
+    init(router: Router) {
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
+        tabBarItem = router.tabBarItem(for: .about)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        return nil
+    }
+    
     // MARK: - UIViewController life cycle
     
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Analytics.track(viewContent: "About", ofType: "View")
     }
@@ -35,23 +52,22 @@ public final class AboutViewController: UIViewController {
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
-        self.title = "About"
-        self.creditLabel.text = "App icon by Shmidt Sergey from the Noun Project."
-        self.creditLabel.apply(style: TextStyle.bodyTiny)
+        title = "About"
+        buttons.forEach { $0.tintColor = UIColor(commonColor: .yellow) }
+        creditLabel.text = "App icon by Shmidt Sergey from the Noun Project."
+        creditLabel.apply(style: TextStyle.bodyTiny)
         let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        self.versionLabel.apply(style: TextStyle.bodyDemiBold)
-        self.versionLabel.text = "WhatMovie v\(versionNumber) build \(buildNumber)"
+        versionLabel.apply(style: TextStyle.bodyDemiBold)
+        versionLabel.text = "WhatMovie v\(versionNumber) build \(buildNumber)"
     }
     
     // MARK: - IBAction functions
     
     @IBAction func shareButtonTapped(sender: UIButton) {
-        
         let shareText: String = "Check out WhatMovie!"
         let url: URL = URL(string: "https://itunes.apple.com/us/app/spores/id718495353?mt=8")!
         let items: [Any] = [shareText, url]
-        
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
     }

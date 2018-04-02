@@ -50,5 +50,6 @@ public struct Settings {
         UINavigationBar.appearance().backgroundColor = UIColor.clear
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().isTranslucent = true
+        UINavigationBar.appearance().tintColor = UIColor(commonColor: .yellow)
     }
 }

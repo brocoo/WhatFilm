@@ -10,24 +10,41 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class FeaturedViewController: UIViewController, ReactiveDisposable {
+final class FeaturedViewController: UIViewController {
     
     // MARK: - IBOutlet Properties
     
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var placeholderView: UIView!
-    fileprivate lazy var refreshControl: UIRefreshControl = UIRefreshControl()
     
     // MARK: - Properties
     
+    fileprivate let router: Router
+    fileprivate let viewModel: FeaturedViewModel
+    fileprivate(set) var selectedCell: FilmCollectionViewCell?
+    
+    // MARK: - Reactive properties
+    
     fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
     fileprivate let sizeObserver: PublishSubject<CGSize> = PublishSubject()
-    fileprivate let viewModel: FeaturedViewModel = FeaturedViewModel()
-    let disposeBag: DisposeBag = DisposeBag()
+    fileprivate let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Lazy properties
     
-    lazy private var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
+    private lazy var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
+    fileprivate lazy var refreshControl: UIRefreshControl = UIRefreshControl()
+    
+    // MARK: - Initializer
+    
+    init(viewModel: FeaturedViewModel, router: Router) {
+        self.viewModel = viewModel
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
+        tabBarItem = router.tabBarItem(for: .featured)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        return nil
+    }
     
     // MARK: - UIViewController life cycle
     
@@ -35,7 +52,6 @@ final class FeaturedViewController: UIViewController, ReactiveDisposable {
         super.viewDidLoad()
         setupUI()
         setupBindings()
-        viewModel.reloadTrigger.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,8 +72,11 @@ final class FeaturedViewController: UIViewController, ReactiveDisposable {
         
         filmsCollectionViewManager
             .itemSelected
-            .drive(onNext: { [unowned self] (film, indexPath) in
-                self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: (film, indexPath))
+            .drive(onNext: { [unowned self] (film, cell) in
+                
+                self.selectedCell = cell
+                self.router.showFilmDetails(for: film, from: self)
+                
             }).disposed(by: disposeBag)
         
         refreshControl.rx
@@ -95,11 +114,14 @@ final class FeaturedViewController: UIViewController, ReactiveDisposable {
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
+        
+        viewModel.reloadTrigger.onNext(())
     }
     
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
+        title = "Featured"
         collectionView.addSubview(refreshControl)
     }
     
@@ -119,18 +141,11 @@ final class FeaturedViewController: UIViewController, ReactiveDisposable {
     fileprivate func setupUI(`for` task: Task<PaginatedList<Film>>) {
         refreshControl.endRefreshing()
     }
-    
-    // MARK: - Navigation handling
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
-            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
-            let tuple = sender as? (Film, IndexPath),
-            let cell = collectionView.cellForItem(at: tuple.1) as? FilmCollectionViewCell else { return }
-        let film = tuple.0
-        preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
-        Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
-    }
 }
 
-extension FeaturedViewController: FilmDetailsFromCellTransitionable { }
+// MARK: -
+
+extension FeaturedViewController: FilmDetailsTransitionable {
+    
+    // MARK: - FilmDetailsTransitionable
+}

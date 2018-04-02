@@ -13,22 +13,11 @@ import SDWebImage
 
 // MARK: -
 
-public final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
-
-    // MARK: - Properties
-    
-    var viewModel: FilmDetailsViewModel!
-    
-    // MARK: - Reactive properties
-    
-    private lazy var backgroundImagePath: Driver<ImagePath> = makeBackgroundImagePath()
-    let disposeBag: DisposeBag = DisposeBag()
+final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - IBOutlet properties
     
     @IBOutlet weak var blurredImageView: UIImageView!
-    @IBOutlet weak var fakeNavigationBar: UIView!
-    @IBOutlet weak var fakeNavigationBarHeight: NSLayoutConstraint!
     @IBOutlet weak var backdropImageView: UIImageView!
     @IBOutlet weak var backdropImageViewHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -54,13 +43,35 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     @IBOutlet weak var videosLabel: UILabel!
     @IBOutlet weak var videosCollectionView: UICollectionView!
     
+    // MARK: - Properties
+    
+    fileprivate let router: Router
+    fileprivate let viewModel: FilmDetailsViewModel
+    
+    // MARK: - Reactive properties
+    
+    private lazy var backgroundImagePath: Driver<ImagePath> = makeBackgroundImagePath()
+    let disposeBag: DisposeBag = DisposeBag()
+    
+    // MARK: - Initializer
+    
+    init(viewModel: FilmDetailsViewModel, router: Router) {
+        self.viewModel = viewModel
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        return nil
+    }
+    
     // MARK: - UIViewController life cycle
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.setupUI()
-        self.setupCollectionViews()
-        if let viewModel = self.viewModel { self.setupBindings(forViewModel: viewModel) }
+        setupUI()
+        setupCollectionViews()
+        setupBindings()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -70,9 +81,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
-        
-        // Adjust scrollview insets based on film title
         let height: CGFloat = self.view.bounds.width / ImageSize.backdropRatio
         self.scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: 0, right: 0)
         self.scrollView.scrollIndicatorInsets = UIEdgeInsets(top: height, left: 0, bottom: 0, right: 0)
@@ -81,8 +89,8 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
-        self.fakeNavigationBar.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
         self.filmTitleLabel.apply(style: .filmDetailTitle)
+        self.filmTitleLabel.text = viewModel.film.fullTitle.uppercased()
         self.filmSubDetailsView.alpha = 0.0
         self.filmSubDetailsView.backgroundColor = UIColor(commonColor: .offBlack).withAlphaComponent(0.2)
         self.filmRuntimeImageView.image = #imageLiteral(resourceName: "Time_Icon").withRenderingMode(.alwaysTemplate)
@@ -92,10 +100,14 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         self.filmRatingImageView.tintColor = UIColor(commonColor: .yellow)
         self.filmRatingLabel.apply(style: .filmRating)
         self.filmOverviewLabel.apply(style: .body)
+        self.filmOverviewLabel.text = viewModel.film.overview
         self.creditsView.alpha = 0.0
         self.crewLabel.apply(style: .filmDetailTitle)
         self.castLabel.apply(style: .filmDetailTitle)
         self.videosLabel.apply(style: .filmDetailTitle)
+        if let posterPath = viewModel.film.posterPath {
+            self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animatedOnce: true)
+        }
     }
     
     fileprivate func setupCollectionViews() {
@@ -161,15 +173,9 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         self.videosView.alpha = 0.0
     }
     
-    public func prePopulate(forFilm film: Film) {
-        if let posterPath = film.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animatedOnce: true) }
-        self.filmTitleLabel.text = film.fullTitle.uppercased()
-        self.filmOverviewLabel.text = film.overview
-    }
-    
     // MARK: - Reactive setup
     
-    fileprivate func setupBindings(forViewModel viewModel: FilmDetailsViewModel) {
+    fileprivate func setupBindings() {
         
         viewModel
             .filmDetail
@@ -274,33 +280,6 @@ public final class FilmDetailsViewController: UIViewController, ReactiveDisposab
         guard let url = video.youtubeURL else { return }
         UIApplication.shared.openURL(url)
     }
-    
-    // MARK: - Navigation handling
-    
-    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let personViewController = segue.destination as? PersonViewController,
-            let sender = sender as? CollectionViewSelection {
-            do {
-                let person: Person = try sender.collectionView.rx.model(at: sender.indexPath)
-                let personViewModel = PersonViewModel(withPersonId: person.id)
-                personViewController.viewModel = personViewModel
-                personViewController.backgroundImagePath = self.backgroundImagePath
-                personViewController.rx.viewDidLoad.subscribe(onNext: { _ in
-                    personViewController.prePopulate(forPerson: person)
-                }).disposed(by: self.disposeBag)
-                Analytics.track(viewContent: "Selected person", ofType: "Person", withId: "\(person.id)", withAttributes: ["Person": person.name])
-            } catch { fatalError(error.localizedDescription) }
-        }
-    }
-}
-
-// MARK: -
-
-extension FilmDetailsViewController: SegueReachable {
-    
-    // MARK: - SegueReachable
-    
-    static var segueIdentifier: String { return PushFilmDetailsSegue.identifier }
 }
 
 // MARK: - 
@@ -310,9 +289,8 @@ extension FilmDetailsViewController: UICollectionViewDelegate {
     // MARK: - UITableViewDelegate functions
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard collectionView == self.castCollectionView || collectionView == self.crewCollectionView else { return }
-        let sender = CollectionViewSelection(collectionView: collectionView, indexPath: indexPath)
-        self.performSegue(withIdentifier: PersonViewController.segueIdentifier, sender: sender)
+        guard let person: Person = try? collectionView.rx.model(at: indexPath) else { return }
+        router.showPerson(person, backgroundImagePath: backgroundImagePath, from: self)
     }
 }
 
@@ -339,5 +317,3 @@ extension FilmDetailsViewController: UICollectionViewDelegateFlowLayout {
         return 15.0
     }
 }
-
-extension FilmDetailsViewController: PersonFromCellTransitionable { }

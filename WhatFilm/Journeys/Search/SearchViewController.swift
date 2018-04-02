@@ -26,12 +26,27 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     
     fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
     fileprivate let sizeObserver: PublishSubject<CGSize> = PublishSubject()
-    fileprivate let viewModel: SearchViewModel = SearchViewModel()
+    fileprivate let viewModel: SearchViewModel
+    fileprivate let router: Router
+    fileprivate(set) var selectedCell: FilmCollectionViewCell?
     let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Lazy properties
     
     lazy private var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
+    
+    // MARK: - Initializer
+    
+    init(viewModel: SearchViewModel, router: Router) {
+        self.viewModel = viewModel
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
+        tabBarItem = router.tabBarItem(for: .search)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        return nil
+    }
     
     // MARK: - UIViewController life cycle
     
@@ -59,8 +74,9 @@ class SearchViewController: UIViewController, ReactiveDisposable {
         
         filmsCollectionViewManager
             .itemSelected
-            .drive(onNext: { [unowned self] (film, indexPath) in
-                self.performSegue(withIdentifier: FilmDetailsViewController.segueIdentifier, sender: (film, indexPath))
+            .drive(onNext: { [unowned self] (film, cell) in
+                self.selectedCell = cell
+                self.router.showFilmDetails(for: film, from: self)
             }).disposed(by: disposeBag)
         
         searchBar
@@ -126,6 +142,7 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     
     fileprivate func setupUI() {
         
+        title = "Search"
         searchBar.returnKeyType = .done
         searchBar.delegate = self
         // http://stackoverflow.com/questions/14272015/enable-search-button-when-searching-string-is-empty-in-default-search-bar
@@ -158,18 +175,6 @@ class SearchViewController: UIViewController, ReactiveDisposable {
             view.layoutIfNeeded()
         }
     }
-    
-    // MARK: - Navigation handling
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let filmDetailsViewController = segue.destination as? FilmDetailsViewController,
-            let PushFilmDetailsSegue = segue as? PushFilmDetailsSegue,
-            let tuple = sender as? (Film, IndexPath),
-            let cell = collectionView.cellForItem(at: tuple.1) as? FilmCollectionViewCell else { return }
-        let film = tuple.0
-        preparePushTransition(to: filmDetailsViewController, with: film, fromCell: cell, via: PushFilmDetailsSegue)
-        Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
-    }
 }
 
 // MARK: -
@@ -185,4 +190,7 @@ extension SearchViewController: UISearchBarDelegate {
 
 // MARK: -
 
-extension SearchViewController: FilmDetailsFromCellTransitionable { }
+extension SearchViewController: FilmDetailsTransitionable {
+    
+    // MARK: - FilmDetailsTransitionable
+}

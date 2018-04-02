@@ -33,9 +33,9 @@ final class FilmsCollectionViewManager: NSObject {
     
     // MARK: - Reactive properties
     
-    private let itemSelectedStream: PublishSubject<(Film, IndexPath)>
-    lazy private(set) var itemSelected: Driver<(Film, IndexPath)> = {
-        return itemSelectedStream.asDriver(onErrorDriveWith: Driver<(Film, IndexPath)>.from(optional: nil))
+    private let itemSelectedStream: PublishSubject<(Film, FilmCollectionViewCell)>
+    lazy private(set) var itemSelected: Driver<(Film, FilmCollectionViewCell)> = {
+        return itemSelectedStream.asDriver(onErrorDriveWith: Driver<(Film, FilmCollectionViewCell)>.from(optional: nil))
     }()
     private let disposeBag: DisposeBag
     
@@ -129,7 +129,8 @@ extension FilmsCollectionViewManager: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        itemSelectedStream.onNext((dataSource[indexPath.row], indexPath))
+        guard let cell = collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell else { return }
+        itemSelectedStream.onNext((dataSource[indexPath.row], cell))
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {

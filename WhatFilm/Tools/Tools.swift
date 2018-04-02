@@ -45,33 +45,6 @@ protocol ReactiveDisposable {
     var disposeBag: DisposeBag { get }
 }
 
-// MARK: - Reactive extensions
-
-extension Reactive where Base: UIViewController {
-    
-    // MARK: - UIViewController reactive extension
-    
-    public var viewDidLoad: Observable<Void> {
-        return self.sentMessage(#selector(UIViewController.viewDidLoad)).map({ _ in return () })
-    }
-    
-    public var viewWillAppear: Observable<Bool> {
-        return self.sentMessage(#selector(UIViewController.viewWillAppear(_:))).map({ $0.first as! Bool })
-    }
-    
-    public var viewDidAppear: Observable<Bool> {
-        return self.sentMessage(#selector(UIViewController.viewDidAppear(_:))).map({ $0.first as! Bool })
-    }
-    
-    public var viewWillDisappear: Observable<Bool> {
-        return self.sentMessage(#selector(UIViewController.viewWillDisappear(_:))).map({ $0.first as! Bool })
-    }
-    
-    public var viewDidDisappear: Observable<Bool> {
-        return self.sentMessage(#selector(UIViewController.viewDidDisappear(_:))).map({ $0.first as! Bool })
-    }
-}
-
 // MARK: - UIImageView extension 
 
 extension UIImageView {
