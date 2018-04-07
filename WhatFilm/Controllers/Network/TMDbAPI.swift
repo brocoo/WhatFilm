@@ -11,16 +11,11 @@ import RxSwift
 
 public final class TMDbAPI {
     
-    // MARK: - singleton
-    
-    static let instance: TMDbAPI = TMDbAPI()
-    
     // MARK: - Properties
     
     fileprivate let disposeBag: DisposeBag = DisposeBag()
-    fileprivate(set) var imageManager: ImageManager? = nil
     
-    lazy private var service: Service = setupService()
+    private var service: Service?
     
     lazy private var apiKey: String = {
         guard let filePath: String = Bundle.main.path(forResource: "Services", ofType: "plist") else { fatalError("Couldn't find Services.plist") }
@@ -29,13 +24,13 @@ public final class TMDbAPI {
         return apiKey
     }()
     
-    // MARK: - Initializer (private)
+    // MARK: - Initializer
     
-    fileprivate init() {}
+    init() { }
     
     // MARK: - Service
     
-    private func setupService() -> Service {
+    private func setupService(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Service {
         let urlSession = URLSession.shared
         let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
         let configuration = ServiceConfiguration(urlScheme: "https", urlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
@@ -44,7 +39,8 @@ public final class TMDbAPI {
 
     // MARK: - 
     
-    public func start() {
+    public func start(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
+        service = setupService(with: launchOptions)
         
         // Start updating the API configuration (Every four days)
         // FIXME: - Improve this by performing background fetch
@@ -56,7 +52,7 @@ public final class TMDbAPI {
             }.map { (apiConfiguration) -> ImageManager in
                 return ImageManager(apiConfiguration: apiConfiguration)
             }.subscribe(onNext: { (imageManager) in
-                self.imageManager = imageManager
+                UIImageView.imageManager = imageManager
             }).disposed(by: self.disposeBag)
     }
     
@@ -75,7 +71,8 @@ public final class TMDbAPI {
                 }
             }
             do {
-                try self.service.perform(request: request, onCompletion: completion)
+                guard let service = self.service else { throw ServiceError.serviceNotInitialized }
+                try service.perform(request: request, onCompletion: completion)
             } catch {
                 observer.onError(error)
             }

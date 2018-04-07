@@ -15,6 +15,7 @@ public final class FilmDetailsViewModel {
     // MARK: - Properties
     
     let film: Film
+    private let tmdbAPI: TMDbAPI
     
     // MARK: - Reactive drivers (output)
 
@@ -23,8 +24,9 @@ public final class FilmDetailsViewModel {
     
     // MARK: - Initializer
     
-    init(withFilm film: Film) {
+    init(withFilm film: Film, tmdbAPI: TMDbAPI) {
         self.film = film
+        self.tmdbAPI = tmdbAPI
     }
     
     // MARK: -
@@ -32,7 +34,7 @@ public final class FilmDetailsViewModel {
     fileprivate func makeFilmDetails() -> Driver<Result<FilmDetail>> {
         return Observable
             .just(())
-            .flatMapLatest { TMDbAPI.instance.filmDetail(fromId: self.film.id) }
+            .flatMapLatest { self.tmdbAPI.filmDetail(fromId: self.film.id) }
             .asResult()
             .asDriver(onErrorJustReturn: Result(GeneralError.default))
     }
@@ -40,7 +42,7 @@ public final class FilmDetailsViewModel {
     fileprivate func makeCredits() -> Driver<Result<FilmCredits>> {
         return Observable
             .just(())
-            .flatMapLatest { TMDbAPI.instance.credits(forFilmId: self.film.id) }
+            .flatMapLatest { self.tmdbAPI.credits(forFilmId: self.film.id) }
             .asResult()
             .asDriver(onErrorJustReturn: Result(GeneralError.default))
     }

@@ -15,7 +15,7 @@ class AppDelegate: UIResponder {
     // MARK: - Properties
 
     var window: UIWindow?
-    fileprivate lazy var router = Router()
+    fileprivate lazy var router = Router(tmdbAPI: TMDbAPI())
 }
 
 // MARK: -
@@ -27,7 +27,7 @@ extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Settings.initializeServices()
         Settings.setupAppearance()
-        router.setup(for: self)
+        router.setup(for: self, with: launchOptions)
         window?.makeKeyAndVisible()
         return true
     }

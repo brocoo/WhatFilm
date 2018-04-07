@@ -22,22 +22,30 @@ final class Router: NSObject {
     
     // MARK: - Properties
     
+    private let tmdbAPI: TMDbAPI
     lazy fileprivate var tabBarController = self.setupTabBarController()
+    
+    // MARK: - Initializer
+    
+    init(tmdbAPI: TMDbAPI) {
+        self.tmdbAPI = tmdbAPI
+    }
     
     // MARK: - Setup navigation
     
     private func setupTabBarController() -> UITabBarController {
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [
-            FeaturedViewController(viewModel: FeaturedViewModel(), router: self),
-            SearchViewController(viewModel: SearchViewModel(), router: self),
+            FeaturedViewController(viewModel: FeaturedViewModel(tmdbAPI: tmdbAPI), router: self),
+            SearchViewController(viewModel: SearchViewModel(tmdbAPI: tmdbAPI), router: self),
             AboutViewController(router: self)
         ].map { UINavigationController(rootViewController: $0) }
         tabBarController.tabBar.tintColor = UIColor(commonColor: .yellow)
         return tabBarController
     }
     
-    func setup(`for` delegate: AppDelegate) {
+    func setup(`for` delegate: AppDelegate, with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
+        tmdbAPI.start(with: launchOptions)
         delegate.window = {
             let window = UIWindow(frame: UIScreen.main.bounds)
             window.backgroundColor = .white
@@ -59,7 +67,8 @@ final class Router: NSObject {
     func showFilmDetails(`for` film: Film, from viewController: UIViewController) {
         Analytics.track(viewContent: "Selected film", ofType: "Film", withId: "\(film.id)", withAttributes: ["Title": film.fullTitle])
         
-        let filmDetailsViewController = FilmDetailsViewController(viewModel: FilmDetailsViewModel(withFilm: film), router: self)
+        let viewModel = FilmDetailsViewModel(withFilm: film, tmdbAPI: tmdbAPI)
+        let filmDetailsViewController = FilmDetailsViewController(viewModel: viewModel, router: self)
         
         viewController.navigationController?.delegate = self
         viewController.navigationController?.pushViewController(filmDetailsViewController, animated: true)
@@ -68,7 +77,8 @@ final class Router: NSObject {
     func showPerson(_ person: Person, backgroundImagePath path: Driver<ImagePath>, from viewController: UIViewController) {
         Analytics.track(viewContent: "Selected person", ofType: "Person", withId: "\(person.id)", withAttributes: ["Person": person.name])
         
-        let personViewController = PersonViewController(viewModel: PersonViewModel(withPerson: person), backgroundImagePath: path, router: self)
+        let viewModel = PersonViewModel(withPerson: person, tmdbAPI: tmdbAPI)
+        let personViewController = PersonViewController(viewModel: viewModel, backgroundImagePath: path, router: self)
         
         viewController.navigationController?.delegate = self
         viewController.navigationController?.pushViewController(personViewController, animated: true)

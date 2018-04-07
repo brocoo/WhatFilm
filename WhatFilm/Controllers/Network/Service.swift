@@ -45,7 +45,7 @@ final class Service {
             if let data = data {
                 return Result(data)
             } else {
-                let serviceError = error ?? ServiceError.unknown(urlResponse: urlResponse)
+                let serviceError = error ?? ServiceError.unknown(request: request, response: urlResponse)
                 return Result(serviceError)
             }
         }()
@@ -73,9 +73,10 @@ final class Service {
 
 // MARK: - Service error
 
-public enum ServiceError: Error {
+enum ServiceError: Error {
     
-    case unknown(urlResponse: URLResponse?)
+    case serviceNotInitialized
+    case unknown(request: RequestProtocol, response: URLResponse?)
     case urlFailedBuilding(components: URLComponents)
 }
 

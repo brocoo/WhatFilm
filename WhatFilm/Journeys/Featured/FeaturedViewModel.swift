@@ -15,6 +15,7 @@ final class FeaturedViewModel {
     // MARK: - Properties
     
     let disposeBag = DisposeBag()
+    private let tmdbAPI: TMDbAPI
     
     // MARK: - Reactive triggers (input)
     
@@ -27,7 +28,9 @@ final class FeaturedViewModel {
     
     // MARK: - Initializer
     
-    init() { }
+    init(tmdbAPI: TMDbAPI) {
+        self.tmdbAPI = tmdbAPI
+    }
     
     // MARK: - Reactive Setup
     
@@ -37,7 +40,7 @@ final class FeaturedViewModel {
         
         let sequence = Observable.concat([
             Observable.just(Task.loading),
-            TMDbAPI.instance.popularFilms(startingAtPage: 0, loadNextPageTrigger: nextPage).asTask()
+            self.tmdbAPI.popularFilms(startingAtPage: 0, loadNextPageTrigger: nextPage).asTask()
             ])
         
         return reloadTrigger

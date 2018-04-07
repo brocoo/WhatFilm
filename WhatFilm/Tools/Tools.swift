@@ -9,14 +9,6 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import SDWebImage
-
-// MARK: -
-
-public struct CollectionViewSelection {
-    let collectionView: UICollectionView
-    let indexPath: IndexPath
-}
 
 // MARK: - URLParametersListSerializable protocol
 
@@ -45,30 +37,6 @@ protocol ReactiveDisposable {
     var disposeBag: DisposeBag { get }
 }
 
-// MARK: - UIImageView extension 
-
-extension UIImageView {
-    
-    func setImage(fromTMDbPath path: ImagePath, withSize size: ImageSize, animatedOnce: Bool = true, withPlaceholder placeholder: UIImage? = nil) {
-        guard let imageURL = TMDbAPI.instance.imageManager?.url(fromTMDbPath: path, withSize: size) else { return }
-        let hasImage: Bool = (self.image != nil)
-        self.sd_setImage(with: imageURL, placeholderImage: nil, options: .avoidAutoSetImage) { [weak self] (image, error, cacheType, url) in
-            if animatedOnce && !hasImage && cacheType == .none {
-                self?.alpha = 0.0
-                UIView.animate(withDuration: 0.5) { self?.alpha = 1.0 }
-            }
-            self?.image = image
-        }
-    }
-}
-
-// MARK: - SegueReachable protocol
-
-protocol SegueReachable: class {
-    
-    static var segueIdentifier: String { get }
-}
-
 // MARK: - TextStyle extension
 
 extension TextStyle {
@@ -86,13 +54,6 @@ extension UILabel {
         self.font = style.font
         self.textColor = style.color
     }
-}
-
-// MARK: - Custom errors
-
-public enum DataError: Error {
-    
-    case noData
 }
 
 // MARK: - Key window

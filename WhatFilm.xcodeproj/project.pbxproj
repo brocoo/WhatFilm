@@ -19,6 +19,7 @@
 		2042ACC72034C974007337BC /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2042ACC62034C974007337BC /* Task.swift */; };
 		2044CD7F2070DEC400F6CADB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2044CD7E2070DEC400F6CADB /* AboutViewController.xib */; };
 		2044D38B20284D3A00379C2B /* FilmSearchParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044D38A20284D3A00379C2B /* FilmSearchParameters.swift */; };
+		204997C42073F54700CD60B2 /* UIImageView+ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204997C32073F54700CD60B2 /* UIImageView+ImageManager.swift */; };
 		204CF72420725913001F5B94 /* PaginatedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CF72220725913001F5B94 /* PaginatedList.swift */; };
 		204CF72520725913001F5B94 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CF72320725913001F5B94 /* Page.swift */; };
 		2054E214206A48F200791D9A /* Reactive+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2054E213206A48F200791D9A /* Reactive+UIViewController.swift */; };
@@ -106,6 +107,7 @@
 		2042ACC62034C974007337BC /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		2044CD7E2070DEC400F6CADB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
 		2044D38A20284D3A00379C2B /* FilmSearchParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmSearchParameters.swift; sourceTree = "<group>"; };
+		204997C32073F54700CD60B2 /* UIImageView+ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+ImageManager.swift"; sourceTree = "<group>"; };
 		204CF72220725913001F5B94 /* PaginatedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginatedList.swift; sourceTree = "<group>"; };
 		204CF72320725913001F5B94 /* Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		2054E213206A48F200791D9A /* Reactive+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive+UIViewController.swift"; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 				202954682042C23B005D256A /* ReusableView.swift */,
 				2041D78B20610C7500448EEE /* Reactive+UIScrollView.swift */,
 				2054E213206A48F200791D9A /* Reactive+UIViewController.swift */,
+				204997C32073F54700CD60B2 /* UIImageView+ImageManager.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -798,6 +801,7 @@
 				204CF72420725913001F5B94 /* PaginatedList.swift in Sources */,
 				F99DD6AA1D80BD4F00179C5A /* AppDelegate.swift in Sources */,
 				F9230F581D95624E0091B353 /* FeaturedViewModel.swift in Sources */,
+				204997C42073F54700CD60B2 /* UIImageView+ImageManager.swift in Sources */,
 				F91AC7931D88585100E99849 /* SearchViewController.swift in Sources */,
 				F95A04EC1D9C41B9007AB2C1 /* FilmDetailsViewModel.swift in Sources */,
 				F99D46CF1D888F550014A7AF /* SearchViewModel.swift in Sources */,

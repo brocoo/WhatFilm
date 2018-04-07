@@ -20,11 +20,13 @@ final class PersonViewModel {
     // MARK: - Properties
     
     let person: Person
+    private let tmdbAPI: TMDbAPI
     
     // MARK: - Initializer
     
-    init(withPerson person: Person) {
+    init(withPerson person: Person, tmdbAPI: TMDbAPI) {
         self.person = person
+        self.tmdbAPI = tmdbAPI
     }
     
     // MARK: -
@@ -32,7 +34,7 @@ final class PersonViewModel {
     private func makePersonDetailDriver() -> Driver<Result<PersonDetail>> {
         return Observable
             .just(())
-            .flatMapLatest { TMDbAPI.instance.person(forId: self.person.id) }
+            .flatMapLatest { self.tmdbAPI.person(forId: self.person.id) }
             .asResult()
             .asDriver(onErrorJustReturn: Result(GeneralError.default))
     }
@@ -40,7 +42,7 @@ final class PersonViewModel {
     private func makePersonFilmsCredit() -> Driver<Result<PersonCreditedFilms>> {
         return Observable
             .just(())
-            .flatMapLatest { TMDbAPI.instance.filmsCredited(forPersonId: self.person.id) }
+            .flatMapLatest { self.tmdbAPI.filmsCredited(forPersonId: self.person.id) }
             .asResult()
             .asDriver(onErrorJustReturn: Result(GeneralError.default))
     }

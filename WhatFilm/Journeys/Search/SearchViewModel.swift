@@ -15,6 +15,7 @@ public final class SearchViewModel {
     // MARK: - Properties
     
     let disposaBag: DisposeBag = DisposeBag()
+    private let tmdbAPI: TMDbAPI
     
     // MARK: - Reactive triggers (input)
 
@@ -28,8 +29,10 @@ public final class SearchViewModel {
     
     // MARK: - Initializer
     
-    init() { }
-    
+    init(tmdbAPI: TMDbAPI) {
+        self.tmdbAPI = tmdbAPI
+    }
+
     // MARK: - Reactive Setup
     
     fileprivate func makeFilmsTask() -> Driver<Task<PaginatedList<Film>>> {
@@ -45,7 +48,7 @@ public final class SearchViewModel {
                 Analytics.track(searchQuery: query)
                 return Observable.concat([
                     Observable.just(Task.loading),
-                    TMDbAPI.instance.films(withTitle: query, loadNextPageTrigger: trigger).asTask()
+                    self.tmdbAPI.films(withTitle: query, loadNextPageTrigger: trigger).asTask()
                     ])
                 
             }.asDriver(onErrorJustReturn: Task(GeneralError.default))
