@@ -20,7 +20,7 @@ public struct Page<T: Decodable> {
     // MARK: - Computed properties
     
     var nextPageIndex: Int { return pageIndex + 1 }
-    var hasNextPage: Bool { return nextPageIndex < totalPages - 1 }
+    var hasNextPage: Bool { return nextPageIndex < totalPages }
     var asArray: [T] { return results }
     
     // MARK: - Initializer

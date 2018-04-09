@@ -26,6 +26,7 @@ public class Film: Decodable {
         case popularity
         case video
         case voteAverage = "vote_average"
+        case voteCount = "vote_count"
     }
     
     // MARK: - Properties
@@ -43,27 +44,26 @@ public class Film: Decodable {
     let popularity: Double
     let video: Bool
     let voteAverage: Double
+    let voteCount: Int
     
-    // MARK: - Computed properties
+    // MARK: - Lazy properties
     
-    var fullTitle: String {
+    private(set) lazy var fullTitle: String = {
         guard let date = releaseDate else { return title }
         return self.title + " (\((date as NSDate).year()))"
-    }
+    }()
     
-    var posterPath: ImagePath? {
+    private(set) lazy var posterPath: ImagePath? = {
         guard let posterPathString = self.posterPathString else { return nil }
         return ImagePath.poster(path: posterPathString)
-    }
+    }()
     
-    var backdropPath: ImagePath? {
+    private(set) lazy var backdropPath: ImagePath? = {
         guard let backdropPathString = self.backdropPathString else { return nil }
         return ImagePath.backdrop(path: backdropPathString)
-    }
+    }()
     
-    var voteCount: Int { return Int(popularity) }
-    
-    // MARK: - JSONInitializable initializer
+    // MARK: - Decoder initializer
     
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -80,6 +80,7 @@ public class Film: Decodable {
         self.popularity = try container.decode(Double.self, forKey: .popularity)
         self.video = try container.decode(Bool.self, forKey: .video)
         self.voteAverage = try container.decode(Double.self, forKey: .voteAverage)
+        self.voteCount = try container.decode(Int.self, forKey: .voteCount)
     }
 }
 
