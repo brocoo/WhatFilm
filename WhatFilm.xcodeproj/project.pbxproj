@@ -37,7 +37,6 @@
 		206AC43F2028EF22009AE5C3 /* DiscoverParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206AC43E2028EF22009AE5C3 /* DiscoverParameters.swift */; };
 		206AC4412028EFE4009AE5C3 /* FilmSortingCriterion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206AC4402028EFE4009AE5C3 /* FilmSortingCriterion.swift */; };
 		206AC4432028F682009AE5C3 /* OrderingCriteria.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206AC4422028F682009AE5C3 /* OrderingCriteria.swift */; };
-		206BC5BD2078DA6B002566EC /* WhatFilmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206BC5BC2078DA6B002566EC /* WhatFilmTests.swift */; };
 		206BC5C62078DA9D002566EC /* PaginatedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206BC5C52078DA9D002566EC /* PaginatedListTests.swift */; };
 		206BC5C82078DC26002566EC /* PageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206BC5C72078DC26002566EC /* PageTests.swift */; };
 		206BC5CB2078E11E002566EC /* GET_movie_popular_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 206BC5CA2078E11E002566EC /* GET_movie_popular_1.json */; };
@@ -144,7 +143,6 @@
 		206AC4402028EFE4009AE5C3 /* FilmSortingCriterion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmSortingCriterion.swift; sourceTree = "<group>"; };
 		206AC4422028F682009AE5C3 /* OrderingCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderingCriteria.swift; sourceTree = "<group>"; };
 		206BC5BA2078DA6A002566EC /* WhatFilmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhatFilmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		206BC5BC2078DA6B002566EC /* WhatFilmTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatFilmTests.swift; sourceTree = "<group>"; };
 		206BC5BE2078DA6B002566EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		206BC5C52078DA9D002566EC /* PaginatedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListTests.swift; sourceTree = "<group>"; };
 		206BC5C72078DC26002566EC /* PageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageTests.swift; sourceTree = "<group>"; };
@@ -384,7 +382,6 @@
 				206BC5D12078E197002566EC /* Helpers */,
 				206BC5C92078E0EA002566EC /* JSON objects */,
 				206BC5C42078DA7A002566EC /* Models */,
-				206BC5BC2078DA6B002566EC /* WhatFilmTests.swift */,
 				206BC5BE2078DA6B002566EC /* Info.plist */,
 			);
 			path = WhatFilmTests;
@@ -910,7 +907,6 @@
 				206BC5C82078DC26002566EC /* PageTests.swift in Sources */,
 				20641CEA207B6025007A7E16 /* FilmTests.swift in Sources */,
 				20472E8C207A924D0033B302 /* Bundle+jsonDecoded.swift in Sources */,
-				206BC5BD2078DA6B002566EC /* WhatFilmTests.swift in Sources */,
 				206BC5C62078DA9D002566EC /* PaginatedListTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
