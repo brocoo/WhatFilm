@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import DateTools
 
 public final class PersonDetail {
     
@@ -29,13 +28,18 @@ public final class PersonDetail {
         return ImagePath.profile(path: profilePathString)
     }
     
-    var initials: String { return name.initials(upTo: 3) }
+    var age: Int? { return birthDate?.age(upTo: deathDate ?? Date()) }
     
-    var age: Int? {
-        guard let birthdate = self.birthDate else { return nil }
-        let endDate = self.deathDate ?? Date()
-        return (endDate as NSDate).years(from: birthdate)
+    var birthDeathYearsAndAgeFormatted: String? {
+        guard let birthYearString = birthDate?.asString(withFormat: .year) else { return nil }
+        guard let age = age else { return birthYearString }
+        guard let deathYearString = deathDate?.asString(withFormat: .year) else { return birthYearString + " (\(age))" }
+        return birthYearString + " - " + deathYearString + " (\(age))"
     }
+    
+    // MARK: - Lazy properties
+    
+    lazy private(set) var initials: String = { return name.initials(upTo: 3) }()
     
     // MARK: - Initializer
     
@@ -63,8 +67,8 @@ extension PersonDetail: Decodable {
         case name
         case profilePathString = "profile_path"
         case biography
-        case birthDate = "birthdate"
-        case deathDate = "deathdate"
+        case birthDate = "birthday"
+        case deathDate = "deathday"
         case placeOfBirth = "place_of_birth"
         case images
         case profiles = "profiles"
@@ -76,8 +80,8 @@ extension PersonDetail: Decodable {
         let name = try container.decode(String.self, forKey: .name)
         let profilePathString = try container.decode(String.self, forKey: .profilePathString)
         let biography = try container.decode(String.self, forKey: .biography)
-        let birthDate = try container.decodeIfPresent(String.self, forKey: .birthDate)?.asISO8601Date
-        let deathDate = try container.decodeIfPresent(String.self, forKey: .deathDate)?.asISO8601Date
+        let birthDate = try container.decodeIfPresent(String.self, forKey: .birthDate)?.asDate(withFormat: .iso8601)
+        let deathDate = try container.decodeIfPresent(String.self, forKey: .deathDate)?.asDate(withFormat: .iso8601)
         let placeOfBirth = try container.decodeIfPresent(String.self, forKey: .placeOfBirth)
         let imagesContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .images)
         let imagesPathStrings = try imagesContainer.decode([ProfileImage].self, forKey: .profiles).map { $0.filePath }

@@ -177,19 +177,8 @@ final class PersonViewController: UIViewController, ReactiveDisposable {
             profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
         }
         personNameLabel.text = person.name
-        personAgeLabel.text = age(forPerson: person)
+        personAgeLabel.text = person.birthDeathYearsAndAgeFormatted
         personBiographyLabel.text = person.biography
-    }
-    
-    fileprivate func age(forPerson person: PersonDetail) -> String? {
-        guard let birthDate = person.birthDate else { return nil }
-        guard let birthDateString = (birthDate as NSDate).formattedDate(with: .medium) else { return nil }
-        guard let age = person.age else { return nil }
-        if let deathDate = person.deathDate {
-            return birthDateString + " - " + (deathDate as NSDate).formattedDate(with: .medium) + " (\(age))"
-        } else {
-            return birthDateString + " (\(age))"
-        }
     }
 }
 

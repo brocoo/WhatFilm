@@ -49,8 +49,8 @@ public class Film: Decodable {
     // MARK: - Lazy properties
     
     private(set) lazy var fullTitle: String = {
-        guard let date = releaseDate else { return title }
-        return self.title + " (\((date as NSDate).year()))"
+        guard let releaseDate = releaseDate else { return title }
+        return title + " (" + releaseDate.asString(withFormat: .year) + ")"
     }()
     
     private(set) lazy var posterPath: ImagePath? = {
@@ -71,7 +71,7 @@ public class Film: Decodable {
         self.posterPathString = try container.decodeIfPresent(String.self, forKey: .posterPathString)
         self.adult = try container.decode(Bool.self, forKey: .adult)
         self.overview = try container.decode(String.self, forKey: .overview)
-        self.releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)?.asISO8601Date
+        self.releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)?.asDate(withFormat: .iso8601)
         self.genreIds = try container.decodeIfPresent([Int].self, forKey: .genreIds) ?? []
         self.originalTitle = try container.decode(String.self, forKey: .originalTitle)
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
@@ -92,8 +92,7 @@ extension Film: CustomStringConvertible {
     
     public var description: String {
         guard let date = releaseDate else { return originalTitle }
-        let dateString: String = DateManager.sharedFormatter.string(from: date)
-        return "\(originalTitle) (\(dateString))"
+        return originalTitle + " " + date.asString(withFormat: .year)
     }
 }
 

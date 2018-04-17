@@ -1,7 +1,6 @@
 PODS:
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
-  - DateTools (2.0.0)
   - Differentiator (3.0.2)
   - Fabric (1.7.6)
   - RxCocoa (4.1.2):
@@ -17,7 +16,6 @@ PODS:
 
 DEPENDENCIES:
   - Crashlytics
-  - DateTools
   - Fabric
   - RxCocoa
   - RxDataSources
@@ -27,7 +25,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Crashlytics
-    - DateTools
     - Differentiator
     - Fabric
     - RxCocoa
@@ -37,7 +34,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   Differentiator: a87be69eba49ec4ab460c7671143ee3a9eececfd
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
@@ -45,6 +41,6 @@ SPEC CHECKSUMS:
   RxSwift: e49536837d9901277638493ea537394d4b55f570
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
 
-PODFILE CHECKSUM: 35411e7fc6e0ded4e677edce1e6846fe49fc7a35
+PODFILE CHECKSUM: a7215dd99cedeead350d3cdac8f082b4bca2da7b
 
 COCOAPODS: 1.5.0

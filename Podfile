@@ -11,6 +11,5 @@ target 'WhatFilm' do
   pod 'SDWebImage'
   pod 'Fabric'
   pod 'Crashlytics'
-  pod 'DateTools'
 
 end
