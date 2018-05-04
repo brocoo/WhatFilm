@@ -27,7 +27,6 @@ public final class FilmCollectionViewCell: UICollectionViewCell {
     
     func populate(withPosterPath posterPath: ImagePath?, andTitle title: String) {
         self.filmTitleLabel.text = title
-        self.filmPosterImageView.image = nil
         if let posterPath = posterPath {
             self.filmPosterImageView.setImage(fromPath: posterPath, withSize: .medium)
         }
