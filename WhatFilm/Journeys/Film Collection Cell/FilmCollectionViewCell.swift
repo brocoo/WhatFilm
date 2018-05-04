@@ -29,7 +29,7 @@ public final class FilmCollectionViewCell: UICollectionViewCell {
         self.filmTitleLabel.text = title
         self.filmPosterImageView.image = nil
         if let posterPath = posterPath {
-            self.filmPosterImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animatedOnce: true)
+            self.filmPosterImageView.setImage(fromPath: posterPath, withSize: .medium)
         }
     }
 }

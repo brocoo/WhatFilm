@@ -93,7 +93,7 @@ final class PersonViewController: UIViewController, ReactiveDisposable {
         personBiographyLabel.text = nil
         if let profilePath = viewModel.person.profilePath {
             personInitialsLabel.text = nil
-            profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
+            profileImageView.setImage(fromPath: profilePath, withSize: .big)
         } else {
             personInitialsLabel.text = viewModel.person.initials
             profileImageView.image = nil
@@ -164,7 +164,7 @@ final class PersonViewController: UIViewController, ReactiveDisposable {
         
         backgroundImagePath
             .drive(onNext: { [weak self] (imagePath) in
-                self?.blurredImageView.setImage(fromTMDbPath: imagePath, withSize: .medium)
+                self?.blurredImageView.setImage(fromPath: imagePath, withSize: .medium)
             }).disposed(by: self.disposeBag)
     }
     
@@ -174,7 +174,7 @@ final class PersonViewController: UIViewController, ReactiveDisposable {
         personInitialsLabel.text = person.initials
         profileImageView.image = nil
         if let profilePath = person.profilePath {
-            profileImageView.setImage(fromTMDbPath: profilePath, withSize: .big)
+            profileImageView.setImage(fromPath: profilePath, withSize: .big)
         }
         personNameLabel.text = person.name
         personAgeLabel.text = person.birthDeathYearsAndAgeFormatted

@@ -12,6 +12,8 @@ protocol RequestProtocol {
     
     // MARK: - Properties
     
+    var scheme: String? { get }
+    var host: String? { get }
     var path: String { get }
     var method: RequestMethod { get }
     var body: RequestBody? { get }
@@ -22,8 +24,9 @@ protocol RequestProtocol {
 // MARK: -
 
 extension RequestProtocol {
+
+    // MARK: - Default implementation
     
-    // MARK: - Default properties
-    
-    
+    var scheme: String? { return nil }
+    var host: String? { return nil }
 }

@@ -17,6 +17,8 @@ public enum ImageSize {
     case big
     case original
     
+    // MARK: - Properties
+    
     static var posterRatio: CGFloat = (2.0 / 3.0)
     static var backdropRatio: CGFloat = (300.0 / 169.0)
 }
@@ -42,6 +44,31 @@ public enum ImagePath {
         case .poster(let path): return path
         case .profile(let path): return path
         case .still(let path): return path
+        }
+    }
+}
+
+// MARK: -
+
+extension ImagePath: Equatable {
+    
+    public static func == (lhs: ImagePath, rhs: ImagePath) -> Bool {
+        switch lhs {
+        case .backdrop(let lhsPath):
+            guard case let .backdrop(rhsPath) = rhs, lhsPath == rhsPath else { return false }
+            return true
+        case .logo(let lhsPath):
+            guard case let .logo(rhsPath) = rhs, lhsPath == rhsPath else { return false }
+            return true
+        case .poster(let lhsPath):
+            guard case let .poster(rhsPath) = rhs, lhsPath == rhsPath else { return false }
+            return true
+        case .profile(let lhsPath):
+            guard case let .profile(rhsPath) = rhs, lhsPath == rhsPath else { return false }
+            return true
+        case .still(let lhsPath):
+            guard case let .still(rhsPath) = rhs, lhsPath == rhsPath else { return false }
+            return true
         }
     }
 }
@@ -81,12 +108,11 @@ public final class ImageManager: NSObject {
             }
         }()
         let sizeComponent: String = array[sizeComponentIndex]
-        return "\(sizeComponent)/\(imagePath.path)"
+        return "\(sizeComponent)\(imagePath.path)"
     }
     
-    func url(fromTMDbPath imagePath: ImagePath, withSize size: ImageSize) -> URL? {
-        let pathComponent = self.pathComponent(forSize: size, andPath: imagePath)
-        let url = URL(string: self.apiConfiguration.imagesSecureBaseURLString)?.appendingPathComponent(pathComponent)
-        return url
+    func imageRequest(fromPath imagePath: ImagePath, withSize size: ImageSize) throws -> RequestProtocol {
+        let path = pathComponent(forSize: size, andPath: imagePath)
+        return try ImageRequest(baseUrlString: apiConfiguration.imagesSecureBaseURLString, path: path)
     }
 }

@@ -15,8 +15,8 @@ final class Service {
     
     // MARK: - Properties
     
-    let session: URLSession
-    let configuration: ServiceConfiguration
+    private let session: URLSession
+    private let configuration: ServiceConfiguration
     
     // MARK: - Initializer
     
@@ -29,9 +29,9 @@ final class Service {
     
     func perform<T: ResponseProtocol>(request: RequestProtocol, onCompletion: @escaping (T) -> Void) throws {
         let urlRequest = try makeURLRequest(for: request)
-        let task = session.dataTask(with: urlRequest) { [weak self] (data, urlResponse, error) in
+        let task = self.session.dataTask(with: urlRequest) { [weak self] (data, urlResponse, error) in
             guard let `self` = self else { return }
-            let response: T = self.makeResponse(from: request, data: data, urlResponse: urlResponse, error: error)
+            let response: T = self.makeResponse(from: request, data: data, error: error)
             print(response)
             onCompletion(response)
         }
@@ -40,13 +40,12 @@ final class Service {
     
     // MARK: - Private helper methods
     
-    private func makeResponse<T: ResponseProtocol>(from request: RequestProtocol, data: Data?, urlResponse: URLResponse?, error: Error?) -> T {
+    private func makeResponse<T: ResponseProtocol>(from request: RequestProtocol, data: Data?, error: Error?) -> T {
         let dataResult: Result<Data> = {
             if let data = data {
                 return Result(data)
             } else {
-                let serviceError = error ?? ServiceError.unknown(request: request, response: urlResponse)
-                return Result(serviceError)
+                return Result(error ?? ServiceError.unknown(request: request))
             }
         }()
         return T(request: request, data: dataResult)
@@ -56,15 +55,14 @@ final class Service {
         let components = makeComponents(for: request)
         guard let url = components.url else { throw ServiceError.urlFailedBuilding(components: components) }
         var urlRequest = URLRequest(url: url)
-        urlRequest.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         urlRequest.allHTTPHeaderFields = configuration.defaultHTTPHeaders.merging(request.headers, uniquingKeysWith: { $1 })
         return urlRequest
     }
     
     private func makeComponents(`for` request: RequestProtocol) -> URLComponents {
         var components = URLComponents()
-        components.host = configuration.urlHost
-        components.scheme = configuration.urlScheme
+        components.scheme = request.scheme ?? configuration.defaultUrlScheme
+        components.host = request.host ?? configuration.defaultUrlHost
         components.path = request.path
         components.queryItems = (configuration.defaultURLParameters + request.parameters).map { URLQueryItem(name: $0.key, value: $0.value) }
         return components
@@ -76,7 +74,7 @@ final class Service {
 enum ServiceError: Error {
     
     case serviceNotInitialized
-    case unknown(request: RequestProtocol, response: URLResponse?)
+    case unknown(request: RequestProtocol)
     case urlFailedBuilding(components: URLComponents)
 }
 

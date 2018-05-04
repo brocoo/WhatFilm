@@ -13,9 +13,11 @@ public final class TMDbAPI {
     
     // MARK: - Properties
     
-    fileprivate let disposeBag: DisposeBag = DisposeBag()
-    
+    fileprivate let apiConfiguration: BehaviorSubject<APIConfiguration?>
+    fileprivate let disposeBag: DisposeBag
     private var service: Service?
+    
+    // MARK: - Lazy properties
     
     lazy private var apiKey: String = {
         guard let filePath: String = Bundle.main.path(forResource: "Services", ofType: "plist") else { fatalError("Couldn't find Services.plist") }
@@ -24,17 +26,35 @@ public final class TMDbAPI {
         return apiKey
     }()
     
+    lazy fileprivate var imageCache: ImageCache? = {
+        return try? ImageCache()
+    }()
+    
+    fileprivate let imageManager: ReplaySubject<ImageManager> = ReplaySubject.create(bufferSize: 1)
+    
     // MARK: - Initializer
     
-    init() { }
+    init() {
+        apiConfiguration = BehaviorSubject(value: nil)
+        disposeBag = DisposeBag()
+    }
     
     // MARK: - Service
     
     private func setupService(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Service {
-        let urlSession = URLSession.shared
-        let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
-        let configuration = ServiceConfiguration(urlScheme: "https", urlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
-        return Service(session: urlSession, configuration: configuration)
+        
+        let urlSession: URLSession = {
+            let configuration = URLSessionConfiguration.default
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            return URLSession(configuration: configuration)
+        }()
+        
+        let serviceConfiguration: ServiceConfiguration = {
+            let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
+            return ServiceConfiguration(defaultUrlScheme: "https", defaultUrlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
+        }()
+        
+        return Service(session: urlSession, configuration: serviceConfiguration)
     }
 
     // MARK: - 
@@ -47,20 +67,21 @@ public final class TMDbAPI {
         let days: RxTimeInterval = 4.0 * 60.0 * 60.0 * 24.0
         Observable<Int>
             .timer(0, period: days, scheduler: MainScheduler.instance)
-            .flatMap { (_) -> Observable<APIConfiguration> in
-                return self.configuration()
+            .flatMap { [weak self] (_) -> Observable<APIConfiguration> in
+                guard let `self` = self else { return Observable.empty() }
+                return self.decodedResponseAsObservable(for: Endpoint.configuration)
             }.map { (apiConfiguration) -> ImageManager in
                 return ImageManager(apiConfiguration: apiConfiguration)
-            }.subscribe(onNext: { (imageManager) in
-                UIImageView.imageManager = imageManager
-            }).disposed(by: self.disposeBag)
+            }.bind(to: imageManager)
+            .disposed(by: disposeBag)
     }
     
     
-    // MARK: - Helper functions]
+    // MARK: - Helper functions
     
-    private func executeAsObservable<T: Decodable>(_ request: RequestProtocol) -> Observable<T> {
-        return Observable.create { (observer) -> Disposable in
+    private func decodedResponseAsObservable<T: Decodable>(`for` request: RequestProtocol) -> Observable<T> {
+        return Observable.create { [weak self] (observer) -> Disposable in
+            guard let `self` = self else { return Disposables.create() }
             let completion: (DecodableResponse<T>) -> Void = { response in
                 switch response.decodedData {
                 case .success(let data):
@@ -83,7 +104,7 @@ public final class TMDbAPI {
     // MARK: - Configuration
     
     fileprivate func configuration() -> Observable<APIConfiguration> {
-        return executeAsObservable(Endpoint.configuration)
+        return decodedResponseAsObservable(for: Endpoint.configuration)
     }
     
     // MARK: - Search films
@@ -94,8 +115,8 @@ public final class TMDbAPI {
     }
     
     fileprivate func films(currentPaginatedList currentList: PaginatedList<Film>?, with parameters: FilmSearchParameters, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
-        let films: Observable<Page<Film>> = executeAsObservable(Endpoint.searchFilms(parameters: parameters))
-        return films.flatMapLatest { (page) -> Observable<PaginatedList<Film>> in
+        let films: Observable<Page<Film>> = decodedResponseAsObservable(for: Endpoint.searchFilms(parameters: parameters))
+        return films.flatMapLatest { [weak self, weak trigger] (page) -> Observable<PaginatedList<Film>> in
             do {
                 
                 let newList = try { () throws -> (PaginatedList<Film>) in
@@ -103,19 +124,16 @@ public final class TMDbAPI {
                     return try list.appending(page)
                 }()
                 
-                let newParameters: FilmSearchParameters? = {
-                    guard page.hasNextPage else { return nil }
-                    return parameters.forPage(page.nextPageIndex)
-                }()
+                guard page.hasNextPage, let `self` = self, let trigger = trigger else { return Observable.just(newList) }
                 
-                if let newParameters = newParameters {
-                    return Observable.concat([
-                        Observable.just(newList),
-                        Observable.never().takeUntil(trigger),
-                        self.films(currentPaginatedList: newList, with: newParameters, loadNextPageTrigger: trigger)
-                        ])
-                } else { return Observable.just(newList) }
-                
+                return Observable.concat([
+                    Observable.just(newList),
+                    Observable.never().takeUntil(trigger),
+                    self.films(currentPaginatedList: newList,
+                               with: parameters.forPage(page.nextPageIndex),
+                               loadNextPageTrigger: trigger)
+                    ])
+
             } catch { return Observable.error(error) }
         }
     }
@@ -127,8 +145,8 @@ public final class TMDbAPI {
     }
     
     fileprivate func popularFilms(currentPaginatedList currentList: PaginatedList<Film>?, atPage pageIndex: Int, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
-        let popularFilms: Observable<Page<Film>> = executeAsObservable(Endpoint.popularFilms(page: pageIndex))
-        return popularFilms.flatMapLatest { (page) -> Observable<PaginatedList<Film>> in
+        let popularFilms: Observable<Page<Film>> = decodedResponseAsObservable(for: Endpoint.popularFilms(page: pageIndex))
+        return popularFilms.flatMapLatest { [weak self, weak trigger] (page) -> Observable<PaginatedList<Film>> in
             do {
                 
                 let newList = try { () throws -> (PaginatedList<Film>) in
@@ -136,13 +154,16 @@ public final class TMDbAPI {
                     return try list.appending(page)
                 }()
                 
-                if page.hasNextPage {
-                    return Observable.concat([
-                        Observable.just(newList),
-                        Observable.never().takeUntil(trigger),
-                        self.popularFilms(currentPaginatedList: newList, atPage: page.nextPageIndex, loadNextPageTrigger: trigger)
-                        ])
-                } else { return Observable.just(newList) }
+                guard page.hasNextPage, let `self` = self, let trigger = trigger else { return Observable.just(newList) }
+                
+                return Observable.concat([
+                    Observable.just(newList),
+                    Observable.never().takeUntil(trigger),
+                    self.popularFilms(currentPaginatedList: newList,
+                                      atPage: page.nextPageIndex,
+                                      loadNextPageTrigger: trigger)
+                    ])
+                
             } catch { return Observable.error(error) }
         }
     }
@@ -150,22 +171,71 @@ public final class TMDbAPI {
     // MARK: - Film detail
     
     public func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
-        return executeAsObservable(Endpoint.filmDetail(filmId: filmId))
+        return decodedResponseAsObservable(for: Endpoint.filmDetail(filmId: filmId))
     }
     
     // MARK: - Film credits
     
     public func credits(forFilmId filmId: Int) -> Observable<FilmCredits> {
-        return executeAsObservable(Endpoint.filmCredits(filmId: filmId))
+        return decodedResponseAsObservable(for: Endpoint.filmCredits(filmId: filmId))
     }
     
     // MARK: - Person
     
     public func person(forId id: Int) -> Observable<PersonDetail> {
-        return executeAsObservable(Endpoint.person(id: id))
+        return decodedResponseAsObservable(for: Endpoint.person(id: id))
     }
     
     public func filmsCredited(forPersonId id: Int) -> Observable<PersonCreditedFilms> {
-        return executeAsObservable(Endpoint.personCredits(id: id))
+        return decodedResponseAsObservable(for: Endpoint.personCredits(id: id))
+    }
+}
+
+// MARK: -
+
+extension TMDbAPI: ImageAPIProtocol {
+    
+    // MARK: - ImageAPI
+    
+    private func imageResponseAsObservable(`for` request: RequestProtocol) -> Observable<CachedImage> {
+        if let image = imageCache?.cachedRessource(for: request.path) {
+            return Observable.just(CachedImage(image: image, cached: true))
+        } else {
+            return Observable.create { [weak self] (observer) -> Disposable in
+                let completion: (ImageResponse) -> Void = { response in
+                    switch response.image {
+                    case .success(let image):
+                        self?.imageCache?.cache(image, for: request.path)
+                        observer.onNext(CachedImage(image: image, cached: false))
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+                do {
+                    guard let `self` = self, let service = self.service else { throw ServiceError.serviceNotInitialized }
+                    try service.perform(request: request, onCompletion: completion)
+                } catch {
+                    observer.onError(error)
+                }
+                return Disposables.create()
+            }
+        }
+    }
+    
+    func image(withSize size: ImageSize, atPath path: ImagePath) -> Observable<CachedImage> {
+        
+        let sizePathTuple: (size: ImageSize, path: ImagePath) = (size: size, path: path)
+        return Observable
+            .just(sizePathTuple)
+            .withLatestFrom(imageManager) { (tuple, imageManager) -> ((size: ImageSize, path: ImagePath), ImageManager) in
+                return (tuple, imageManager)
+            }.flatMapLatest() { [weak self] (tuple, imageManager) -> Observable<CachedImage> in
+                guard let `self` = self else { return Observable.empty() }
+                do {
+                    let request = try imageManager.imageRequest(fromPath: tuple.path, withSize: tuple.size)
+                    return self.imageResponseAsObservable(for: request)
+                } catch { return Observable.error(error) }
+        }
     }
 }

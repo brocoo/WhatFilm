@@ -106,7 +106,7 @@ final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
         self.castLabel.apply(style: .filmDetailTitle)
         self.videosLabel.apply(style: .filmDetailTitle)
         if let posterPath = viewModel.film.posterPath {
-            self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium, animatedOnce: true)
+            self.blurredImageView.setImage(fromPath: posterPath, withSize: .medium)
         }
     }
     
@@ -153,14 +153,14 @@ final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
         self.filmRatingLabel.text = "\(filmDetail.voteAverage)/10"
         self.blurredImageView.contentMode = .scaleAspectFill
         if let backdropPath = filmDetail.backdropPath {
-            if let posterPath = filmDetail.posterPath { self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium) }
+            if let posterPath = filmDetail.posterPath { self.blurredImageView.setImage(fromPath: posterPath, withSize: .medium) }
             self.backdropImageView.contentMode = .scaleAspectFill
-            self.backdropImageView.setImage(fromTMDbPath: backdropPath, withSize: .medium, animatedOnce: true)
+            self.backdropImageView.setImage(fromPath: backdropPath, withSize: .medium)
             self.backdropImageView.backgroundColor = UIColor.clear
         } else if let posterPath = filmDetail.posterPath {
-            self.blurredImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
+            self.blurredImageView.setImage(fromPath: posterPath, withSize: .medium)
             self.backdropImageView.contentMode = .scaleAspectFill
-            self.backdropImageView.setImage(fromTMDbPath: posterPath, withSize: .medium)
+            self.backdropImageView.setImage(fromPath: posterPath, withSize: .medium)
             self.backdropImageView.backgroundColor = UIColor.clear
         } else {
             self.blurredImageView.image = nil

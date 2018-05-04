@@ -12,8 +12,8 @@ struct ServiceConfiguration {
     
     // MARK: - Properties
     
-    let urlScheme: String
-    let urlHost: String
+    let defaultUrlScheme: String
+    let defaultUrlHost: String
     let defaultHTTPHeaders: [String: String]
     let defaultURLParameters: [URLParameter]
 }

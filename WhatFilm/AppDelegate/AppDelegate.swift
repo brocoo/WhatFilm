@@ -15,7 +15,8 @@ class AppDelegate: UIResponder {
     // MARK: - Properties
 
     var window: UIWindow?
-    fileprivate lazy var router = Router(tmdbAPI: TMDbAPI())
+    fileprivate let api = TMDbAPI()
+    fileprivate lazy var router = Router(tmdbAPI: api)
 }
 
 // MARK: -
@@ -27,6 +28,7 @@ extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Settings.initializeServices()
         Settings.setupAppearance()
+        UIImageView.api = api
         router.setup(for: self, with: launchOptions)
         window?.makeKeyAndVisible()
         return true

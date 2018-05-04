@@ -42,7 +42,7 @@ public final class PersonCollectionViewCell: UICollectionViewCell {
         self.profileInitialsLabel.text = person.initials.uppercased()
         self.profileImageView.image = nil
         if let profilePath = person.profilePath {
-            self.profileImageView.setImage(fromTMDbPath: profilePath, withSize: .medium)
+            self.profileImageView.setImage(fromPath: profilePath, withSize: .medium)
         }
         self.nameLabel.text = person.name
     }
