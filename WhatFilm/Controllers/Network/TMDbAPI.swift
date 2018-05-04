@@ -98,7 +98,7 @@ public final class TMDbAPI {
                 observer.onError(error)
             }
             return Disposables.create()
-        }.observeOn(MainScheduler.instance)
+        }
     }
     
     // MARK: - Configuration

@@ -40,7 +40,7 @@ final class FeaturedViewModel {
         
         let sequence = Observable.concat([
             Observable.just(Task.loading),
-            self.tmdbAPI.popularFilms(startingAtPage: 0, loadNextPageTrigger: nextPage).asTask()
+            tmdbAPI.popularFilms(startingAtPage: 0, loadNextPageTrigger: nextPage).asTask()
             ])
         
         return reloadTrigger

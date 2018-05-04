@@ -10,14 +10,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-// MARK: - UIImageView associated objects handle
-
 var imageViewAPIAssociatedObjectHandle: UInt8 = 0
 var imageViewKeyAssociatedObjectHandle: UInt8 = 0
 
 // MARK: -
 
 protocol ImageAPIProtocol: class {
+    
+    // MARK: -
     
     typealias CachedImage = (image: UIImage, cached: Bool)
     
@@ -59,17 +59,15 @@ extension UIImageView {
         let currentKey = Key(path: path, size: size)
         self.key = currentKey
         ImageViewReactiveManager.shared.getImage(forPath: path, size: size, withAPI: api) { [weak self] (cachedImage) in
-            DispatchQueue.main.async {
-                guard let `self` = self, let key = self.key, key == currentKey else { return }
-                if let cachedImage = cachedImage {
-                    if self.image == nil {
-                        self.alpha = 0.0
-                        UIView.animate(withDuration: 0.2) { self.alpha = 1.0 }
-                    }
-                    self.image = cachedImage.image
-                } else {
-                    self.image = placeholder
+            guard let `self` = self, let key = self.key, key == currentKey else { return }
+            if let cachedImage = cachedImage {
+                if self.image == nil {
+                    self.alpha = 0.0
+                    UIView.animate(withDuration: 0.2) { self.alpha = 1.0 }
                 }
+                self.image = cachedImage.image
+            } else {
+                self.image = placeholder
             }
         }
     }
@@ -88,6 +86,7 @@ fileprivate final class ImageViewReactiveManager {
     
     fileprivate func getImage(forPath path: ImagePath, size: ImageSize, withAPI api: ImageAPIProtocol, onCompletion completion: @escaping (ImageAPIProtocol.CachedImage?) -> Void) {
         api.image(withSize: size, atPath: path)
+            .observeOn(MainScheduler.instance)
             .subscribe(onNext: { (image) in
                 completion(image)
             }, onError: { (error) in
