@@ -26,9 +26,9 @@ public struct KeyboardInfo {
     // MARK: - Initializer
     
     init(notification: Notification) {
-        self.frameEnd = (notification.userInfo![UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
-        self.frameBegin = (notification.userInfo![UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
-        self.animationDuration = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! Double
+        self.frameEnd = (notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
+        self.frameBegin = (notification.userInfo![UIResponder.keyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+        self.animationDuration = notification.userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
     }
 }
 
@@ -51,32 +51,32 @@ public final class KeyboardObserver {
     
     public init() {
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillChangeFrame)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillChangeFrameNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.willChangeFrame)
             .disposed(by: self.disposeBag)
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidChangeFrame)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardDidChangeFrameNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.didChangeFrame)
             .disposed(by: self.disposeBag)
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.willShow)
             .disposed(by: self.disposeBag)
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidShow)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardDidShowNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.didShow)
             .disposed(by: self.disposeBag)
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.willHide)
             .disposed(by: self.disposeBag)
         
-        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardDidHide)
+        NotificationCenter.default.rx.notification(UIResponder.keyboardDidHideNotification)
             .map { KeyboardInfo(notification: $0) }
             .bind(to: self.didHide)
             .disposed(by: self.disposeBag)

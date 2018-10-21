@@ -73,7 +73,7 @@ final class FilmsCollectionViewManager: NSObject {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.registerReusableCell(FilmCollectionViewCell.self)
-        collectionView.registerSupplementaryView(LoaderCollectionReusableView.self, ofKind: UICollectionElementKindSectionFooter)
+        collectionView.registerSupplementaryView(LoaderCollectionReusableView.self, ofKind: UICollectionView.elementKindSectionFooter)
     }
     
     // MARK: -

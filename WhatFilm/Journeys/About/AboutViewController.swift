@@ -88,7 +88,7 @@ final class AboutViewController: UIViewController {
             let alert = UIAlertController(title: "Can't send Email", message: "Your device can't send e-mail. Please check your email configuration and try again.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Go to settings", style: .default) { _ in
                 alert.dismiss(animated: true, completion: nil)
-                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+                UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                 alert.dismiss(animated: true, completion: nil)

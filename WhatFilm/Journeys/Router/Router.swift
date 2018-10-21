@@ -44,7 +44,7 @@ final class Router: NSObject {
         return tabBarController
     }
     
-    func setup(`for` delegate: AppDelegate, with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
+    func setup(`for` delegate: AppDelegate, with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         tmdbAPI.start(with: launchOptions)
         delegate.window = {
             let window = UIWindow(frame: UIScreen.main.bounds)
@@ -91,7 +91,7 @@ extension Router: UINavigationControllerDelegate {
     
     // MARK: - UINavigationControllerDelegate
     
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         switch (operation, fromVC, toVC) {
         case (.push, _, toVC) where toVC is FilmDetailsViewController:
             guard let fromVC = fromVC as? (UIViewController & FilmDetailsTransitionable) else { return nil }

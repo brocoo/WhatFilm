@@ -41,8 +41,8 @@ protocol ReactiveDisposable {
 
 extension TextStyle {
     
-    var attributes: [NSAttributedStringKey: AnyObject] {
-        return [NSAttributedStringKey.font: self.font, NSAttributedStringKey.foregroundColor: self.color]
+    var attributes: [NSAttributedString.Key: AnyObject] {
+        return [NSAttributedString.Key.font: self.font, NSAttributedString.Key.foregroundColor: self.color]
     }
 }
 

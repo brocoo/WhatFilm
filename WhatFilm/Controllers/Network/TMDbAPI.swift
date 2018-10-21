@@ -30,7 +30,7 @@ public final class TMDbAPI {
     
     // MARK: - Service
     
-    private func setupService(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Service {
+    private func setupService(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Service {
         let urlSession = URLSession.shared
         let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
         let configuration = ServiceConfiguration(urlScheme: "https", urlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
@@ -39,7 +39,7 @@ public final class TMDbAPI {
 
     // MARK: - 
     
-    public func start(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
+    public func start(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         service = setupService(with: launchOptions)
         
         // Start updating the API configuration (Every four days)

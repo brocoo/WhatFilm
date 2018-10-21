@@ -20,7 +20,7 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var contentOverlayBottomMargin: NSLayoutConstraint!
-    fileprivate var loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    fileprivate var loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .gray)
     
     // MARK: - Properties
     

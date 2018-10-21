@@ -1,18 +1,18 @@
 PODS:
-  - Crashlytics (3.10.1):
-    - Fabric (~> 1.7.5)
-  - Differentiator (3.0.2)
-  - Fabric (1.7.6)
-  - RxCocoa (4.1.2):
+  - Crashlytics (3.10.9):
+    - Fabric (~> 1.7.13)
+  - Differentiator (3.1.0)
+  - Fabric (1.7.13)
+  - RxCocoa (4.3.1):
     - RxSwift (~> 4.0)
-  - RxDataSources (3.0.2):
+  - RxDataSources (3.1.0):
     - Differentiator (~> 3.0)
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
-  - RxSwift (4.1.2)
-  - SDWebImage (4.3.3):
-    - SDWebImage/Core (= 4.3.3)
-  - SDWebImage/Core (4.3.3)
+  - RxSwift (4.3.1)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
 
 DEPENDENCIES:
   - Crashlytics
@@ -33,13 +33,13 @@ SPEC REPOS:
     - SDWebImage
 
 SPEC CHECKSUMS:
-  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  Differentiator: a87be69eba49ec4ab460c7671143ee3a9eececfd
-  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
-  RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
-  RxDataSources: cb7c31e652a87ebb919da45f716bbb87b3765f6b
-  RxSwift: e49536837d9901277638493ea537394d4b55f570
-  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
+  Crashlytics: 55e24fc23989680285a21cb1146578d9d18e432c
+  Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
+  Fabric: 25d0963b691fc97be566392243ff0ecef5a68338
+  RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
+  RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
+  RxSwift: fe0fd770a43acdb7d0a53da411c9b892e69bb6e4
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
 
 PODFILE CHECKSUM: a7215dd99cedeead350d3cdac8f082b4bca2da7b
 
