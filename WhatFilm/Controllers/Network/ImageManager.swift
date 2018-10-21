@@ -52,6 +52,8 @@ public enum ImagePath {
 
 extension ImagePath: Equatable {
     
+    // MARK: - Equatable
+    
     public static func == (lhs: ImagePath, rhs: ImagePath) -> Bool {
         switch lhs {
         case .backdrop(let lhsPath):

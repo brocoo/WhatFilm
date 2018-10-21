@@ -11,6 +11,13 @@ import RxSwift
 
 public final class TMDbAPI {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let defaultUrlScheme = "https"
+        static let defaultUrlHost = "api.themoviedb.org"
+    }
+    
     // MARK: - Properties
     
     fileprivate let apiConfiguration: BehaviorSubject<APIConfiguration?>
@@ -51,7 +58,7 @@ public final class TMDbAPI {
         
         let serviceConfiguration: ServiceConfiguration = {
             let defaultParameters = [URLParameter(key: "api_key", value: apiKey)]
-            return ServiceConfiguration(defaultUrlScheme: "https", defaultUrlHost: "api.themoviedb.org", defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
+            return ServiceConfiguration(defaultUrlScheme: Constants.defaultUrlScheme, defaultUrlHost: Constants.defaultUrlHost, defaultHTTPHeaders: [:], defaultURLParameters: defaultParameters)
         }()
         
         return Service(session: urlSession, configuration: serviceConfiguration)
@@ -62,11 +69,9 @@ public final class TMDbAPI {
     public func start(with launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
         service = setupService(with: launchOptions)
         
-        // Start updating the API configuration (Every four days)
-        // FIXME: - Improve this by performing background fetch
-        let days: RxTimeInterval = 4.0 * 60.0 * 60.0 * 24.0
+        let day: RxTimeInterval = 60.0 * 60.0 * 24.0
         Observable<Int>
-            .timer(0, period: days, scheduler: MainScheduler.instance)
+            .timer(0, period: 4.0 * day, scheduler: MainScheduler.instance)
             .flatMap { [weak self] (_) -> Observable<APIConfiguration> in
                 guard let `self` = self else { return Observable.empty() }
                 return self.decodedResponseAsObservable(for: Endpoint.configuration)
@@ -116,7 +121,7 @@ public final class TMDbAPI {
     
     fileprivate func films(currentPaginatedList currentList: PaginatedList<Film>?, with parameters: FilmSearchParameters, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
         let films: Observable<Page<Film>> = decodedResponseAsObservable(for: Endpoint.searchFilms(parameters: parameters))
-        return films.flatMapLatest { [weak self, weak trigger] (page) -> Observable<PaginatedList<Film>> in
+        return films.flatMapLatest { (page) -> Observable<PaginatedList<Film>> in
             do {
                 
                 let newList = try { () throws -> (PaginatedList<Film>) in
@@ -124,14 +129,10 @@ public final class TMDbAPI {
                     return try list.appending(page)
                 }()
                 
-                guard page.hasNextPage, let `self` = self, let trigger = trigger else { return Observable.just(newList) }
-                
                 return Observable.concat([
                     Observable.just(newList),
                     Observable.never().takeUntil(trigger),
-                    self.films(currentPaginatedList: newList,
-                               with: parameters.forPage(page.nextPageIndex),
-                               loadNextPageTrigger: trigger)
+                    self.films(currentPaginatedList: newList, with: parameters.forPage(page.nextPageIndex), loadNextPageTrigger: trigger)
                     ])
 
             } catch { return Observable.error(error) }
@@ -146,28 +147,26 @@ public final class TMDbAPI {
     
     fileprivate func popularFilms(currentPaginatedList currentList: PaginatedList<Film>?, atPage pageIndex: Int, loadNextPageTrigger trigger: Observable<Void>) -> Observable<PaginatedList<Film>> {
         let popularFilms: Observable<Page<Film>> = decodedResponseAsObservable(for: Endpoint.popularFilms(page: pageIndex))
-        return popularFilms.flatMapLatest { [weak self, weak trigger] (page) -> Observable<PaginatedList<Film>> in
+        return popularFilms.flatMapLatest { (page) -> Observable<PaginatedList<Film>> in
             do {
                 
                 let newList = try { () throws -> (PaginatedList<Film>) in
                     guard let list = currentList else { return try PaginatedList(with: page) }
                     return try list.appending(page)
-                }()
+                    }()
                 
-                guard page.hasNextPage, let `self` = self, let trigger = trigger else { return Observable.just(newList) }
-                
-                return Observable.concat([
-                    Observable.just(newList),
-                    Observable.never().takeUntil(trigger),
-                    self.popularFilms(currentPaginatedList: newList,
-                                      atPage: page.nextPageIndex,
-                                      loadNextPageTrigger: trigger)
-                    ])
-                
+                if page.hasNextPage {
+                    return Observable.concat([
+                        Observable.just(newList),
+                        Observable.never().takeUntil(trigger),
+                        self.popularFilms(currentPaginatedList: newList, atPage: page.nextPageIndex, loadNextPageTrigger: trigger)
+                        ])
+                    
+                } else { return Observable.just(newList) }
             } catch { return Observable.error(error) }
         }
     }
-    
+
     // MARK: - Film detail
     
     public func filmDetail(fromId filmId: Int) -> Observable<FilmDetail> {
