@@ -718,7 +718,7 @@
 					};
 					F99DD6A51D80BD4F00179C5A = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = REMNHN3R45;
+						DevelopmentTeam = PH2JAPR3D3;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
@@ -1160,10 +1160,11 @@
 			baseConfigurationReference = CF617C246769580856BE0678 /* Pods-WhatFilm.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = REMNHN3R45;
+				DEVELOPMENT_TEAM = PH2JAPR3D3;
 				INFOPLIST_FILE = WhatFilm/Ressources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilmApp;
@@ -1180,10 +1181,10 @@
 			baseConfigurationReference = 4CDE941203556B9E1E9F6231 /* Pods-WhatFilm.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = REMNHN3R45;
+				DEVELOPMENT_TEAM = PH2JAPR3D3;
 				INFOPLIST_FILE = WhatFilm/Ressources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brocoo.WhatFilmApp;
