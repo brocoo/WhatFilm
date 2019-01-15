@@ -278,7 +278,7 @@ final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
     
     fileprivate func play(video: Video) {
         guard let url = video.youtubeURL else { return }
-        UIApplication.shared.openURL(url)
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 

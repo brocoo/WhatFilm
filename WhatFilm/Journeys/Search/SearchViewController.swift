@@ -165,13 +165,13 @@ class SearchViewController: UIViewController, ReactiveDisposable {
             UIView.animate(withDuration: duration, animations: {
                 self.collectionView.contentInset = inset
                 self.collectionView.scrollIndicatorInsets = inset
-                self.contentOverlayBottomMargin.constant = bottom - self.bottomLayoutGuide.length
+                self.contentOverlayBottomMargin.constant = bottom - self.view.safeAreaInsets.bottom
                 self.view.layoutIfNeeded()
             })
         } else {
             collectionView.contentInset = inset
             collectionView.scrollIndicatorInsets = inset
-            contentOverlayBottomMargin.constant = bottom - bottomLayoutGuide.length
+            contentOverlayBottomMargin.constant = bottom - view.safeAreaInsets.bottom
             view.layoutIfNeeded()
         }
     }

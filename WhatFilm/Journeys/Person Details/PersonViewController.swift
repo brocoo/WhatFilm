@@ -70,7 +70,8 @@ final class PersonViewController: UIViewController, ReactiveDisposable {
     
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
+        self.fakeNavigationBarHeight.constant = view.safeAreaInsets.top
+//        self.fakeNavigationBarHeight.constant = self.topLayoutGuide.length
     }
     
     // MARK: - UI Setup

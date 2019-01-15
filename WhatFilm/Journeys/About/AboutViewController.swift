@@ -88,7 +88,8 @@ final class AboutViewController: UIViewController {
             let alert = UIAlertController(title: "Can't send Email", message: "Your device can't send e-mail. Please check your email configuration and try again.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Go to settings", style: .default) { _ in
                 alert.dismiss(animated: true, completion: nil)
-                UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
+                let settingsUrl = URL(string: UIApplication.openSettingsURLString)
+                UIApplication.shared.open(settingsUrl!, options: [:], completionHandler: nil)
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                 alert.dismiss(animated: true, completion: nil)
@@ -111,18 +112,18 @@ final class AboutViewController: UIViewController {
     
     fileprivate func open(url: URL, withAlertMessage message: String) {
         
-        UserDefaults.performOnce(forKey: "", perform: { 
+        UserDefaults.performOnce(forKey: "com.brocoo.WhatFilmApp.leavingAppAlert", perform: {
             let alert = UIAlertController(title: "Leave the app?", message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Continue", style: .default) { _ in
                 alert.dismiss(animated: true, completion: nil)
-                UIApplication.shared.openURL(url)
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
                 alert.dismiss(animated: true, completion: nil)
             })
             self.present(alert, animated: true, completion: nil)
         }, elsePerform: {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         })
     }
 }
