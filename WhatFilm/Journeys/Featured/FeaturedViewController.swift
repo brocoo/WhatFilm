@@ -122,6 +122,7 @@ final class FeaturedViewController: UIViewController {
     
     fileprivate func setupUI() {
         title = "Featured"
+        navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.addSubview(refreshControl)
     }
     
