@@ -19,8 +19,8 @@ final class FeaturedViewModel {
     
     // MARK: - Reactive triggers (input)
     
-    let reloadTrigger: PublishSubject<Void> = PublishSubject()
-    let nextPageTrigger: PublishSubject<Void> = PublishSubject()
+    let reloadTrigger: PublishRelay<Void> = PublishRelay()
+    let nextPageTrigger: PublishRelay<Void> = PublishRelay()
     
     // MARK: - Reactive drivers (output)
     

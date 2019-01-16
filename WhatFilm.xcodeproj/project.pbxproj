@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		201C495D206D4BFF00F8462B /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201C495C206D4BFF00F8462B /* Router.swift */; };
+		2020E06721ED3CFC00EBB694 /* Reactive+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020E06621ED3CFC00EBB694 /* Reactive+UIView.swift */; };
 		202954692042C23B005D256A /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202954682042C23B005D256A /* ReusableView.swift */; };
 		2029546C2042D7D8005D256A /* LoaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2029546A2042D7D8005D256A /* LoaderCollectionReusableView.swift */; };
 		2029546D2042D7D8005D256A /* LoaderCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2029546B2042D7D8005D256A /* LoaderCollectionReusableView.xib */; };
@@ -113,6 +114,7 @@
 
 /* Begin PBXFileReference section */
 		201C495C206D4BFF00F8462B /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		2020E06621ED3CFC00EBB694 /* Reactive+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive+UIView.swift"; sourceTree = "<group>"; };
 		202954682042C23B005D256A /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
 		2029546A2042D7D8005D256A /* LoaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		2029546B2042D7D8005D256A /* LoaderCollectionReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoaderCollectionReusableView.xib; sourceTree = "<group>"; };
@@ -425,6 +427,7 @@
 		20C37CEB2001221100F0D31B /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				F944190C1D8C0C2200804E7D /* KeyboardObserver.swift */,
 				F943188F1D85D6A4006B2D23 /* Tools.swift */,
 				F95A04E41D9C169A007AB2C1 /* Settings.swift */,
 				205DE82A20000E940071DAE6 /* String+Tools.swift */,
@@ -432,6 +435,7 @@
 				2041D78B20610C7500448EEE /* Reactive+UIScrollView.swift */,
 				2054E213206A48F200791D9A /* Reactive+UIViewController.swift */,
 				204997C32073F54700CD60B2 /* UIImageView+ImageManager.swift */,
+				2020E06621ED3CFC00EBB694 /* Reactive+UIView.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -441,7 +445,6 @@
 			children = (
 				20C37CEE2001224B00F0D31B /* Network */,
 				F91AC7901D88506E00E99849 /* DateManager.swift */,
-				F944190C1D8C0C2200804E7D /* KeyboardObserver.swift */,
 				F9E9FE0D1E01BEA00093584C /* Analytics.swift */,
 			);
 			path = Controllers;
@@ -897,6 +900,7 @@
 				F95A04E21D9C162F007AB2C1 /* StyleSheet.swift in Sources */,
 				F965EAD61DFEEE3D00CE1F15 /* AboutViewController.swift in Sources */,
 				2044D38B20284D3A00379C2B /* FilmSearchParameters.swift in Sources */,
+				2020E06721ED3CFC00EBB694 /* Reactive+UIView.swift in Sources */,
 				2029546C2042D7D8005D256A /* LoaderCollectionReusableView.swift in Sources */,
 				2062F495200BE1CE0087872F /* Service.swift in Sources */,
 				F965EAD81DFEF36600CE1F15 /* TabBarController.swift in Sources */,

@@ -33,7 +33,7 @@ final class FilmsCollectionViewManager: NSObject {
     
     // MARK: - Reactive properties
     
-    private let itemSelectedStream: PublishSubject<(Film, FilmCollectionViewCell)>
+    private let itemSelectedStream: PublishRelay<(Film, FilmCollectionViewCell)>
     lazy private(set) var itemSelected: Driver<(Film, FilmCollectionViewCell)> = {
         return itemSelectedStream.asDriver(onErrorDriveWith: Driver<(Film, FilmCollectionViewCell)>.from(optional: nil))
     }()
@@ -41,9 +41,9 @@ final class FilmsCollectionViewManager: NSObject {
     
     // MARK: -
     
-    init(films: Driver<Task<PaginatedList<Film>>>, sizeObserver: Observable<CGSize>) {
+    init(films: Driver<Task<PaginatedList<Film>>>, sizeObserver: Driver<CGSize>) {
         self.dataSource = PaginatedList.empty
-        self.itemSelectedStream = PublishSubject()
+        self.itemSelectedStream = PublishRelay()
         self.disposeBag = DisposeBag()
         super.init()
         setupBinding(with: films, sizeObserver: sizeObserver)
@@ -51,7 +51,7 @@ final class FilmsCollectionViewManager: NSObject {
     
     // MARK: - Setup
     
-    private func setupBinding(with films: Driver<Task<PaginatedList<Film>>>, sizeObserver: Observable<CGSize>) {
+    private func setupBinding(with films: Driver<Task<PaginatedList<Film>>>, sizeObserver: Driver<CGSize>) {
         
         films
             .map { $0.result?.value ?? PaginatedList.empty }
@@ -60,7 +60,6 @@ final class FilmsCollectionViewManager: NSObject {
             }).disposed(by: disposeBag)
         
         sizeObserver
-            .asDriver(onErrorJustReturn: collectionView?.bounds.size ?? .zero )
             .map { $0.asCollectionViewItemSize(margin: UIConstants.margin, sizeRatio: UIConstants.itemSizeRatio) }
             .distinctUntilChanged()
             .drive(onNext: { [weak self] (itemSize) in
@@ -130,7 +129,7 @@ extension FilmsCollectionViewManager: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         guard let cell = collectionView.cellForItem(at: indexPath) as? FilmCollectionViewCell else { return }
-        itemSelectedStream.onNext((dataSource[indexPath.row], cell))
+        itemSelectedStream.accept((dataSource[indexPath.row], cell))
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {

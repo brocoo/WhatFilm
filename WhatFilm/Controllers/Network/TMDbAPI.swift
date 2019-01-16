@@ -103,19 +103,13 @@ public final class TMDbAPI {
                     return try list.appending(page)
                 }()
                 
-                let newParameters: FilmSearchParameters? = {
-                    guard page.hasNextPage else { return nil }
-                    return parameters.forPage(page.nextPageIndex)
-                }()
-                
-                if let newParameters = newParameters {
+                if page.hasNextPage {
                     return Observable.concat([
                         Observable.just(newList),
                         Observable.never().takeUntil(trigger),
-                        self.films(currentPaginatedList: newList, with: newParameters, loadNextPageTrigger: trigger)
+                        self.films(currentPaginatedList: newList, with: parameters.forPage(page.nextPageIndex), loadNextPageTrigger: trigger)
                         ])
                 } else { return Observable.just(newList) }
-                
             } catch { return Observable.error(error) }
         }
     }
