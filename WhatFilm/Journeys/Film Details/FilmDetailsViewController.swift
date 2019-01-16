@@ -89,6 +89,7 @@ final class FilmDetailsViewController: UIViewController, ReactiveDisposable {
     // MARK: - UI Setup
     
     fileprivate func setupUI() {
+        navigationItem.largeTitleDisplayMode = .never
         self.filmTitleLabel.apply(style: .filmDetailTitle)
         self.filmTitleLabel.text = viewModel.film.fullTitle.uppercased()
         self.filmSubDetailsView.alpha = 0.0

@@ -24,8 +24,7 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - Properties
     
-    fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
-    fileprivate let sizeObserver: PublishSubject<CGSize> = PublishSubject()
+    fileprivate let sizeObserver: PublishRelay<CGSize> = PublishRelay()
     fileprivate let viewModel: SearchViewModel
     fileprivate let router: Router
     fileprivate(set) var selectedCell: FilmCollectionViewCell?
@@ -33,7 +32,9 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     
     // MARK: - Lazy properties
     
-    lazy private var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
+    lazy private var filmsCollectionViewManager = {
+       return FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver.asDriver(onErrorDriveWith: Driver.empty()))
+    }()
     
     // MARK: - Initializer
     
@@ -63,7 +64,7 @@ class SearchViewController: UIViewController, ReactiveDisposable {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        sizeObserver.onNext(size)
+        sizeObserver.accept(size)
     }
     
     // MARK: - Reactive bindings setup
@@ -94,30 +95,27 @@ class SearchViewController: UIViewController, ReactiveDisposable {
         collectionView.rx
             .startedDragging
             .withLatestFrom(viewModel.films)
+            .asDriver(onErrorDriveWith: Driver.empty())
             .filter { (films) -> Bool in
                 return films.count > 0
-            }.subscribe(onNext: { [unowned self] _ in
+            }.drive(onNext: { [unowned self] _ in
                 self.searchBar.endEditing(true)
             }).disposed(by: disposeBag)
         
         collectionView.rx
-            .observe(CGRect.self, "bounds")
-            .flatMap { Observable.from(optional: $0?.size) }
+            .bounds
+            .map { $0.size }
             .distinctUntilChanged()
             .bind(to: sizeObserver)
             .disposed(by: disposeBag)
         
         viewModel
             .films
-            .asObservable()
-            .withLatestFrom(searchBar.rx.text) { (films, searchQuery) -> String? in
-                
+            .withLatestFrom(searchBar.rx.text.asDriver()) { (films, searchQuery) -> String? in
                 guard films.count == 0 else { return nil }
                 guard let query = searchQuery, query.count > 0 else { return "Search thousands of films, old or new on TMDb..." }
                 return "No results found for '\(query)'"
-                
-            }.subscribe(onNext: { [unowned self] (placeholderString) in
-                
+            }.drive(onNext: { [unowned self] (placeholderString) in
                 self.placeholderLabel.text = placeholderString
                 UIView.animate(withDuration: 0.2) {
                     self.placeholderView.alpha = placeholderString == nil ? 0.0 : 1.0
@@ -125,14 +123,14 @@ class SearchViewController: UIViewController, ReactiveDisposable {
                 }
             }).disposed(by: disposeBag)
         
-        keyboardObserver
-            .willShow
+        UIResponder
+            .keyboardWillShow
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
         
-        keyboardObserver
-            .willHide
+        UIResponder
+            .keyboardWillHide
             .subscribe(onNext: { [unowned self] (keyboardInfo) in
                 self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
@@ -158,21 +156,12 @@ class SearchViewController: UIViewController, ReactiveDisposable {
         placeholderView.tintColor = UIColor(commonColor: .grey)
     }
     
-    fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
+    fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double) {
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: bottom, right: 0)
-        if let duration = duration {
-            view.layoutIfNeeded()
-            UIView.animate(withDuration: duration, animations: {
-                self.collectionView.contentInset = inset
-                self.collectionView.scrollIndicatorInsets = inset
-                self.contentOverlayBottomMargin.constant = bottom - self.view.safeAreaInsets.bottom
-                self.view.layoutIfNeeded()
-            })
-        } else {
-            collectionView.contentInset = inset
-            collectionView.scrollIndicatorInsets = inset
-            contentOverlayBottomMargin.constant = bottom - view.safeAreaInsets.bottom
-            view.layoutIfNeeded()
+        UIView.animate(withDuration: duration) {
+            self.collectionView.contentInset = inset
+            self.collectionView.scrollIndicatorInsets = inset
+            self.contentOverlayBottomMargin.constant = bottom - self.view.safeAreaInsets.bottom
         }
     }
 }

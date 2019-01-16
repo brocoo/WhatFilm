@@ -19,8 +19,8 @@ public final class SearchViewModel {
     
     // MARK: - Reactive triggers (input)
 
-    let textSearchTrigger: PublishSubject<String> = PublishSubject()
-    let nextPageTrigger: PublishSubject<Void> = PublishSubject()
+    let textSearchTrigger: PublishRelay<String> = PublishRelay()
+    let nextPageTrigger: PublishRelay<Void> = PublishRelay()
     
     // MARK: - Reactive drivers (output)
 
@@ -37,14 +37,13 @@ public final class SearchViewModel {
     
     fileprivate func makeFilmsTask() -> Driver<Task<PaginatedList<Film>>> {
         
-        let trigger = nextPageTrigger.asObservable().debounce(0.2, scheduler: MainScheduler.instance)
+        let trigger = nextPageTrigger.debounce(0.2, scheduler: MainScheduler.instance)
         
         return textSearchTrigger
             .asObservable()
             .distinctUntilChanged()
             .debounce(0.3, scheduler: MainScheduler.instance)
             .flatMapLatest { (query) -> Observable<Task<PaginatedList<Film>>> in
-                
                 Analytics.track(searchQuery: query)
                 return Observable.concat([
                     Observable.just(Task.loading),

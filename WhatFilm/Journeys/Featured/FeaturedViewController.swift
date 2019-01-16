@@ -24,13 +24,15 @@ final class FeaturedViewController: UIViewController {
     
     // MARK: - Reactive properties
     
-    fileprivate let keyboardObserver: KeyboardObserver = KeyboardObserver()
-    fileprivate let sizeObserver: PublishSubject<CGSize> = PublishSubject()
+    fileprivate let sizeObserver: PublishRelay<CGSize> = PublishRelay()
     fileprivate let disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Lazy properties
     
-    private lazy var filmsCollectionViewManager = FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver)
+    private lazy var filmsCollectionViewManager = {
+        return FilmsCollectionViewManager(films: viewModel.filmsTask, sizeObserver: sizeObserver.asDriver(onErrorDriveWith: Driver.empty()))
+    }()
+    
     fileprivate lazy var refreshControl: UIRefreshControl = UIRefreshControl()
     
     // MARK: - Initializer
@@ -61,7 +63,7 @@ final class FeaturedViewController: UIViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        sizeObserver.onNext(size)
+        sizeObserver.accept(size)
     }
     
     // MARK: - Reactive bindings setup
@@ -73,10 +75,8 @@ final class FeaturedViewController: UIViewController {
         filmsCollectionViewManager
             .itemSelected
             .drive(onNext: { [unowned self] (film, cell) in
-                
                 self.selectedCell = cell
                 self.router.showFilmDetails(for: film, from: self)
-                
             }).disposed(by: disposeBag)
         
         refreshControl.rx
@@ -87,8 +87,8 @@ final class FeaturedViewController: UIViewController {
         
         viewModel
             .filmsTask
-            .drive(onNext: { (task) in
-                self.setupUI(for: task)
+            .drive(onNext: { [weak self] (task) in
+                self?.setupUI(for: task)
             }).disposed(by: disposeBag)
 
         collectionView.rx
@@ -97,25 +97,25 @@ final class FeaturedViewController: UIViewController {
             .disposed(by: disposeBag)
         
         collectionView.rx
-            .observe(CGRect.self, "bounds")
-            .flatMap { Observable.from(optional: $0?.size) }
+            .bounds
+            .map { $0.size }
             .distinctUntilChanged()
             .bind(to: sizeObserver)
             .disposed(by: disposeBag)
         
-        keyboardObserver
-            .willShow
-            .subscribe(onNext: { [unowned self] (keyboardInfo) in
-                self.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
+        UIResponder
+            .keyboardWillShow
+            .subscribe(onNext: { [weak self] (keyboardInfo) in
+                self?.setupScrollViewViewInset(forBottom: keyboardInfo.frameEnd.height, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
         
-        keyboardObserver
-            .willHide
-            .subscribe(onNext: { [unowned self] (keyboardInfo) in
-                self.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
+        UIResponder
+            .keyboardWillHide
+            .subscribe(onNext: { [weak self] (keyboardInfo) in
+                self?.setupScrollViewViewInset(forBottom: 0, animationDuration: keyboardInfo.animationDuration)
             }).disposed(by: disposeBag)
         
-        viewModel.reloadTrigger.onNext(())
+        viewModel.reloadTrigger.accept(())
     }
     
     // MARK: - UI Setup
@@ -126,14 +126,9 @@ final class FeaturedViewController: UIViewController {
         collectionView.addSubview(refreshControl)
     }
     
-    fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double? = nil) {
+    fileprivate func setupScrollViewViewInset(forBottom bottom: CGFloat, animationDuration duration: Double) {
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: bottom, right: 0)
-        if let duration = duration {
-            UIView.animate(withDuration: duration, animations: {
-                self.collectionView.contentInset = inset
-                self.collectionView.scrollIndicatorInsets = inset
-            })
-        } else {
+        UIView.animate(withDuration: duration) {
             self.collectionView.contentInset = inset
             self.collectionView.scrollIndicatorInsets = inset
         }
